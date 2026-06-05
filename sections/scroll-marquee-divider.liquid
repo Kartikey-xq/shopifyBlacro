@@ -1,0 +1,202 @@
+<script src="{{ 'scroll-marquee-divider.js' | asset_url }}" type="module" fetchpriority="low"></script>
+
+<scroll-marquee-divider class="section scroll-marquee-divider color-{{ section.settings.color_scheme }}" style="--divider-thickness: {{ section.settings.line_thickness | default: 4 }}px; --logo-width: {{ section.settings.image_width | default: 80 }}px; --logo-height: {{ section.settings.logo_height | default: 20 }}px;">
+  <div class="scroll-marquee-divider__track-wrapper">
+    <div class="scroll-marquee-divider__track" data-scroll-marquee data-direction="{{ section.settings.movement_direction }}" data-sensitivity="{{ section.settings.scroll_sensitivity | default: 1 }}">
+      {% for i in (1..6) %}
+        <span class="scroll-marquee-divider__item">
+          {% if section.blocks.size > 0 %}
+            {% for block in section.blocks %}
+              {% case block.type %}
+                {% when 'logo' %}
+                  {% if block.settings.logo_image != blank %}
+                    <img
+                      class="scroll-marquee-divider__logo"
+                      src="{{ block.settings.logo_image | image_url: width: section.settings.image_width | default: 80 }}"
+                      alt="{{ block.settings.logo_alt | escape | default: 'Marquee logo' }}"
+                      width="{{ section.settings.image_width | default: 80 }}"
+                      height="{{ section.settings.logo_height | default: 20 }}"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  {% endif %}
+                {% when 'text' %}
+                  {{ block.settings.text | default: 'SCROLL STORY • FLOW • CONNECT' }}
+              {% endcase %}
+            {% endfor %}
+          {% else %}
+            {{ section.settings.marquee_text | default: 'SCROLL STORY • FLOW • CONNECT' }}
+          {% endif %}
+        </span>
+      {% endfor %}
+    </div>
+  </div>
+</scroll-marquee-divider>
+
+{% stylesheet %}
+  .scroll-marquee-divider {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    overflow: hidden;
+    padding-block: 12px;
+    position: relative;
+    color: var(--color-foreground);
+  }
+
+  .scroll-marquee-divider__track-wrapper {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .scroll-marquee-divider__track {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    width: 100%;
+    padding-block: 14px;
+    transform: translateX(0);
+    transition: transform 0.2s ease-out;
+    will-change: transform;
+  }
+
+  .scroll-marquee-divider__item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    line-height: 1;
+    white-space: nowrap;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0.9;
+    color: inherit;
+    padding: 0;
+  }
+
+  .scroll-marquee-divider__logo {
+    height: var(--logo-height);
+    width: auto;
+    max-width: var(--logo-width);
+    object-fit: contain;
+    display: inline-flex;
+    margin-right: 0.75rem;
+    vertical-align: middle;
+  }
+
+  .scroll-marquee-divider__item::after {
+    content: '•';
+    margin-left: 1rem;
+    opacity: 0.45;
+  }
+
+  .scroll-marquee-divider__item:last-child::after {
+    content: '';
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Scroll scrub divider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "marquee_text",
+      "label": "Divider marquee text",
+      "default": "SCROLL STORY • FLOW • CONNECT"
+    },
+    {
+      "type": "select",
+      "id": "movement_direction",
+      "label": "Text direction",
+      "options": [
+        { "value": "normal", "label": "Left to right" },
+        { "value": "reverse", "label": "Right to left" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "range",
+      "id": "line_thickness",
+      "label": "Line thickness",
+      "min": 2,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo height",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Logo width",
+      "min": 20,
+      "max": 120,
+      "step": 1,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "scroll_sensitivity",
+      "label": "Scroll sensitivity",
+      "min": 0.5,
+      "max": 3,
+      "step": 0.1,
+      "default": 1
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo_image",
+          "label": "Logo image"
+        },
+        {
+          "type": "text",
+          "id": "logo_alt",
+          "label": "Logo alt text",
+          "default": "Marquee logo"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "SCROLL STORY • FLOW • CONNECT"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scroll scrub divider",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
