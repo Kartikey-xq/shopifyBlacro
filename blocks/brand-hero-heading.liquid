@@ -1,0 +1,143 @@
+{%- assign b = block.settings -%}
+
+<div
+  class="brand-hero-heading"
+  style="
+    --x: {{ b.pos_x }}%;
+    --y: {{ b.pos_y }}%;
+    --heading-size: {{ b.heading_size }}rem;
+    --crow-size: {{ b.crow_size }}px;
+    --crow-opacity: {{ b.crow_opacity }};
+  "
+  {{ block.shopify_attributes }}
+>
+  <h1 class="heading">{{ b.heading_text }}</h1>
+
+  <div class="crow">
+    <!-- REAL crow silhouette (cleaned Illustrator export) -->
+    <svg viewBox="500 250 1200 1500" aria-hidden="true">
+      <path
+        d="M 1283.679688 1135.726562
+           C 1283.679688 1135.726562 1378.148438 1144.285156 1426.199219 1144.53125
+           C 1474.261719 1144.777344 1492.519531 1185.003906 1492.519531 1185.003906
+           C 1492.519531 1185.003906 1538.988281 1210.988281 1516.621094 1242.148438
+           C 1516.621094 1242.148438 1517.96875 1225.808594 1491.371094 1223.152344
+           C 1464.769531 1220.496094 1453.988281 1220.324219 1453.988281 1220.324219
+           L 1475.21875 1226.386719
+           C 1475.21875 1226.386719 1503.519531 1252.652344 1506.640625 1261.027344
+           C 1509.761719 1269.398438 1493.761719 1255.144531 1479.128906 1250.679688
+           C 1464.488281 1246.21875 1423.890625 1247.359375 1410.300781 1278.058594
+           C 1410.300781 1278.058594 1358.011719 1288.90625 1339.121094 1304.59375
+           Z"
+        fill="currentColor"
+      />
+    </svg>
+  </div>
+</div>
+
+{% stylesheet %}
+.brand-hero-heading {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  text-align: center;
+}
+
+.brand-hero-heading .heading {
+  font-size: var(--heading-size);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+  color: currentColor;
+}
+
+.brand-hero-heading .crow {
+  margin-top: 0.6rem;
+  opacity: var(--crow-opacity);
+}
+
+.brand-hero-heading .crow svg {
+  width: var(--crow-size);
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  animation: crow-drift 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes crow-drift {
+  from {
+    transform: translateY(0) scale(1);
+  }
+  to {
+    transform: translateY(-4px) scale(1.015);
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Brand Hero Heading (Crow)",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading text",
+      "default": "Breed Apart"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (rem)",
+      "min": 1.5,
+      "max": 8,
+      "step": 0.1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "pos_x",
+      "label": "Horizontal position (%)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "pos_y",
+      "label": "Vertical position (%)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "crow_size",
+      "label": "Crow size (px)",
+      "min": 40,
+      "max": 300,
+      "step": 5,
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "crow_opacity",
+      "label": "Crow opacity",
+      "min": 0.3,
+      "max": 1,
+      "step": 0.1,
+      "default": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Hero Heading (Crow)",
+      "category": "Hero"
+    }
+  ]
+}
+{% endschema %}

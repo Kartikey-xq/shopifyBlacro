@@ -1,0 +1,479 @@
+{% comment %}
+  Custom Collection Carousel with Hover Image
+  Renders collection title and a responsive horizontal carousel of products.
+  Supports manual title, price, image, hover image, and link overrides.
+{% endcomment %}
+
+{% liquid
+  assign collection_title = section.settings.collection_title | default: section.settings.collection.title | default: 'Featured Collection'
+  assign collection_url = section.settings.collection.url | default: '#'
+%}
+
+<div 
+  id="CollectionCarousel-{{ section.id }}" 
+  class="collection-hover-carousel"
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <!-- Header with Collection Title and Navigation Controls -->
+    <div class="collection-hover-carousel__header">
+      <a href="{{ collection_url }}" class="collection-hover-carousel__title-link">
+        <h2 class="collection-hover-carousel__title">{{ collection_title }}</h2>
+      </a>
+      <div class="collection-hover-carousel__nav">
+        <button 
+          class="collection-hover-carousel__btn collection-hover-carousel__btn--prev"
+          aria-label="Previous slide"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
+        <button 
+          class="collection-hover-carousel__btn collection-hover-carousel__btn--next"
+          aria-label="Next slide"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Carousel Track Wrapper -->
+    <div class="collection-hover-carousel__track-wrapper">
+      <div class="collection-hover-carousel__track">
+        {% if section.blocks.size > 0 %}
+          {% for block in section.blocks %}
+            {% liquid
+              assign product = block.settings.product
+              assign title = block.settings.title_override | default: product.title | default: 'Sample Product'
+              
+              assign price_text = 'Rs. 1,000.00 INR'
+              if block.settings.price_override != blank
+                assign price_text = block.settings.price_override
+              elsif product != blank
+                assign price_text = product.price | money_with_currency
+              endif
+              
+              assign primary_image = block.settings.image_override | default: product.featured_image
+              assign hover_image = block.settings.hover_image_override | default: product.images[1] | default: primary_image
+              
+              assign card_url = block.settings.link_override | default: collection_url
+            %}
+            <div class="collection-hover-carousel__item" {{ block.shopify_attributes }}>
+              <a href="{{ card_url }}" class="collection-hover-carousel__card">
+                <div class="collection-hover-carousel__image-wrapper">
+                  {% if primary_image != blank %}
+                    <img 
+                      src="{{ primary_image | image_url: width: 600 }}" 
+                      alt="{{ title | escape }}"
+                      loading="lazy"
+                      class="collection-hover-carousel__img collection-hover-carousel__img--primary"
+                      width="{{ primary_image.width }}"
+                      height="{{ primary_image.height }}"
+                    >
+                    {% if hover_image != blank and hover_image != primary_image %}
+                      <img 
+                        src="{{ hover_image | image_url: width: 600 }}" 
+                        alt="{{ title | escape }} (alternate view)"
+                        loading="lazy"
+                        class="collection-hover-carousel__img collection-hover-carousel__img--hover"
+                        width="{{ hover_image.width }}"
+                        height="{{ hover_image.height }}"
+                      >
+                    {% endif %}
+                  {% else %}
+                    {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'collection-hover-carousel__placeholder-svg' }}
+                  {% endif %}
+                </div>
+                <div class="collection-hover-carousel__info">
+                  <h4 class="collection-hover-carousel__product-title">{{ title }}</h4>
+                  <p class="collection-hover-carousel__product-price">{{ price_text }}</p>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        {% else %}
+          {% comment %} Fallback items if no blocks exist {% endcomment %}
+          {% for i in (1..4) %}
+            <div class="collection-hover-carousel__item">
+              <a href="#" class="collection-hover-carousel__card">
+                <div class="collection-hover-carousel__image-wrapper">
+                  {{ 'product-' | append: i | placeholder_svg_tag: 'collection-hover-carousel__placeholder-svg' }}
+                </div>
+                <div class="collection-hover-carousel__info">
+                  <h4 class="collection-hover-carousel__product-title">Sample Product {{ i }}</h4>
+                  <p class="collection-hover-carousel__product-price">Rs. 1,200.00 INR</p>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .collection-hover-carousel {
+    background-color: #000000;
+    color: #ffffff;
+    overflow: hidden;
+    font-family: var(--font-body--family), sans-serif;
+  }
+
+  .collection-hover-carousel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+  }
+
+  .collection-hover-carousel__title-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .collection-hover-carousel__title {
+    margin: 0;
+    font-size: 2.4rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    text-transform: uppercase;
+    transition: opacity 0.3s ease;
+  }
+
+  .collection-hover-carousel__title-link:hover .collection-hover-carousel__title {
+    opacity: 0.7;
+  }
+
+  .collection-hover-carousel__nav {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .collection-hover-carousel__btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    padding: 0;
+  }
+
+  .collection-hover-carousel__btn:hover {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+  }
+
+  .collection-hover-carousel__btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .collection-hover-carousel__track-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .collection-hover-carousel__track {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .collection-hover-carousel__track::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+
+  .collection-hover-carousel__item {
+    flex: 0 0 calc(25% - 1.5rem); /* 4 columns on desktop */
+    scroll-snap-align: start;
+  }
+
+  .collection-hover-carousel__card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .collection-hover-carousel__image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background-color: #111111;
+    margin-bottom: 1.2rem;
+  }
+
+  .collection-hover-carousel__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .collection-hover-carousel__img--hover {
+    opacity: 0;
+    z-index: 1;
+  }
+
+  .collection-hover-carousel__card:hover .collection-hover-carousel__img--hover {
+    opacity: 1;
+  }
+
+  .collection-hover-carousel__card:hover .collection-hover-carousel__img--primary {
+    transform: scale(1.03);
+  }
+
+  .collection-hover-carousel__placeholder-svg {
+    width: 100%;
+    height: 100%;
+    background-color: #111111;
+    fill: #222222;
+  }
+
+  .collection-hover-carousel__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .collection-hover-carousel__product-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #ffffff;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .collection-hover-carousel__product-price {
+    margin: 0;
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Responsiveness */
+  @media screen and (max-width: 1024px) {
+    .collection-hover-carousel__item {
+      flex: 0 0 calc(33.333% - 1.333rem); /* 3 columns on tablet */
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .collection-hover-carousel__item {
+      flex: 0 0 calc(50% - 1rem); /* 2 columns on small tablet */
+    }
+
+    .collection-hover-carousel .page-width {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .collection-hover-carousel__header {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .collection-hover-carousel__track {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .collection-hover-carousel__item {
+      flex: 0 0 70%; /* Shows 1.4 cards to indicate scrolling */
+    }
+    
+    .collection-hover-carousel__title {
+      font-size: 1.8rem;
+    }
+
+    .collection-hover-carousel__btn {
+      width: 36px;
+      height: 36px;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  (function() {
+    function initCarousel(sectionId) {
+      const section = document.getElementById('CollectionCarousel-' + sectionId);
+      if (!section) return;
+      
+      const track = section.querySelector('.collection-hover-carousel__track');
+      const prevBtn = section.querySelector('.collection-hover-carousel__btn--prev');
+      const nextBtn = section.querySelector('.collection-hover-carousel__btn--next');
+      if (!track || !prevBtn || !nextBtn) return;
+
+      function getScrollAmount() {
+        const firstItem = track.querySelector('.collection-hover-carousel__item');
+        if (firstItem) {
+          // scroll by card width plus its right-gap/padding
+          return firstItem.getBoundingClientRect().width + 20; 
+        }
+        return 300;
+      }
+
+      prevBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        track.scrollBy({
+          left: -getScrollAmount(),
+          behavior: 'smooth'
+        });
+      });
+
+      nextBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        track.scrollBy({
+          left: getScrollAmount(),
+          behavior: 'smooth'
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initCarousel('{{ section.id }}');
+    });
+
+    document.addEventListener('shopify:section:load', function(event) {
+      if (event.detail.sectionId === '{{ section.id }}') {
+        initCarousel('{{ section.id }}');
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection Carousel Hover",
+  "tag": "section",
+  "class": "section-collection-carousel-hover",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "collection_title",
+      "label": "Collection Title",
+      "default": "Featured Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection (for Redirection)"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_slide",
+      "name": "Product Slide",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        },
+        {
+          "type": "text",
+          "id": "title_override",
+          "label": "Title Override",
+          "info": "Leave blank to use the product's actual title"
+        },
+        {
+          "type": "text",
+          "id": "price_override",
+          "label": "Price Override",
+          "info": "Leave blank to use the product's actual price"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_override",
+          "label": "Custom Primary Image",
+          "info": "Leave blank to use the product's featured image"
+        },
+        {
+          "type": "image_picker",
+          "id": "hover_image_override",
+          "label": "Custom Hover Image",
+          "info": "Leave blank to use the product's second image"
+        },
+        {
+          "type": "url",
+          "id": "link_override",
+          "label": "Redirection Link Override",
+          "info": "Leave blank to redirect to the section collection page"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Carousel Hover",
+      "blocks": [
+        {
+          "type": "product_slide"
+        },
+        {
+          "type": "product_slide"
+        },
+        {
+          "type": "product_slide"
+        },
+        {
+          "type": "product_slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,176 @@
+{% if settings.intro_desktop_video != blank %}
+<div id="shopi_video_intro">
+  <div id="just-black"></div>
+
+  {% if settings.intro_skip != blank %}
+    <button
+      type="button"
+      class="skip-button"
+      onclick="skipVideoIntro()"
+      aria-label="{{ settings.intro_skip }}"
+    >
+      {{ settings.intro_skip }}
+    </button>
+  {% endif %}
+
+  <div class="vi-intro-window">
+    <audio id="enter-sound">
+      <source src="{{ settings.intro_audio_file }}">
+    </audio>
+
+    <div class="vi-animation-container vi-animation">
+      <video
+        class="vi-desktop-only vid"
+        id="animation-desktop"
+        muted
+        playsinline
+        webkit-playsinline
+        preload="auto"
+      >
+        <source src="{{ settings.intro_desktop_video }}">
+      </video>
+
+      <video
+        class="vi-mobile-only vid"
+        id="animation-mobile"
+        muted
+        playsinline
+        webkit-playsinline
+        preload="auto"
+      >
+        <source src="{{ settings.intro_mobile_video }}">
+      </video>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<style>
+#just-black {
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 1000;
+}
+
+.vi-desktop-only { display: block; }
+.vi-mobile-only { display: none; }
+
+@media (max-width: 768px) {
+  .vi-desktop-only { display: none !important; }
+  .vi-mobile-only { display: block !important; }
+}
+
+.vi-intro-window {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 9999;
+  opacity: 1;
+}
+
+.vi-intro-window.show {
+  display: block;
+}
+
+.vi-intro-window.fade-out {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+body.vi-video-active {
+  overflow: hidden;
+}
+
+.vi-animation-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.skip-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10001;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.15);
+  color: {{ settings.skip_color | default: '#ffffff' }};
+  border: 1px solid {{ settings.skip_color | default: '#ffffff' }};
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.skip-button.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const introWindow = document.querySelector(".vi-intro-window");
+  const videos = document.querySelectorAll(".vid");
+  const skipButton = document.querySelector(".skip-button");
+  const enterSound = document.querySelector("#enter-sound");
+  const justBlack = document.querySelector("#just-black");
+  const volumeIntro = {{ settings.volume_intro | default: 100 }};
+
+  if (!introWindow || !videos.length) return;
+
+  function removeIntroWindow() {
+    introWindow.classList.add("fade-out");
+
+    if (skipButton) skipButton.classList.add("hidden");
+    justBlack.style.display = "none";
+    document.body.classList.remove("vi-video-active");
+
+    setTimeout(() => {
+      introWindow.style.display = "none";
+      sessionStorage.setItem("videoPlayed", "true");
+    }, 500);
+  }
+
+  function skipVideoIntro() {
+    videos.forEach(v => {
+      v.pause();
+      v.currentTime = 0;
+    });
+
+    if (enterSound) {
+      enterSound.pause();
+      enterSound.currentTime = 0;
+    }
+
+    removeIntroWindow();
+  }
+
+  window.skipVideoIntro = skipVideoIntro;
+
+  function startIntro() {
+    if (sessionStorage.getItem("videoPlayed")) return;
+
+    introWindow.style.display = "block";
+    introWindow.classList.add("show");
+    document.body.classList.add("vi-video-active");
+    justBlack.style.display = "block";
+
+    videos.forEach(v => {
+      v.currentTime = 0;
+      v.play().catch(() => {});
+      v.addEventListener("ended", removeIntroWindow);
+    });
+
+    if (enterSound) {
+      enterSound.volume = volumeIntro / 100;
+      enterSound.play().catch(() => {});
+    }
+  }
+
+  startIntro();
+});
+</script>
