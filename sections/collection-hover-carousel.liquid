@@ -7,6 +7,10 @@
 {% liquid
   assign collection_title = section.settings.collection_title | default: section.settings.collection.title | default: 'Featured Collection'
   assign collection_url = section.settings.collection.url | default: '#'
+  assign section_collection = section.settings.collection
+  assign collection_products = section_collection.products
+  assign title_animation = section.settings.title_animation | default: 'fade-up'
+  assign title_animation_duration = section.settings.title_animation_duration | default: 700
 %}
 
 <div 
@@ -16,10 +20,15 @@
 >
   <div class="page-width">
     <!-- Header with Collection Title and Navigation Controls -->
-    <div class="collection-hover-carousel__header">
-      <a href="{{ collection_url }}" class="collection-hover-carousel__title-link">
-        <h2 class="collection-hover-carousel__title">{{ collection_title }}</h2>
-      </a>
+    <div class="collection-hover-carousel__header collection-hover-carousel__header--{{ title_animation }}" style="--title-animation-duration: {{ title_animation_duration }}ms;">
+      <div class="collection-hover-carousel__heading">
+        <a href="{{ collection_url }}" class="collection-hover-carousel__title-link">
+          <h2 class="collection-hover-carousel__title">{{ collection_title }}</h2>
+        </a>
+        <a href="{{ collection_url }}" class="collection-hover-carousel__view-collection-button">
+          View collection
+        </a>
+      </div>
       <div class="collection-hover-carousel__nav">
         <button 
           class="collection-hover-carousel__btn collection-hover-carousel__btn--prev"
@@ -45,25 +54,18 @@
     <!-- Carousel Track Wrapper -->
     <div class="collection-hover-carousel__track-wrapper">
       <div class="collection-hover-carousel__track">
-        {% if section.blocks.size > 0 %}
-          {% for block in section.blocks %}
+        {% if section_collection != blank and collection_products.size > 0 %}
+          {% for product in collection_products limit: 8 %}
             {% liquid
-              assign product = block.settings.product
-              assign title = block.settings.title_override | default: product.title | default: 'Sample Product'
-              
-              assign price_text = 'Rs. 1,000.00 INR'
-              if block.settings.price_override != blank
-                assign price_text = block.settings.price_override
-              elsif product != blank
-                assign price_text = product.price | money_with_currency
-              endif
-              
-              assign primary_image = block.settings.image_override | default: product.featured_image
-              assign hover_image = block.settings.hover_image_override | default: product.images[1] | default: primary_image
-              
-              assign card_url = block.settings.link_override | default: collection_url
+              assign title = product.title | default: 'Sample Product'
+              assign price_text = product.price | money_with_currency
+              assign primary_image = product.featured_image
+              assign hover_setting = 'hover_image_' | append: forloop.index
+              assign override_image = section.settings[hover_setting]
+              assign hover_image = override_image | default: product.images[1] | default: primary_image
+              assign card_url = product.url
             %}
-            <div class="collection-hover-carousel__item" {{ block.shopify_attributes }}>
+            <div class="collection-hover-carousel__item">
               <a href="{{ card_url }}" class="collection-hover-carousel__card">
                 <div class="collection-hover-carousel__image-wrapper">
                   {% if primary_image != blank %}
@@ -119,6 +121,7 @@
 
 {% stylesheet %}
   .collection-hover-carousel {
+    padding: 8px;
     background-color: #000000;
     color: #ffffff;
     overflow: hidden;
@@ -129,7 +132,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
     margin-bottom: 3rem;
+  }
+
+  .collection-hover-carousel__heading {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
   .collection-hover-carousel__title-link {
@@ -144,11 +155,26 @@
     letter-spacing: -0.02em;
     color: #ffffff;
     text-transform: uppercase;
-    transition: opacity 0.3s ease;
+    opacity: 0;
+    transition: opacity var(--title-animation-duration, 700ms) ease, transform var(--title-animation-duration, 700ms) ease;
+    will-change: opacity, transform;
   }
 
-  .collection-hover-carousel__title-link:hover .collection-hover-carousel__title {
-    opacity: 0.7;
+  .collection-hover-carousel__header--fade-up .collection-hover-carousel__title {
+    transform: translateY(1rem);
+  }
+
+  .collection-hover-carousel__header--slide-left .collection-hover-carousel__title {
+    transform: translateX(-1.25rem);
+  }
+
+  .collection-hover-carousel__header--zoom-in .collection-hover-carousel__title {
+    transform: scale(0.95);
+  }
+
+  .collection-hover-carousel__header.title-visible .collection-hover-carousel__title {
+    opacity: 1;
+    transform: none;
   }
 
   .collection-hover-carousel__nav {
@@ -180,6 +206,42 @@
   .collection-hover-carousel__btn svg {
     width: 18px;
     height: 18px;
+  }
+
+  .collection-hover-carousel__view-collection-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    padding: 0.9rem 1.25rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.12);
+    background: rgba(var(--color-foreground-rgb), 0.08);
+    color: var(--color-foreground);
+    text-decoration: none;
+    font-family: var(--font-body--family), sans-serif;
+    font-size: var(--font-paragraph--size);
+    line-height: var(--font-paragraph--line-height);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0 0 1px rgba(var(--color-foreground-rgb), 0.04);
+  }
+
+  .collection-hover-carousel__view-collection-button:hover {
+    background: rgba(var(--color-foreground-rgb), 0.12);
+    border-color: rgba(var(--color-foreground-rgb), 0.24);
+    box-shadow: 0 12px 25px rgba(var(--color-foreground-rgb), 0.08);
+    transform: translateY(-1px);
+  }
+
+  .collection-hover-carousel__view-collection-button::after {
+    content: '→';
+    display: inline-block;
+    margin-left: 0.65rem;
+    font-size: 0.95em;
+    opacity: 0.9;
   }
 
   .collection-hover-carousel__track-wrapper {
@@ -270,7 +332,10 @@
 
   .collection-hover-carousel__product-price {
     margin: 0;
-    font-size: 1.3rem;
+    font-family: var(--font-body--family), sans-serif;
+    font-size: var(--font-paragraph--size);
+    line-height: var(--font-paragraph--line-height);
+    font-weight: var(--font-weight-regular);
     color: rgba(255, 255, 255, 0.6);
   }
 
@@ -292,9 +357,21 @@
     }
 
     .collection-hover-carousel__header {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
       padding-left: 2rem;
       padding-right: 2rem;
       margin-bottom: 2rem;
+    }
+
+    .collection-hover-carousel__heading {
+      justify-content: center;
+    }
+
+    .collection-hover-carousel__nav {
+      display: none;
     }
 
     .collection-hover-carousel__track {
@@ -356,13 +433,41 @@
       });
     }
 
+    function initTitleReveal(sectionId) {
+      const section = document.getElementById('CollectionCarousel-' + sectionId);
+      if (!section) return;
+
+      const header = section.querySelector('.collection-hover-carousel__header');
+      if (!header) return;
+
+      if (!('IntersectionObserver' in window)) {
+        header.classList.add('title-visible');
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            header.classList.add('title-visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.2
+      });
+
+      observer.observe(section);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       initCarousel('{{ section.id }}');
+      initTitleReveal('{{ section.id }}');
     });
 
     document.addEventListener('shopify:section:load', function(event) {
       if (event.detail.sectionId === '{{ section.id }}') {
         initCarousel('{{ section.id }}');
+        initTitleReveal('{{ section.id }}');
       }
     });
   })();
@@ -384,9 +489,83 @@
       "default": "Featured Collection"
     },
     {
+      "type": "select",
+      "id": "title_animation",
+      "label": "Title Animation",
+      "default": "fade-up",
+      "options": [
+        {
+          "value": "fade-up",
+          "label": "Fade Up"
+        },
+        {
+          "value": "slide-left",
+          "label": "Slide Left"
+        },
+        {
+          "value": "zoom-in",
+          "label": "Zoom In"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "title_animation_duration",
+      "label": "Animation Duration",
+      "min": 200,
+      "max": 1500,
+      "step": 50,
+      "unit": "ms",
+      "default": 700
+    },
+    {
       "type": "collection",
       "id": "collection",
       "label": "Collection (for Redirection)"
+    },
+    {
+      "type": "header",
+      "content": "Hover image overrides"
+    },
+    {
+      "type": "image_picker",
+      "id": "hover_image_1",
+      "label": "Hover image override 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "hover_image_2",
+      "label": "Hover image override 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "hover_image_3",
+      "label": "Hover image override 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "hover_image_4",
+      "label": "Hover image override 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "hover_image_5",
+      "label": "Hover image override 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "hover_image_6",
+      "label": "Hover image override 6"
+    },
+    {
+      "type": "image_picker",
+      "id": "hover_image_7",
+      "label": "Hover image override 7"
+    },
+    {
+      "type": "image_picker",
+      "id": "hover_image_8",
+      "label": "Hover image override 8"
     },
     {
       "type": "header",
@@ -413,66 +592,10 @@
       "default": 48
     }
   ],
-  "blocks": [
-    {
-      "type": "product_slide",
-      "name": "Product Slide",
-      "settings": [
-        {
-          "type": "product",
-          "id": "product",
-          "label": "Select Product"
-        },
-        {
-          "type": "text",
-          "id": "title_override",
-          "label": "Title Override",
-          "info": "Leave blank to use the product's actual title"
-        },
-        {
-          "type": "text",
-          "id": "price_override",
-          "label": "Price Override",
-          "info": "Leave blank to use the product's actual price"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_override",
-          "label": "Custom Primary Image",
-          "info": "Leave blank to use the product's featured image"
-        },
-        {
-          "type": "image_picker",
-          "id": "hover_image_override",
-          "label": "Custom Hover Image",
-          "info": "Leave blank to use the product's second image"
-        },
-        {
-          "type": "url",
-          "id": "link_override",
-          "label": "Redirection Link Override",
-          "info": "Leave blank to redirect to the section collection page"
-        }
-      ]
-    }
-  ],
+  "blocks": [],
   "presets": [
     {
-      "name": "Collection Carousel Hover",
-      "blocks": [
-        {
-          "type": "product_slide"
-        },
-        {
-          "type": "product_slide"
-        },
-        {
-          "type": "product_slide"
-        },
-        {
-          "type": "product_slide"
-        }
-      ]
+      "name": "Collection Carousel Hover"
     }
   ]
 }
