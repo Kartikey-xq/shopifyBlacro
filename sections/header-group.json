@@ -72,10 +72,10 @@
         "color_scheme_top": "scheme-1",
         "color_scheme_bottom": "",
         "color_scheme_transparent": "scheme-ee7615b0-d2f3-4aef-a279-360959bc9ece",
-        "enable_transparent_header_home": true,
-        "home_color_scheme": "inverse",
+        "enable_transparent_header_home": false,
+        "home_color_scheme": "default",
         "enable_transparent_header_product": true,
-        "product_color_scheme": "default",
+        "product_color_scheme": "inverse",
         "enable_transparent_header_collection": false,
         "collection_color_scheme": "default"
       }
