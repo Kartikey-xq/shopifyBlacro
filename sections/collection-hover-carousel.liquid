@@ -15,8 +15,13 @@
 
 <div 
   id="CollectionCarousel-{{ section.id }}" 
-  class="collection-hover-carousel"
-  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
+  class="collection-hover-carousel {% if section.settings.color_scheme != blank %}color-{{ section.settings.color_scheme }}{% endif %}"
+  style="
+    padding-top: {{ section.settings.padding_top }}px; 
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    {% if section.settings.custom_bg_color != blank %}--collection-carousel-bg: {{ section.settings.custom_bg_color }};{% endif %}
+    {% if section.settings.custom_text_color != blank %}--collection-carousel-text: {{ section.settings.custom_text_color }};{% endif %}
+  "
 >
   <div class="page-width">
     <!-- Header with Collection Title and Navigation Controls -->
@@ -122,8 +127,8 @@
 {% stylesheet %}
   .collection-hover-carousel {
     padding: 8px;
-    background-color: #000000;
-    color: #ffffff;
+    background-color: var(--collection-carousel-bg, var(--color-background, #000000));
+    color: var(--collection-carousel-text, var(--color-foreground, #ffffff));
     overflow: hidden;
     font-family: var(--font-body--family), sans-serif;
   }
@@ -153,7 +158,7 @@
     font-size: 2.4rem;
     font-weight: 500;
     letter-spacing: -0.02em;
-    color: #ffffff;
+    color: var(--color-foreground-heading, inherit);
     text-transform: uppercase;
     opacity: 0;
     transition: opacity var(--title-animation-duration, 700ms) ease, transform var(--title-animation-duration, 700ms) ease;
@@ -184,8 +189,8 @@
 
   .collection-hover-carousel__btn {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
+    border: 1px solid var(--color-border, rgba(var(--color-foreground-rgb), 0.15));
+    color: var(--color-foreground, #ffffff);
     width: 42px;
     height: 42px;
     border-radius: 50%;
@@ -198,9 +203,9 @@
   }
 
   .collection-hover-carousel__btn:hover {
-    background-color: #ffffff;
-    color: #000000;
-    border-color: #ffffff;
+    background-color: var(--color-foreground, #ffffff);
+    color: var(--color-background, #000000);
+    border-color: var(--color-foreground, #ffffff);
   }
 
   .collection-hover-carousel__btn svg {
@@ -281,7 +286,7 @@
     width: 100%;
     aspect-ratio: 3 / 4;
     overflow: hidden;
-    background-color: #111111;
+    background-color: var(--color-border, #111111);
     margin-bottom: 1.2rem;
   }
 
@@ -311,8 +316,8 @@
   .collection-hover-carousel__placeholder-svg {
     width: 100%;
     height: 100%;
-    background-color: #111111;
-    fill: #222222;
+    background-color: var(--color-border, #111111);
+    fill: var(--color-foreground-muted, #222222);
   }
 
   .collection-hover-carousel__info {
@@ -325,7 +330,7 @@
     margin: 0;
     font-size: 1.4rem;
     font-weight: 400;
-    color: #ffffff;
+    color: var(--color-foreground-heading, var(--color-foreground, inherit));
     letter-spacing: normal;
     text-transform: none;
   }
@@ -336,7 +341,7 @@
     font-size: var(--font-paragraph--size);
     line-height: var(--font-paragraph--line-height);
     font-weight: var(--font-weight-regular);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--color-foreground-muted, rgba(var(--color-foreground-rgb), 0.6));
   }
 
   /* Responsiveness */
@@ -445,11 +450,12 @@
         return;
       }
 
-      const observer = new IntersectionObserver((entries, obs) => {
+      const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             header.classList.add('title-visible');
-            obs.unobserve(entry.target);
+          } else {
+            header.classList.remove('title-visible');
           }
         });
       }, {
@@ -522,6 +528,22 @@
       "type": "collection",
       "id": "collection",
       "label": "Collection (for Redirection)"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "color",
+      "id": "custom_bg_color",
+      "label": "Custom Background Color (Override)"
+    },
+    {
+      "type": "color",
+      "id": "custom_text_color",
+      "label": "Custom Text Color (Override)"
     },
     {
       "type": "header",
