@@ -1,0 +1,215 @@
+<scroll-scrub-driver
+  data-duration="{{ block.settings.scroll_duration | default: 200 }}"
+  data-loops="{{ block.settings.loops | default: 1 }}"
+  data-fade="{{ block.settings.enable_fade }}"
+  data-scale="{{ block.settings.enable_scale }}"
+  data-sensitivity="{{ block.settings.sensitivity | default: 1.0 }}"
+>
+</scroll-scrub-driver>
+
+<script>
+  class ScrollScrubDriver extends HTMLElement {
+    connectedCallback() {
+      // Disable in Shopify Theme Editor to preserve customizer settings and text selection
+      if (window.Shopify && window.Shopify.designMode) {
+        return;
+      }
+
+      this.scrollDuration = Number(this.dataset.duration) || 200;
+      this.loops = Number(this.dataset.loops) || 1;
+      this.enableFade = this.dataset.fade === 'true';
+      this.enableScale = this.dataset.scale === 'true';
+      this.sensitivity = Number(this.dataset.sensitivity) || 1.0;
+
+      // Find the parent shopify section
+      this.targetSection = this.closest('.shopify-section') || this.parentElement;
+      if (!this.targetSection) return;
+
+      // Find the hero element or root container inside section to pin
+      this.heroElement = this.targetSection.querySelector('.hero') || 
+                         this.targetSection.querySelector('marquee-component') || 
+                         this.targetSection.firstElementChild;
+      if (!this.heroElement) return;
+
+      // Wrap the element to create a scroll range
+      if (this.heroElement.parentElement.classList.contains('scroll-scrub-pin-wrapper')) {
+        this.wrapper = this.heroElement.parentElement;
+      } else {
+        this.wrapper = document.createElement('div');
+        this.wrapper.className = 'scroll-scrub-pin-wrapper';
+        this.wrapper.style.height = `${this.scrollDuration}vh`;
+        this.wrapper.style.position = 'relative';
+
+        this.heroElement.parentNode.insertBefore(this.wrapper, this.heroElement);
+        this.wrapper.appendChild(this.heroElement);
+      }
+
+      // Find marquee inside target section
+      this.marquee = this.targetSection.querySelector('marquee-component');
+      this.marqueeWrapper = this.marquee ? this.marquee.querySelector('.marquee__wrapper') : null;
+
+      this.handleScroll = this.handleScroll.bind(this);
+      this.frameId = null;
+
+      window.addEventListener('scroll', this.handleScroll, { passive: true });
+      this.update();
+    }
+
+    disconnectedCallback() {
+      window.removeEventListener('scroll', this.handleScroll);
+      if (this.frameId) {
+        cancelAnimationFrame(this.frameId);
+      }
+    }
+
+    handleScroll() {
+      if (this.frameId) return;
+      this.frameId = requestAnimationFrame(() => {
+        this.frameId = null;
+        this.update();
+      });
+    }
+
+    update() {
+      if (!this.wrapper || !this.marqueeWrapper || !this.marquee) return;
+
+      const rect = this.wrapper.getBoundingClientRect();
+      const scrollHeight = rect.height - window.innerHeight;
+      let progress = 0;
+
+      if (scrollHeight > 0) {
+        progress = Math.min(Math.max(-rect.top / scrollHeight, 0), 1);
+      }
+
+      // Get configuration direction (reverse = 1, normal = -1)
+      const direction = this.marquee.getAttribute('data-movement-direction') === 'reverse' ? 1 : -1;
+      
+      // 50% translates exactly one loop cycle in marquee repeated contents
+      const translatePercent = progress * 50 * this.loops * this.sensitivity * direction;
+      this.marqueeWrapper.style.transform = `translate3d(${translatePercent}%, 0, 0)`;
+
+      // Apply customizable fade out/in effect
+      if (this.enableFade) {
+        let opacity = 1;
+        if (progress > 0.8) {
+          opacity = Math.min(Math.max((1 - progress) / 0.2, 0), 1);
+        } else if (progress < 0.2) {
+          opacity = Math.min(Math.max(progress / 0.2, 0), 1);
+        }
+        this.marqueeWrapper.style.opacity = opacity;
+      } else {
+        this.marqueeWrapper.style.opacity = 1;
+      }
+
+      // Apply customizable scale entry/exit effect
+      if (this.enableScale) {
+        let scale = 1;
+        if (progress > 0.8) {
+          const fadeProgress = (progress - 0.8) / 0.2;
+          scale = 1 - (fadeProgress * 0.1); // 1.0 -> 0.9
+        } else if (progress < 0.2) {
+          const entryProgress = progress / 0.2;
+          scale = 0.9 + (entryProgress * 0.1); // 0.9 -> 1.0
+        }
+        this.marqueeWrapper.style.transform += ` scale(${scale})`;
+      }
+    }
+  }
+
+  if (!customElements.get('scroll-scrub-driver')) {
+    customElements.define('scroll-scrub-driver', ScrollScrubDriver);
+  }
+</script>
+
+{% stylesheet %}
+  scroll-scrub-driver {
+    display: none !important;
+  }
+
+  .scroll-scrub-pin-wrapper {
+    width: 100%;
+  }
+
+  /* Make target pinned elements sticky in viewport */
+  .scroll-scrub-pin-wrapper > .hero,
+  .scroll-scrub-pin-wrapper > marquee-component {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Pause auto-animation when pinned */
+  .scroll-scrub-pin-wrapper marquee-component .marquee__wrapper {
+    animation: none !important;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Scroll Scrub Driver",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Add this block to a Hero or Marquee section to pin the section and scrub its marquee animation dynamically on scroll."
+    },
+    {
+      "type": "header",
+      "content": "Pinning Configuration"
+    },
+    {
+      "type": "range",
+      "id": "scroll_duration",
+      "label": "Scroll depth (Pinning duration)",
+      "min": 100,
+      "max": 600,
+      "step": 50,
+      "unit": "vh",
+      "default": 200,
+      "info": "Distance to scroll before unpinning the section."
+    },
+    {
+      "type": "range",
+      "id": "loops",
+      "label": "Marquee loops",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 1,
+      "info": "Number of full marquee cycles to scroll through before unpinning."
+    },
+    {
+      "type": "range",
+      "id": "sensitivity",
+      "label": "Scroll sensitivity multiplier",
+      "min": 0.5,
+      "max": 3.0,
+      "step": 0.1,
+      "default": 1.0
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_fade",
+      "label": "Enable entry/exit fade-out",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_scale",
+      "label": "Enable entry/exit scale",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scroll Scrub Driver"
+    }
+  ]
+}
+{% endschema %}
