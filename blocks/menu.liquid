@@ -41,7 +41,10 @@
       {% endif %}
       {{ block.shopify_attributes }}
     >
-      <summary class="menu__heading{% if heading == blank %} menu__heading--empty{% endif %} {{ block_settings.heading_preset }}">
+      <summary 
+        class="menu__heading{% if heading == blank %} menu__heading--empty{% endif %} {{ block_settings.heading_preset }}"
+        style="{% if block_settings.custom_font_sizes %}font-size: {{ block_settings.heading_font_size }}px;{% endif %}"
+      >
         <span class="menu__heading__default">{{ heading }}</span>
         <span class="menu__heading__accordion">
           {{ heading | default: menu.title }}
@@ -58,7 +61,10 @@
         {% if menu %}
           <ul class="list-unstyled">
             {% for link in menu.links %}
-              <li class="menu__item {{ block_settings.link_preset }}">
+              <li 
+                class="menu__item {{ block_settings.link_preset }}"
+                style="{% if block_settings.custom_font_sizes %}font-size: {{ block_settings.link_font_size }}px;{% endif %}"
+              >
                 <a href="{{ link.url }}">
                   {{ link.title }}
                 </a>
@@ -289,6 +295,36 @@
         }
       ],
       "default": "paragraph"
+    },
+    {
+      "type": "header",
+      "content": "Custom Font Sizes"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_font_sizes",
+      "label": "Enable Custom Font Sizes",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Heading Font Size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "link_font_size",
+      "label": "Link Font Size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 14
     },
     {
       "type": "header",
