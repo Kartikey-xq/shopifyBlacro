@@ -62,9 +62,12 @@
       "name": "Collection Carousel Hover",
       "settings": {
         "collection_title": "collection : Relic",
-        "title_animation": "slide-left",
+        "title_animation": "zoom-in",
         "title_animation_duration": 1500,
         "collection": "relic",
+        "color_scheme": "scheme-3",
+        "custom_bg_color": "#ffffff",
+        "custom_text_color": "",
         "padding_top": 100,
         "padding_bottom": 80
       }
