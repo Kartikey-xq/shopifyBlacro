@@ -65,12 +65,12 @@
         "localization_position": "right",
         "localization_row": "top",
         "section_width": "full-width",
-        "section_height": "standard",
+        "section_height": "compact",
         "enable_sticky_header": "always",
         "divider_width": 0,
         "divider_size": "page-width",
         "border_width": 0,
-        "color_scheme_top": "scheme-2",
+        "color_scheme_top": "scheme-3",
         "color_scheme_bottom": "",
         "color_scheme_transparent": "scheme-1",
         "enable_transparent_header_home": true,
@@ -78,7 +78,7 @@
         "enable_transparent_header_product": true,
         "product_color_scheme": "inverse",
         "enable_transparent_header_collection": true,
-        "collection_color_scheme": "inverse"
+        "collection_color_scheme": "default"
       }
     }
   },
