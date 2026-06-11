@@ -1,4 +1,3 @@
-{% # theme-check-disable UndefinedObject %}
 {%- doc -%}
   Renders a default variant picker, used to display the variant picker in the variants block.
 
@@ -10,11 +9,7 @@
 
 {% unless product_resource.has_only_default_variant %}
   {% liquid
-    if section
-      assign button_background_brightness = section.settings.color_scheme.settings.foreground | color_brightness
-    else
-      assign button_background_brightness = 255
-    endif
+    assign button_background_brightness = section.settings.color_scheme.settings.foreground | color_brightness
     if button_background_brightness < 105
       assign strikethrough_color_mix = '#000'
     else
