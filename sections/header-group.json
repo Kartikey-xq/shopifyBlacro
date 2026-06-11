@@ -32,7 +32,7 @@
           "settings": {
             "menu": "main-menu",
             "color_scheme": "scheme-2",
-            "type_font_primary_size": "1.5rem",
+            "type_font_primary_size": "1.125rem",
             "menu_font_weight": "700",
             "menu_font_style": "regular",
             "type_font_primary_link": "heading",
@@ -76,7 +76,7 @@
         "enable_transparent_header_home": true,
         "home_color_scheme": "inverse",
         "enable_transparent_header_product": true,
-        "product_color_scheme": "inverse",
+        "product_color_scheme": "default",
         "enable_transparent_header_collection": true,
         "collection_color_scheme": "default"
       }
