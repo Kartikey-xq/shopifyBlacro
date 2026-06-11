@@ -35,6 +35,10 @@
       --product-swatches-padding-block-end: {{ block_settings.product_swatches_padding_bottom }}px;
       --product-swatches-padding-inline-start: {{ block_settings.product_swatches_padding_left }}px;
       --product-swatches-padding-inline-end: {{ block_settings.product_swatches_padding_right }}px;
+      --variant-picker-swatch-radius: {{ block_settings.border_radius }}px;
+      --style-border-swatch-width: {{ block_settings.border_width }}px;
+      --style-border-swatch-style: {{ block_settings.border_style }};
+      --color-border: {{ block_settings.border_color }};
     "
     {{ block.shopify_attributes }}
   >
@@ -146,6 +150,60 @@
       "unit": "px",
       "default": 0,
       "visible_if": "{{ block.settings.hide_padding == false }}"
+    },
+    {
+      "type": "header",
+      "content": "Borders"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border thickness",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Border style",
+      "options": [
+        {
+          "value": "solid",
+          "label": "Solid"
+        },
+        {
+          "value": "dashed",
+          "label": "Dashed"
+        },
+        {
+          "value": "dotted",
+          "label": "Dotted"
+        },
+        {
+          "value": "none",
+          "label": "None"
+        }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#dddddd"
     }
   ],
   "presets": [
