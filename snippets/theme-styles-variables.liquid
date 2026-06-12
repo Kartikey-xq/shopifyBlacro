@@ -593,10 +593,6 @@
     --button-font-family-primary: var(--font-{{ settings.type_font_button_primary }}--family);
     --button-font-family-secondary: var(--font-{{ settings.type_font_button_secondary }}--family);
 
-    /* Button width variables */
-    --button-width-primary: {% if settings.primary_button_width_type == 'custom' %}{{ settings.primary_button_custom_width }}px{% else %}{{ settings.primary_button_width_type | default: 'fit-content' }}{% endif %};
-    --button-width-secondary: {% if settings.secondary_button_width_type == 'custom' %}{{ settings.secondary_button_custom_width }}px{% else %}{{ settings.secondary_button_width_type | default: 'fit-content' }}{% endif %};
-
     /* Button text case */
     --button-text-case: {{ settings.button_text_case }};
     --button-text-case-primary: {{ settings.button_text_case_primary }};
