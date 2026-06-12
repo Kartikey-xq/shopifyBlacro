@@ -1627,6 +1627,37 @@
         "default": "default"
       },
       {
+        "type": "select",
+        "id": "primary_button_width_type",
+        "label": "Primary button width type",
+        "options": [
+          {
+            "value": "fit-content",
+            "label": "Fit content"
+          },
+          {
+            "value": "100%",
+            "label": "Full width"
+          },
+          {
+            "value": "custom",
+            "label": "Custom width"
+          }
+        ],
+        "default": "fit-content"
+      },
+      {
+        "type": "range",
+        "id": "primary_button_custom_width",
+        "min": 100,
+        "max": 600,
+        "step": 10,
+        "unit": "px",
+        "label": "Primary button custom width",
+        "default": 200,
+        "visible_if": "{{ settings.primary_button_width_type == 'custom' }}"
+      },
+      {
         "type": "header",
         "content": "t:options.button_secondary"
       },
@@ -1681,6 +1712,37 @@
           }
         ],
         "default": "default"
+      },
+      {
+        "type": "select",
+        "id": "secondary_button_width_type",
+        "label": "Secondary button width type",
+        "options": [
+          {
+            "value": "fit-content",
+            "label": "Fit content"
+          },
+          {
+            "value": "100%",
+            "label": "Full width"
+          },
+          {
+            "value": "custom",
+            "label": "Custom width"
+          }
+        ],
+        "default": "fit-content"
+      },
+      {
+        "type": "range",
+        "id": "secondary_button_custom_width",
+        "min": 100,
+        "max": 600,
+        "step": 10,
+        "unit": "px",
+        "label": "Secondary button custom width",
+        "default": 200,
+        "visible_if": "{{ settings.secondary_button_width_type == 'custom' }}"
       },
       {
         "type": "header",
