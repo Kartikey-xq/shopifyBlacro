@@ -5065,3 +5065,70 @@ product-recommendations:has([data-has-recommendations='false']) {
   align-items: center;
   gap: var(--gap-sm);
 }
+
+/* --- Collapsible Accordion Rows (Product Details & Shipping Popup Link) --- */
+.product-details-accordion,
+.popup-link--accordion-row {
+  width: 100%;
+}
+
+/* Base styles for the details header summaries and the popup accordion buttons */
+.details__header,
+.popup-link__accordion-button {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding-block: var(--padding-md) !important;
+  cursor: pointer;
+  width: 100% !important;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-paragraph--family) !important;
+  font-weight: 600 !important;
+  font-size: 1.6rem !important;
+  color: var(--color-foreground) !important;
+}
+
+/* Eliminate default markers on summary */
+.product-details-accordion > summary {
+  list-style: none;
+}
+.product-details-accordion > summary::-webkit-details-marker {
+  display: none;
+}
+
+.popup-link__accordion-button {
+  background: none !important;
+  border: none !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+}
+
+/* Accordion details expanded content padding */
+.product-details-accordion .details-content {
+  padding-block-start: var(--padding-md);
+  padding-block-end: var(--padding-md);
+}
+
+/* Rotate the plus icon to a multiplication/cross (X) sign when details/dialog are open */
+.details[open] .icon-plus,
+dialog-component:has(dialog[open]) .icon-plus {
+  transform: rotate(45deg);
+}
+
+.icon-plus {
+  transition: transform 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile responsiveness adjustments */
+@media screen and (max-width: 749px) {
+  .details__header,
+  .popup-link__accordion-button {
+    font-size: 1.4rem !important;
+    padding-block: var(--padding-sm) !important;
+  }
+}

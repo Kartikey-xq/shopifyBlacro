@@ -1,20 +1,63 @@
 
 
 {% liquid
-  assign product = block.settings.product
-  if request.visual_preview_mode and product == blank
-    assign product = collections.all.products.first
+  assign block_settings = block.settings
+  assign text = block_settings.text
+  if text == blank
+    assign product = closest.product
+    if request.visual_preview_mode and product == blank
+      assign product = collections.all.products.first
+    endif
     assign text = product.description
   endif
 %}
 
-{% render 'text', fallback_text: text, block: block %}
+{% if block_settings.enable_accordion %}
+  <accordion-custom
+    {% if block_settings.open_by_default %}
+      open-by-default-on-desktop
+      open-by-default-on-mobile
+    {% endif %}
+  >
+    <details class="details product-details-accordion" {% if block_settings.open_by_default %}open{% endif %}>
+      <summary class="details__header">
+        {{ block_settings.accordion_title }}
+        <span class="svg-wrapper icon-plus">
+          {{- 'icon-plus.svg' | inline_asset_content -}}
+        </span>
+      </summary>
+      <div class="details-content">
+        {% render 'text', fallback_text: text, block: block %}
+      </div>
+    </details>
+  </accordion-custom>
+{% else %}
+  {% render 'text', fallback_text: text, block: block %}
+{% endif %}
 
 {% schema %}
 {
-  "name": "t:names.text",
+  "name": "t:names.product_description",
   "tag": null,
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_accordion",
+      "label": "Enable accordion layout",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "accordion_title",
+      "label": "Accordion title",
+      "default": "Product Details"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_by_default",
+      "label": "Open accordion by default",
+      "default": false
+    },
     {
       "type": "richtext",
       "id": "text",

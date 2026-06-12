@@ -8,16 +8,22 @@
 ></script>
 
 <dialog-component
-  class="popup-link"
+  class="popup-link {% if block_settings.style_as_accordion %}popup-link--accordion-row{% endif %}"
   {{ block.shopify_attributes }}
 >
   <button
     on:click="/showDialog"
-    class="button button-unstyled popup-link__button text-left spacing-style {{ block_settings.type_preset }}"
+    class="button button-unstyled {% if block_settings.style_as_accordion %}details__header popup-link__accordion-button{% else %}popup-link__button{% endif %} text-left spacing-style {{ block_settings.type_preset }}"
     style="{% render 'spacing-style', settings: block_settings %}"
   >
     {{- block_settings.heading }}
-    {{- 'icon-external.svg' | inline_asset_content -}}
+    {% if block_settings.style_as_accordion %}
+      <span class="svg-wrapper icon-plus">
+        {{- 'icon-plus.svg' | inline_asset_content -}}
+      </span>
+    {% else %}
+      {{- 'icon-external.svg' | inline_asset_content -}}
+    {% endif %}
   </button>
 
   <dialog
@@ -110,6 +116,12 @@
   ],
   "tag": null,
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "style_as_accordion",
+      "label": "Style as accordion row",
+      "default": true
+    },
     {
       "type": "header",
       "content": "t:content.popup"
