@@ -195,6 +195,55 @@ class ProductFormComponent extends Component {
   /** @type {number | undefined} */
   #timeout;
 
+  #checkSizeSelection() {
+    const variantPicker = document.querySelector(`variant-picker[data-product-id="${this.dataset.productId}"]`);
+    if (!variantPicker) return { isValid: true };
+
+    // Check buttons/segmented picker
+    const sizeFieldset = variantPicker.querySelector('.variant-option--size-segmented');
+    if (sizeFieldset) {
+      const checkedRadio = sizeFieldset.querySelector('input[type="radio"]:checked');
+      if (!checkedRadio) {
+        return { isValid: false, element: sizeFieldset };
+      }
+    }
+
+    // Check dropdown select
+    const sizeSelect = variantPicker.querySelector('select[id*="Option-"][id*="size" i], select[id*="Option-"][id*="größe" i], select[id*="Option-"][id*="taille" i], select[id*="Option-"][id*="talla" i]');
+    if (sizeSelect && (sizeSelect.value === '' || sizeSelect.selectedIndex === -1 || sizeSelect.options[sizeSelect.selectedIndex].disabled)) {
+      return { isValid: false, element: sizeSelect.closest('.variant-option') || sizeSelect };
+    }
+
+    return { isValid: true };
+  }
+
+  #triggerSizeWarning(element) {
+    if (!element) return;
+    
+    element.classList.add('size-picker-shake');
+    element.addEventListener('animationend', () => {
+      element.classList.remove('size-picker-shake');
+    }, { once: true });
+    
+    element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    
+    const errorText = this.refs.addToCartTextError || this.querySelector('.product-form-text__error');
+    if (errorText) {
+      const textNode = errorText.childNodes[2] || errorText;
+      if (textNode === errorText) {
+        errorText.textContent = "Please select a size";
+      } else {
+        textNode.textContent = "Please select a size";
+      }
+      errorText.classList.remove('hidden');
+      
+      if (this._warningTimeout) clearTimeout(this._warningTimeout);
+      this._warningTimeout = setTimeout(() => {
+        errorText.classList.add('hidden');
+      }, 5000);
+    }
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -205,12 +254,26 @@ class ProductFormComponent extends Component {
 
     // Listen for cart updates to sync data-cart-quantity
     document.addEventListener(ThemeEvents.cartUpdate, this.#onCartUpdate, { signal });
+
+    // Capturing click listener to validate size selection before checkout/cart add
+    this.addEventListener('click', (event) => {
+      const isPaymentBtn = event.target.closest('[ref="acceleratedCheckoutButtonContainer"]') || event.target.closest('add-to-cart-component');
+      if (isPaymentBtn) {
+        const validation = this.#checkSizeSelection();
+        if (!validation.isValid) {
+          event.preventDefault();
+          event.stopPropagation();
+          this.#triggerSizeWarning(validation.element);
+        }
+      }
+    }, { capture: true, signal });
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
 
     this.#abortController.abort();
+    if (this._warningTimeout) clearTimeout(this._warningTimeout);
   }
 
   /**
@@ -281,6 +344,12 @@ class ProductFormComponent extends Component {
     const { addToCartTextError } = this.refs;
     // Stop default behaviour from the browser
     event.preventDefault();
+
+    const validation = this.#checkSizeSelection();
+    if (!validation.isValid) {
+      this.#triggerSizeWarning(validation.element);
+      return;
+    }
 
     if (this.#timeout) clearTimeout(this.#timeout);
 

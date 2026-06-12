@@ -52,12 +52,18 @@
             assign option_id_attribute = 'data-option-id="' | append: fieldset_id | append: '"'
             assign longest_value = 0
           endif
+
+          assign option_name_downcase = product_option.name | downcase
+          assign is_size_option = false
+          if option_name_downcase == 'size' or option_name_downcase == 'größe' or option_name_downcase == 'taille' or option_name_downcase == 'talla'
+            assign is_size_option = true
+          endif
         -%}
 
         {%- if variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
           {%- assign fieldset_index = forloop.index0 -%}
           <fieldset
-            class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
+            class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}{% if is_size_option %} variant-option--size-segmented{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
             ref="fieldsets[]"
             {{ option_id_attribute }}
@@ -68,6 +74,9 @@
                 <span class="variant-option__swatch-value">{{ product_option.selected_value }}</span>
               {%- endif %}
             </legend>
+            {%- if is_size_option -%}
+              <div class="variant-option__segmented-wrapper">
+            {%- endif -%}
             {%- for product_option_value in product_option.values -%}
               {% if product_option_value.size > longest_value and option_id_attribute %}
                 {% assign longest_value = product_option_value.size %}
@@ -75,6 +84,18 @@
               <label
                 class="variant-option__button-label{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}"
               >
+                {%- liquid
+                  assign is_checked = false
+                  if product_option_value.selected
+                    if is_size_option
+                      if product_resource.selected_variant != blank
+                        assign is_checked = true
+                      endif
+                    else
+                      assign is_checked = true
+                    endif
+                  endif
+                -%}
                 <input
                   type="radio"
                   name="{{ product_option.name | escape }}-{{ block.id }}-{{ product_resource.id }}"
@@ -93,7 +114,7 @@
                   {% if product_option_value.variant.id %}
                     data-variant-id="{{ product_option_value.variant.id }}"
                   {% endif %}
-                  {% if product_option_value.selected %}
+                  {% if is_checked %}
                     data-current-checked="true"
                     checked
                   {% else %}
@@ -133,6 +154,21 @@
                 {% render 'strikethrough-variant', product_option: product_option_value %}
               </label>
             {%- endfor -%}
+            {%- if is_size_option -%}
+              </div>
+            {%- endif -%}
+            {%- if variant_style == 'swatch' -%}
+              {%- if option_name_downcase == 'color' or option_name_downcase == 'colour' or option_name_downcase == 'farbe' or option_name_downcase == 'couleur' -%}
+                <span class="variant-option__color-count">
+                  {{ product_option.values.size }}
+                  {%- if product_option.values.size == 1 -%}
+                    Colour
+                  {%- else -%}
+                    Colours
+                  {%- endif -%}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
             {% if option_id_attribute %}
               {% style %}
                 [data-option-id="{{ fieldset_id }}"] {
@@ -171,14 +207,29 @@
                 name="options[{{ product_option.name | escape }}]"
                 class="variant-option__select"
               >
+                {%- if is_size_option and product_resource.selected_variant == blank -%}
+                  <option value="" disabled selected>Select size</option>
+                {%- endif -%}
                 {%- for product_option_value in product_option.values -%}
+                  {%- liquid
+                    assign is_selected = false
+                    if product_option_value.selected
+                      if is_size_option
+                        if product_resource.selected_variant != blank
+                          assign is_selected = true
+                        endif
+                      else
+                        assign is_selected = true
+                      endif
+                    endif
+                  -%}
                   <option
                     value="{{ product_option_value | escape }}"
                     data-input-id="{{ product_option.position }}-{{ forloop.index0 }}"
                     data-option-value-id="{{ product_option_value.id }}"
                     data-variant-id="{{ product_option_value.variant.id }}"
                     data-connected-product-url="{{ product_option_value.product_url }}"
-                    {% if product_option_value.selected %}
+                    {% if is_selected %}
                       selected="selected"
                     {% endif %}
                   >
