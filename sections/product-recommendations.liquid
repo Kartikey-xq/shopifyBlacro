@@ -25,6 +25,22 @@
   endcapture
 %}
 
+{%- liquid
+  # Check if current product belongs to the 'relic' collection
+  assign relic_collection = nil
+  for coll in product.collections
+    if coll.handle == 'relic'
+      assign relic_collection = coll
+      break
+    endif
+  endfor
+
+  assign has_custom_products = false
+  if relic_collection != blank or section.settings.collection != blank
+    assign has_custom_products = true
+  endif
+-%}
+
 <product-recommendations
   id="product-recommendations-{{ section.id }}"
   class="product-recommendations"
@@ -33,7 +49,7 @@
   data-product-id="{{ section.settings.product.id | default: product.id }}"
   data-intent="{{ section.settings.recommendation_type }}"
   data-testid="product-recommendations-section"
-  data-recommendations-performed="{{ recommendations.performed }}"
+  data-recommendations-performed="{% if has_custom_products %}true{% else %}{{ recommendations.performed }}{% endif %}"
   {{ section.shopify_attributes }}
 >
   <div class="section-background color-{{ section.settings.color_scheme }}"></div>
@@ -56,9 +72,13 @@
       {% content_for 'blocks' %}
     </div>
 
-    {%- if recommendations.performed or section.settings.product == blank -%}
+    {%- if has_custom_products or recommendations.performed or section.settings.product == blank -%}
       {% liquid
-        if section.settings.product == blank
+        if relic_collection != blank
+          assign products = relic_collection.products | reject: 'id', product.id
+        elsif section.settings.collection != blank
+          assign products = section.settings.collection.products | reject: 'id', product.id
+        elsif section.settings.product == blank
           assign products = null
           # Onboarding mode: Show placeholder products
           for i in (1..section.settings.max_products)
@@ -124,7 +144,7 @@
             {% render 'resource-list-carousel',
               ref: 'resourceListCarousel',
               slides: slides,
-              slide_count: recommendations.products.size,
+              slide_count: products.size,
               settings: section.settings
             %}
         {% endcase %}
@@ -148,7 +168,7 @@
           {% render 'resource-list-carousel',
             ref: 'resourceListCarouselMobile',
             slides: slides,
-            slide_count: recommendations.products.size,
+            slide_count: products.size,
             settings: section.settings
           %}
         </div>
@@ -211,6 +231,12 @@
       "type": "product",
       "id": "product",
       "label": "t:settings.product"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Custom Collection Override",
+      "info": "Display products from this collection instead of dynamic recommendations."
     },
     {
       "type": "select",

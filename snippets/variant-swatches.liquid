@@ -172,6 +172,16 @@
         {% endcapture %}
 
         {% render 'overflow-list', children: children, ref: 'overflowList' %}
+        {%- if product_option.values.size > 0 -%}
+          <span class="variant-option__color-count">
+            {{ product_option.values.size }}
+            {%- if product_option.values.size == 1 -%}
+              Colour
+            {%- else -%}
+              Colours
+            {%- endif -%}
+          </span>
+        {%- endif -%}
       </fieldset>
     {%- endfor -%}
     <script type="application/json">

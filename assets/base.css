@@ -2244,6 +2244,8 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
 }
 
 .variant-option--swatches > overflow-list {
+  width: auto;
+  flex: 0 1 auto;
   justify-content: var(--product-swatches-alignment);
 
   @media (max-width: 749px) {
@@ -5042,11 +5044,19 @@ product-recommendations:has([data-has-recommendations='false']) {
   display: inline-flex;
   align-items: center;
   margin-left: 12px;
-  font-size: 1.4rem;
-  font-weight: 500;
+  font-family: var(--font-paragraph--family);
+  font-size: var(--font-size--xs);
+  font-weight: var(--font-paragraph--weight);
   color: #4a779d; /* Slate blue/grey tint */
   white-space: nowrap;
   line-height: 1;
+}
+
+@media screen and (max-width: 749px) {
+  .variant-option__color-count {
+    font-size: var(--font-size--2xs);
+    margin-left: 8px;
+  }
 }
 
 .variant-option--swatches {
