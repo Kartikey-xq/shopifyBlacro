@@ -9,14 +9,29 @@
     class="
       header-actions__cart-icon
       {% unless cart == empty %} header-actions__cart-icon--has-cart{% endunless %}
+      {% if settings.enable_cart_icon_rotation %} header-actions__cart-icon--{{ settings.cart_icon_rotation_style }}{% endif %}
     "
     data-testid="cart-icon"
+    style="
+      --custom-cart-icon-width: {{ settings.custom_cart_icon_width | default: 24 }}px;
+      {% if settings.enable_cart_icon_rotation %}
+        --cart-icon-rotation-duration: {{ settings.cart_icon_rotation_duration | default: 8 }}s;
+      {% endif %}
+    "
   >
     <span
       class="svg-wrapper"
       aria-hidden="true"
     >
-      {{ 'icon-cart.svg' | inline_asset_content }}
+      {% if settings.custom_cart_icon != blank %}
+        {%- if settings.custom_cart_icon.src contains '.svg' -%}
+          {{ settings.custom_cart_icon | image_url | image_tag: width: 24, height: 24, style: 'width: var(--custom-cart-icon-width, 24px); height: var(--custom-cart-icon-width, 24px); object-fit: contain;', loading: 'eager' }}
+        {%- else -%}
+          {{ settings.custom_cart_icon | image_url: width: 240 | image_tag: width: 24, height: 24, style: 'width: var(--custom-cart-icon-width, 24px); height: var(--custom-cart-icon-width, 24px); object-fit: contain;', loading: 'eager' }}
+        {%- endif -%}
+      {% else %}
+        {{ 'icon-cart.svg' | inline_asset_content }}
+      {% endif %}
     </span>
 
     {% render 'cart-bubble', limit: 100, live_region: true %}
@@ -553,7 +568,7 @@
   .header-actions__cart-icon {
     --cart-bubble-size: 20px;
     --cart-bubble-top: 4.5px;
-    --cart-bubble-right: 2.5px;
+    --cart-bubble-right: -1px;
 
     position: relative;
   }
@@ -583,7 +598,7 @@
     font-weight: var(--font-paragraph--weight);
   }
 
-  .header-actions__cart-icon.header-actions__cart-icon--has-cart svg {
+  .header-actions__cart-icon.header-actions__cart-icon--has-cart .svg-wrapper {
     /* Create donut mask where the cart bubble sits */
     mask: radial-gradient(
       calc(var(--cart-bubble-size) + 2px) at calc(100% - var(--cart-bubble-right)) var(--cart-bubble-top),
@@ -591,6 +606,40 @@
       #fff 45.45%,
       #fff 100%
     );
+  }
+
+  .header-actions__cart-icon {
+    perspective: 1000px;
+  }
+
+  @keyframes cart-spin-2d-cw {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes cart-spin-2d-ccw {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+  }
+  @keyframes cart-spin-3d-y {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+  }
+  @keyframes cart-spin-3d-x {
+    from { transform: rotateX(0deg); }
+    to { transform: rotateX(360deg); }
+  }
+
+  .header-actions__cart-icon--rotate-2d-cw:hover .svg-wrapper > :is(svg, img) {
+    animation: cart-spin-2d-cw var(--cart-icon-rotation-duration, 8s) linear infinite;
+  }
+  .header-actions__cart-icon--rotate-2d-ccw:hover .svg-wrapper > :is(svg, img) {
+    animation: cart-spin-2d-ccw var(--cart-icon-rotation-duration, 8s) linear infinite;
+  }
+  .header-actions__cart-icon--rotate-3d-y:hover .svg-wrapper > :is(svg, img) {
+    animation: cart-spin-3d-y var(--cart-icon-rotation-duration, 8s) linear infinite;
+  }
+  .header-actions__cart-icon--rotate-3d-x:hover .svg-wrapper > :is(svg, img) {
+    animation: cart-spin-3d-x var(--cart-icon-rotation-duration, 8s) linear infinite;
   }
 
   .cart-drawer__heading .cart-bubble__background {

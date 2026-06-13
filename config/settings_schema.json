@@ -1706,6 +1706,71 @@
     "name": "t:names.cart",
     "settings": [
       {
+        "type": "image_picker",
+        "id": "custom_cart_icon",
+        "label": "Custom Cart Icon",
+        "info": "Upload an image (PNG, SVG, or JPG) to override the default cart icon in the header."
+      },
+      {
+        "type": "range",
+        "id": "custom_cart_icon_width",
+        "label": "Custom Cart Icon Width",
+        "min": 16,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "default": 24,
+        "info": "Adjust the width of the custom cart icon.",
+        "visible_if": "{{ settings.custom_cart_icon != blank }}"
+      },
+      {
+        "type": "header",
+        "content": "Cart Icon Spin Animation"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cart_icon_rotation",
+        "label": "Enable cart icon spin on hover",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "cart_icon_rotation_style",
+        "label": "Rotation Style",
+        "options": [
+          {
+            "value": "rotate-2d-cw",
+            "label": "2D Spin (Clockwise)"
+          },
+          {
+            "value": "rotate-2d-ccw",
+            "label": "2D Spin (Counter-clockwise)"
+          },
+          {
+            "value": "rotate-3d-y",
+            "label": "3D Spin (Horizontal / Planet-like)"
+          },
+          {
+            "value": "rotate-3d-x",
+            "label": "3D Spin (Vertical)"
+          }
+        ],
+        "default": "rotate-3d-y",
+        "visible_if": "{{ settings.enable_cart_icon_rotation == true }}"
+      },
+      {
+        "type": "range",
+        "id": "cart_icon_rotation_duration",
+        "label": "Cart icon rotation speed (seconds)",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "unit": "s",
+        "default": 8,
+        "info": "Lower duration means faster spin. Higher duration means slower spin.",
+        "visible_if": "{{ settings.enable_cart_icon_rotation == true }}"
+      },
+      {
         "type": "select",
         "id": "cart_type",
         "label": "t:settings.cart_type",
