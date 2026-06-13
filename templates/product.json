@@ -21,14 +21,14 @@
             "image_gap": 22,
             "large_first_image": false,
             "icons_style": "none",
-            "slideshow_controls_style": "thumbnails",
-            "slideshow_mobile_controls_style": "dots",
+            "slideshow_controls_style": "counter",
+            "slideshow_mobile_controls_style": "counter",
             "thumbnail_position": "right",
             "thumbnail_width": 44,
             "thumbnail_radius": 0,
             "aspect_ratio": "adapt",
             "constrain_to_viewport": true,
-            "media_fit": "contain",
+            "media_fit": "cover",
             "media_radius": 0,
             "extend_media": true,
             "zoom": true,
@@ -36,7 +36,7 @@
             "hide_variants": true,
             "padding-block-start": 6,
             "padding-block-end": 0,
-            "padding-inline-start": 0,
+            "padding-inline-start": 10,
             "padding-inline-end": 0
           },
           "blocks": {}
@@ -334,6 +334,29 @@
                 "text_z6kcw6",
                 "text_EEWMgK"
               ]
+            },
+            "video_pydtPk": {
+              "type": "video",
+              "name": "t:names.video",
+              "settings": {
+                "source": "uploaded",
+                "video": "shopify://files/videos/0520.mov",
+                "video_autoplay": true,
+                "video_loop": true,
+                "alt": "",
+                "custom_width": 100,
+                "custom_width_mobile": 100,
+                "aspect_ratio": "auto",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -342,7 +365,8 @@
             "product_description_q6rMtw",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
-            "popup_link_7jpUMq"
+            "popup_link_7jpUMq",
+            "video_pydtPk"
           ]
         }
       },
