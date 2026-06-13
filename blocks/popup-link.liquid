@@ -2,6 +2,32 @@
 
 {% assign block_settings = block.settings %}
 
+{% capture header_style %}
+  {% if block_settings.header_font == 'body' %}
+    font-family: var(--font-paragraph--family) !important;
+    font-size: var(--font-paragraph--size, 1.6rem) !important;
+    font-weight: var(--font-paragraph--weight, 400) !important;
+    text-transform: var(--font-paragraph--case, none) !important;
+  {% elsif block_settings.header_font == 'subheading' %}
+    font-family: var(--font-subheading--family) !important;
+    font-size: var(--font-subheading--size, 1.8rem) !important;
+    font-weight: var(--font-subheading--weight, 600) !important;
+    text-transform: var(--font-subheading--case, none) !important;
+  {% elsif block_settings.header_font == 'heading' %}
+    font-family: var(--font-heading--family) !important;
+    font-size: var(--font-heading--size, 2rem) !important;
+    font-weight: var(--font-heading--weight, 700) !important;
+    text-transform: var(--font-heading--case, none) !important;
+  {% elsif block_settings.header_font == 'accent' %}
+    font-family: var(--font-accent--family) !important;
+    font-size: var(--font-accent--size, 1.4rem) !important;
+    font-weight: var(--font-accent--weight, 400) !important;
+    text-transform: var(--font-accent--case, none) !important;
+  {% elsif block_settings.header_font == 'custom' %}
+    font-size: {{ block_settings.header_custom_size }}px !important;
+  {% endif %}
+{% endcapture %}
+
 <script
   src="{{ 'dialog.js' | asset_url }}"
   type="module"
@@ -14,7 +40,7 @@
   <button
     on:click="/showDialog"
     class="button button-unstyled {% if block_settings.style_as_accordion %}details__header popup-link__accordion-button{% else %}popup-link__button{% endif %} text-left spacing-style {{ block_settings.type_preset }}"
-    style="{% render 'spacing-style', settings: block_settings %}"
+    style="{% render 'spacing-style', settings: block_settings %}; {{ header_style | strip_newlines | strip }}"
   >
     {{- block_settings.heading }}
     {% if block_settings.style_as_accordion %}
@@ -121,6 +147,49 @@
       "id": "style_as_accordion",
       "label": "Style as accordion row",
       "default": true
+    },
+    {
+      "type": "select",
+      "id": "header_font",
+      "label": "Link/Header font style",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "custom",
+          "label": "Custom size"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "range",
+      "id": "header_custom_size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Link/Header custom font size",
+      "default": 16,
+      "visible_if": "{{ block.settings.header_font == 'custom' }}"
     },
     {
       "type": "header",

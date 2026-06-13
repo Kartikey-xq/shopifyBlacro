@@ -5047,7 +5047,7 @@ product-recommendations:has([data-has-recommendations='false']) {
   font-family: var(--font-paragraph--family);
   font-size: var(--font-size--xs);
   font-weight: var(--font-paragraph--weight);
-  color: #4a779d; /* Slate blue/grey tint */
+  color: var(--color-foreground, #000000);
   white-space: nowrap;
   line-height: 1;
 }
@@ -5110,6 +5110,21 @@ product-recommendations:has([data-has-recommendations='false']) {
 .popup-link__button {
   text-decoration: none !important;
   border-bottom: none !important;
+}
+
+/* Make accordion plus icon and popup external icon scale relative to text font-size */
+.details__header .svg-wrapper,
+.popup-link__accordion-button .svg-wrapper,
+.popup-link__button .svg-wrapper {
+  width: 1.2em !important;
+  height: 1.2em !important;
+}
+
+.details__header .svg-wrapper > svg,
+.popup-link__accordion-button .svg-wrapper > svg,
+.popup-link__button .svg-wrapper > svg {
+  width: 1.2em !important;
+  height: 1.2em !important;
 }
 
 /* Accordion details expanded content padding */
