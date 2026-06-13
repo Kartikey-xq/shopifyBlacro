@@ -60,17 +60,17 @@
           "settings": {
             "menu": "policies",
             "heading": "Our policies",
-            "menu_spacing": 12,
-            "show_as_accordion": false,
-            "accordion_icon": "caret",
+            "menu_spacing": 0,
+            "show_as_accordion": true,
+            "accordion_icon": "plus",
             "accordion_dividers": false,
             "inherit_color_scheme": true,
             "color_scheme": "",
             "heading_preset": "h3",
-            "link_preset": "paragraph",
-            "custom_font_sizes": false,
-            "heading_font_size": 24,
-            "link_font_size": 14,
+            "link_preset": "",
+            "custom_font_sizes": true,
+            "heading_font_size": 22,
+            "link_font_size": 18,
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
@@ -224,7 +224,7 @@
       "settings": {
         "section_width": "page-width",
         "gap": 11,
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-3",
         "padding-block-start": 26,
         "padding-block-end": 38
       }

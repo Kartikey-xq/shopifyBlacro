@@ -45,37 +45,39 @@
         "padding-block-end": 0
       }
     },
-    "scroll_marquee_divider_x2Yz1": {
-      "type": "scroll-marquee-divider",
-      "settings": {
-        "marquee_text": "SCROLL STORY • FLOW • CONNECT",
-        "movement_direction": "normal",
-        "line_thickness": 12,
-        "logo_height": 20,
-        "image_width": 80,
-        "scroll_sensitivity": 3,
-        "color_scheme": "scheme-1"
-      }
-    },
     "collection_hover_carousel_Hj7YGa": {
       "type": "collection-hover-carousel",
       "name": "Collection Carousel Hover",
       "settings": {
-        "collection_title": "Featured Collection: {{ section.settings.collection.title }}",
-        "title_animation": "fade-up",
-        "title_animation_duration": 700,
+        "collection_title": "BLACRO X {{ section.settings.collection.title }}",
+        "title_animation": "slide-left",
+        "title_animation_duration": 1500,
         "collection": "relic",
         "color_scheme": "scheme-3",
         "custom_bg_color": "",
         "custom_text_color": "",
-        "padding_top": 48,
-        "padding_bottom": 48
+        "title_font": "custom",
+        "title_custom_size": 14,
+        "price_font": "default",
+        "price_custom_size": 14,
+        "show_swatches": true,
+        "swatches_alignment": "flex-start",
+        "swatches_alignment_mobile": "flex-start",
+        "swatches_padding_top": 4,
+        "swatches_padding_bottom": 0,
+        "swatches_padding_left": 0,
+        "swatches_padding_right": 0,
+        "swatches_border_radius": 32,
+        "swatches_border_width": 1,
+        "swatches_border_style": "solid",
+        "swatches_border_color": "#dddddd",
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     }
   },
   "order": [
     "hero_jVaWmY",
-    "scroll_marquee_divider_x2Yz1",
     "collection_hover_carousel_Hj7YGa"
   ]
 }
