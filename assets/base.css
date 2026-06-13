@@ -5082,7 +5082,8 @@ product-recommendations:has([data-has-recommendations='false']) {
   cursor: pointer;
   width: 100% !important;
   text-align: left;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: none !important;
+  text-decoration: none !important;
   font-family: var(--font-paragraph--family) !important;
   font-weight: 600 !important;
   font-size: 1.6rem !important;
@@ -5100,9 +5101,15 @@ product-recommendations:has([data-has-recommendations='false']) {
 .popup-link__accordion-button {
   background: none !important;
   border: none !important;
-  border-bottom: 1px solid var(--color-border) !important;
+  border-bottom: none !important;
   border-radius: 0 !important;
   margin: 0 !important;
+  text-decoration: none !important;
+}
+
+.popup-link__button {
+  text-decoration: none !important;
+  border-bottom: none !important;
 }
 
 /* Accordion details expanded content padding */

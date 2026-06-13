@@ -2,34 +2,43 @@
 
 {% assign block_settings = block.settings %}
 
+{% assign product_video = product.metafields.custom.product_video.value %}
+{% assign video_to_render = product_video | default: block_settings.video %}
+{% assign product_video_url = product.metafields.custom.product_video_url.value %}
+{% assign video_url_to_render = product_video_url | default: block_settings.video_url %}
+
 {% capture video_style %}
   {%  render 'spacing-style', settings: block_settings %}
   {% render 'border-override', settings: block_settings %}
    --size-style-width: {{ block_settings.custom_width }}%; --size-style-width-mobile: {{ block_settings.custom_width_mobile }}%;
-   --size-style-aspect-ratio: {% if block_settings.source == 'uploaded' %}{{ block_settings.video.aspect_ratio | default: 'auto' }}{% elsif block_settings.cover_image == blank %}{{ block_settings.aspect_ratio }}{% else %}auto{% endif %};
+   --size-style-aspect-ratio: {% if block_settings.source == 'uploaded' %}{{ video_to_render.aspect_ratio | default: 'auto' }}{% elsif block_settings.cover_image == blank %}{{ block_settings.aspect_ratio }}{% else %}auto{% endif %};
 {% endcapture %}
 
 {% if block_settings.source == 'uploaded' %}
   {% render 'video',
-    video: block_settings.video,
+    video: video_to_render,
     video_class: 'spacing-style size-style border-style',
     video_loop: block_settings.video_loop,
     video_style: video_style,
-    video_preview_image: block_settings.video.preview_image,
+    video_preview_image: video_to_render.preview_image,
     additional_attributes: block.shopify_attributes,
-    section_id: section.id
+    section_id: section.id,
+    disable_controls: block_settings.hide_controls,
+    hide_interaction_icons: block_settings.hide_interaction_icons
   %}
 {% else %}
   {% render 'video',
     video_from_url: true,
-    video: block_settings.video_url.id,
+    video: video_url_to_render.id,
     video_class: 'spacing-style size-style border-style',
-    video_type: block_settings.video_url.type,
+    video_type: video_url_to_render.type,
     video_style: video_style,
     video_alt: block_settings.alt,
     video_preview_image: block_settings.cover_image,
     additional_attributes: block.shopify_attributes,
-    section_id: section.id
+    section_id: section.id,
+    disable_controls: block_settings.hide_controls,
+    hide_interaction_icons: block_settings.hide_interaction_icons
   %}
 {% endif %}
 
@@ -86,6 +95,18 @@
       "id": "video_loop",
       "label": "t:settings.video_loop",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_controls",
+      "label": "Hide player controls & progress bar",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_interaction_icons",
+      "label": "Hide play/pause hover icons",
+      "default": false
     },
     {
       "type": "image_picker",
