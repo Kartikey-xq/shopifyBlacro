@@ -86,11 +86,16 @@
     {%- for product_option in product_resource.options_with_values -%}
       {%- liquid
         assign swatch_count = product_option.values | map: 'swatch' | compact | size
+        assign option_name_downcase = product_option.name | downcase
+        assign is_color_option = false
+        if swatch_count > 0 or option_name_downcase == 'color' or option_name_downcase == 'colour' or option_name_downcase == 'farbe' or option_name_downcase == 'couleur'
+          assign is_color_option = true
+        endif
       -%}
 
-      {% if swatch_count == 0 %}
+      {% unless is_color_option %}
         {% continue %}
-      {% endif %}
+      {% endunless %}
 
       {%- liquid
         # Identify which option position this swatch option is
@@ -155,6 +160,7 @@
                 {% render 'swatch',
                   swatch: product_option_value.swatch,
                   variant_image: featured_media,
+                  value: product_option_value.name
                 %}
                 {% render 'strikethrough-variant', product_option: product_option_value %}
               </label>

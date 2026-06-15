@@ -135,7 +135,8 @@
                   {% render 'swatch',
                     swatch: product_option_value.swatch,
                     variant_image: featured_media,
-                    mode: 'unscaled'
+                    mode: 'unscaled',
+                    value: product_option_value.name
                   %}
                 {% else %}
                   {% if product_option_value.available == true %}

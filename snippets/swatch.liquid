@@ -22,6 +22,30 @@
     assign swatch_value = 'url(' | append: swatch_image_url | append: ')'
   elsif swatch.color
     assign swatch_value = 'rgb(' | append: swatch.color.rgb | append: ')'
+  elsif value != blank
+    assign color_name = value | downcase | strip
+    assign color_hex = ''
+    if color_name contains 'off white' or color_name contains 'off-white'
+      assign color_hex = '#f8f6f0'
+    elsif color_name contains 'white'
+      assign color_hex = '#ffffff'
+    elsif color_name contains 'black'
+      assign color_hex = '#000000'
+    elsif color_name contains 'grey' or color_name contains 'gray'
+      assign color_hex = '#d3d3d3'
+    elsif color_name contains 'red'
+      assign color_hex = '#ff0000'
+    elsif color_name contains 'blue'
+      assign color_hex = '#0000ff'
+    elsif color_name contains 'green'
+      assign color_hex = '#00ff00'
+    else
+      assign color_hex = color_name | replace: ' ', ''
+    endif
+
+    if color_hex != blank
+      assign swatch_value = color_hex
+    endif
   endif
 
   case mode

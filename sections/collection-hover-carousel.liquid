@@ -420,7 +420,8 @@
                   assign product_has_swatches = false
                   for product_option in product.options_with_values
                     assign swatch_count = product_option.values | map: 'swatch' | compact | size
-                    if swatch_count > 0
+                    assign option_name_downcase = product_option.name | downcase
+                    if swatch_count > 0 or option_name_downcase == 'color' or option_name_downcase == 'colour' or option_name_downcase == 'farbe' or option_name_downcase == 'couleur'
                       assign product_has_swatches = true
                     endif
                   endfor
