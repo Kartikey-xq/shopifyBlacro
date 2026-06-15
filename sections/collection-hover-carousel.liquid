@@ -14,6 +14,81 @@
 %}
 
 {% style %}
+  {% liquid
+    assign cols_desktop = 4
+    assign cols_tablet = 3
+    assign cols_mobile = 2
+
+    if section.settings.enable_carousel == false or section.settings.enable_carousel == nil
+      assign desktop_cols = section.settings.grid_columns_desktop | plus: 0
+      assign cols_desktop = desktop_cols
+      
+      if desktop_cols < 3
+        assign cols_tablet = desktop_cols
+      endif
+      if desktop_cols < 2
+        assign cols_mobile = desktop_cols
+      endif
+    endif
+  %}
+
+  #CollectionCarousel-{{ section.id }} {
+    --carousel-gap: {{ section.settings.carousel_gap }}px;
+    --carousel-padding-horizontal: {{ section.settings.padding_horizontal }}px;
+    --cols-desktop: {{ cols_desktop }};
+    --cols-tablet: {{ cols_tablet }};
+    --cols-mobile: {{ cols_mobile }};
+    --product-info-left-offset: {{ section.settings.product_info_left_offset | default: 0 }}px;
+  }
+
+  #CollectionCarousel-{{ section.id }} .collection-hover-carousel__header {
+    margin-top: {{ section.settings.title_margin_top | default: 0 }}px !important;
+    margin-bottom: {{ section.settings.title_margin_bottom | default: 30 }}px !important;
+  }
+
+  #CollectionCarousel-{{ section.id }} .collection-hover-carousel__title {
+    {% if section.settings.collection_title_font == 'body' %}
+      font-family: var(--font-paragraph--family) !important;
+      font-size: var(--font-paragraph--size, 1.6rem) !important;
+      font-weight: var(--font-paragraph--weight, 400) !important;
+      text-transform: var(--font-paragraph--case, none) !important;
+    {% elsif section.settings.collection_title_font == 'subheading' %}
+      font-family: var(--font-subheading--family) !important;
+      font-size: var(--font-subheading--size, 1.8rem) !important;
+      font-weight: var(--font-subheading--weight, 600) !important;
+      text-transform: var(--font-subheading--case, none) !important;
+    {% elsif section.settings.collection_title_font == 'heading' %}
+      font-family: var(--font-heading--family) !important;
+      font-size: var(--font-heading--size, 2rem) !important;
+      font-weight: var(--font-heading--weight, 700) !important;
+      text-transform: var(--font-heading--case, none) !important;
+    {% elsif section.settings.collection_title_font == 'accent' %}
+      font-family: var(--font-accent--family) !important;
+      font-size: var(--font-accent--size, 1.4rem) !important;
+      font-weight: var(--font-accent--weight, 400) !important;
+      text-transform: var(--font-accent--case, none) !important;
+    {% elsif section.settings.collection_title_font == 'custom' %}
+      font-size: {{ section.settings.collection_title_custom_size }}px !important;
+      {% if section.settings.collection_title_custom_font == 'body' %}
+        font-family: var(--font-paragraph--family) !important;
+        font-weight: var(--font-paragraph--weight, 400) !important;
+        text-transform: var(--font-paragraph--case, none) !important;
+      {% elsif section.settings.collection_title_custom_font == 'subheading' %}
+        font-family: var(--font-subheading--family) !important;
+        font-weight: var(--font-subheading--weight, 600) !important;
+        text-transform: var(--font-subheading--case, none) !important;
+      {% elsif section.settings.collection_title_custom_font == 'heading' %}
+        font-family: var(--font-heading--family) !important;
+        font-weight: var(--font-heading--weight, 700) !important;
+        text-transform: var(--font-heading--case, none) !important;
+      {% elsif section.settings.collection_title_custom_font == 'accent' %}
+        font-family: var(--font-accent--family) !important;
+        font-weight: var(--font-accent--weight, 400) !important;
+        text-transform: var(--font-accent--case, none) !important;
+      {% endif %}
+    {% endif %}
+  }
+
   #CollectionCarousel-{{ section.id }} .collection-hover-carousel__product-title {
     {% if section.settings.title_font == 'body' %}
       font-family: var(--font-paragraph--family) !important;
@@ -37,6 +112,23 @@
       text-transform: var(--font-accent--case, none) !important;
     {% elsif section.settings.title_font == 'custom' %}
       font-size: {{ section.settings.title_custom_size }}px !important;
+      {% if section.settings.title_custom_font == 'body' %}
+        font-family: var(--font-paragraph--family) !important;
+        font-weight: var(--font-paragraph--weight, 400) !important;
+        text-transform: var(--font-paragraph--case, none) !important;
+      {% elsif section.settings.title_custom_font == 'subheading' %}
+        font-family: var(--font-subheading--family) !important;
+        font-weight: var(--font-subheading--weight, 600) !important;
+        text-transform: var(--font-subheading--case, none) !important;
+      {% elsif section.settings.title_custom_font == 'heading' %}
+        font-family: var(--font-heading--family) !important;
+        font-weight: var(--font-heading--weight, 700) !important;
+        text-transform: var(--font-heading--case, none) !important;
+      {% elsif section.settings.title_custom_font == 'accent' %}
+        font-family: var(--font-accent--family) !important;
+        font-weight: var(--font-accent--weight, 400) !important;
+        text-transform: var(--font-accent--case, none) !important;
+      {% endif %}
     {% endif %}
   }
 
@@ -63,8 +155,79 @@
       text-transform: var(--font-accent--case, none) !important;
     {% elsif section.settings.price_font == 'custom' %}
       font-size: {{ section.settings.price_custom_size }}px !important;
+      {% if section.settings.price_custom_font == 'body' %}
+        font-family: var(--font-paragraph--family) !important;
+        font-weight: var(--font-paragraph--weight, 400) !important;
+        text-transform: var(--font-paragraph--case, none) !important;
+      {% elsif section.settings.price_custom_font == 'subheading' %}
+        font-family: var(--font-subheading--family) !important;
+        font-weight: var(--font-subheading--weight, 600) !important;
+        text-transform: var(--font-subheading--case, none) !important;
+      {% elsif section.settings.price_custom_font == 'heading' %}
+        font-family: var(--font-heading--family) !important;
+        font-weight: var(--font-heading--weight, 700) !important;
+        text-transform: var(--font-heading--case, none) !important;
+      {% elsif section.settings.price_custom_font == 'accent' %}
+        font-family: var(--font-accent--family) !important;
+        font-weight: var(--font-accent--weight, 400) !important;
+        text-transform: var(--font-accent--case, none) !important;
+      {% endif %}
     {% endif %}
   }
+
+  #CollectionCarousel-{{ section.id }} .collection-hover-carousel__info {
+    padding-left: var(--product-info-left-offset, 0px) !important;
+    text-align: {{ section.settings.text_alignment | default: 'left' }} !important;
+    align-items: {% if section.settings.text_alignment == 'center' %}center{% elsif section.settings.text_alignment == 'right' %}flex-end{% else %}flex-start{% endif %} !important;
+  }
+
+  #CollectionCarousel-{{ section.id }} product-swatches {
+    padding-left: var(--product-info-left-offset, 0px) !important;
+  }
+
+  #CollectionCarousel-{{ section.id }} swatches-variant-picker-component {
+    --product-swatches-padding-inline-start: 0px !important;
+    --overflow-list-padding-inline: 0px !important;
+  }
+
+  #CollectionCarousel-{{ section.id }} .variant-option--swatches {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  #CollectionCarousel-{{ section.id }} .page-width {
+    padding-left: var(--carousel-padding-horizontal, 2rem);
+    padding-right: var(--carousel-padding-horizontal, 2rem);
+  }
+
+  @media screen and (max-width: 768px) {
+    #CollectionCarousel-{{ section.id }} .collection-hover-carousel__track {
+      padding-left: var(--carousel-padding-horizontal, 2rem);
+      padding-right: var(--carousel-padding-horizontal, 2rem);
+    }
+  }
+
+  {% if section.settings.enable_full_width %}
+    #CollectionCarousel-{{ section.id }} .page-width {
+      max-width: 100% !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    #CollectionCarousel-{{ section.id }} .collection-hover-carousel__header {
+      padding-left: var(--carousel-padding-horizontal, 2rem) !important;
+      padding-right: var(--carousel-padding-horizontal, 2rem) !important;
+    }
+    #CollectionCarousel-{{ section.id }} .collection-hover-carousel__track {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    @media screen and (max-width: 768px) {
+      #CollectionCarousel-{{ section.id }} .collection-hover-carousel__track {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+    }
+  {% endif %}
 {% endstyle %}
 
 <div 
@@ -79,42 +242,44 @@
 >
   <div class="page-width">
     <!-- Header with Collection Title and Navigation Controls -->
-    <div class="collection-hover-carousel__header collection-hover-carousel__header--{{ title_animation }}" style="--title-animation-duration: {{ title_animation_duration }}ms;">
-      <div class="collection-hover-carousel__heading">
-        <a href="{{ collection_url }}" class="collection-hover-carousel__title-link">
-          <h2 class="collection-hover-carousel__title">{{ collection_title }}</h2>
-        </a>
-        <a href="{{ collection_url }}" class="collection-hover-carousel__view-collection-button">
-          View collection
-        </a>
+    {% if section.settings.show_collection_title or section.settings.enable_carousel %}
+      <div class="collection-hover-carousel__header collection-hover-carousel__header--{{ title_animation }}" style="--title-animation-duration: {{ title_animation_duration }}ms;">
+        {% if section.settings.show_collection_title %}
+          <div class="collection-hover-carousel__heading">
+            <h2 class="collection-hover-carousel__title">{{ collection_title }}</h2>
+          </div>
+        {% endif %}
+        {% if section.settings.enable_carousel %}
+          <div class="collection-hover-carousel__nav">
+            <button 
+              class="collection-hover-carousel__btn collection-hover-carousel__btn--prev"
+              aria-label="Previous slide"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </button>
+            <button 
+              class="collection-hover-carousel__btn collection-hover-carousel__btn--next"
+              aria-label="Next slide"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+        {% endif %}
       </div>
-      <div class="collection-hover-carousel__nav">
-        <button 
-          class="collection-hover-carousel__btn collection-hover-carousel__btn--prev"
-          aria-label="Previous slide"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-        </button>
-        <button 
-          class="collection-hover-carousel__btn collection-hover-carousel__btn--next"
-          aria-label="Next slide"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </button>
-      </div>
-    </div>
+    {% endif %}
 
     <!-- Carousel Track Wrapper -->
     <div class="collection-hover-carousel__track-wrapper">
-      <div class="collection-hover-carousel__track">
+      <div class="collection-hover-carousel__track {% unless section.settings.enable_carousel %}collection-hover-carousel__track--grid{% endunless %}">
         {% if section_collection != blank and collection_products.size > 0 %}
-          {% for product in collection_products limit: 8 %}
+          {% assign products_limit = section.settings.products_to_show | default: 8 %}
+          {% for product in collection_products limit: products_limit %}
             {% liquid
               assign title = product.title | default: 'Sample Product'
               assign price_text = product.price | money_with_currency
@@ -192,12 +357,14 @@
           {% endfor %}
         {% else %}
           {% comment %} Fallback items if no blocks exist {% endcomment %}
-          {% for i in (1..4) %}
+          {% assign products_limit = section.settings.products_to_show | default: 8 %}
+          {% for i in (1..products_limit) %}
+            {% assign placeholder_index = i | modulo: 4 | plus: 1 %}
             <div class="collection-hover-carousel__item">
               <div class="collection-hover-carousel__card">
                 <a href="#" class="collection-hover-carousel__card-link-overlay" aria-label="Sample Product {{ i }}"></a>
                 <div class="collection-hover-carousel__image-wrapper">
-                  {{ 'product-' | append: i | placeholder_svg_tag: 'collection-hover-carousel__placeholder-svg' }}
+                  {{ 'product-' | append: placeholder_index | placeholder_svg_tag: 'collection-hover-carousel__placeholder-svg' }}
                 </div>
                 <div class="collection-hover-carousel__info">
                   <h4 class="collection-hover-carousel__product-title">Sample Product {{ i }}</h4>
@@ -344,7 +511,7 @@
 
   .collection-hover-carousel__track {
     display: flex;
-    gap: 2rem;
+    gap: var(--carousel-gap, 2rem);
     overflow-x: auto;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
@@ -352,12 +519,19 @@
     scrollbar-width: none; /* Firefox */
   }
 
+  .collection-hover-carousel__track--grid {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+
   .collection-hover-carousel__track::-webkit-scrollbar {
     display: none; /* Safari and Chrome */
   }
 
   .collection-hover-carousel__item {
-    flex: 0 0 calc(25% - 1.5rem); /* 4 columns on desktop */
+    flex: 0 0 calc((100% - (var(--cols-desktop) - 1) * var(--carousel-gap, 20px)) / var(--cols-desktop));
     scroll-snap-align: start;
   }
 
@@ -449,13 +623,13 @@
   /* Responsiveness */
   @media screen and (max-width: 1024px) {
     .collection-hover-carousel__item {
-      flex: 0 0 calc(33.333% - 1.333rem); /* 3 columns on tablet */
+      flex: 0 0 calc((100% - (var(--cols-tablet) - 1) * var(--carousel-gap, 20px)) / var(--cols-tablet));
     }
   }
 
   @media screen and (max-width: 768px) {
     .collection-hover-carousel__item {
-      flex: 0 0 calc(50% - 1rem); /* 2 columns on small tablet */
+      flex: 0 0 calc((100% - (var(--cols-mobile) - 1) * var(--carousel-gap, 20px)) / var(--cols-mobile));
     }
 
     .collection-hover-carousel .page-width {
@@ -482,14 +656,18 @@
     }
 
     .collection-hover-carousel__track {
-      padding-left: 2rem;
-      padding-right: 2rem;
+      padding-left: var(--carousel-padding-horizontal, 2rem);
+      padding-right: var(--carousel-padding-horizontal, 2rem);
     }
   }
 
   @media screen and (max-width: 480px) {
     .collection-hover-carousel__item {
-      flex: 0 0 70%; /* Shows 1.4 cards to indicate scrolling */
+      {% if section.settings.enable_carousel %}
+        flex: 0 0 70%; /* Shows 1.4 cards to indicate scrolling */
+      {% else %}
+        flex: 0 0 calc((100% - (var(--cols-mobile) - 1) * var(--carousel-gap, 20px)) / var(--cols-mobile));
+      {% endif %}
     }
     
     .collection-hover-carousel__title {
@@ -517,8 +695,10 @@
       function getScrollAmount() {
         const firstItem = track.querySelector('.collection-hover-carousel__item');
         if (firstItem) {
-          // scroll by card width plus its right-gap/padding
-          return firstItem.getBoundingClientRect().width + 20; 
+          // scroll by card width plus actual dynamic gap
+          const style = window.getComputedStyle(track);
+          const gap = parseFloat(style.columnGap || style.gap) || 20;
+          return firstItem.getBoundingClientRect().width + gap; 
         }
         return 300;
       }
@@ -597,6 +777,12 @@
       "default": "Featured Collection"
     },
     {
+      "type": "checkbox",
+      "id": "show_collection_title",
+      "label": "Show Collection Title",
+      "default": true
+    },
+    {
       "type": "select",
       "id": "title_animation",
       "label": "Title Animation",
@@ -629,7 +815,83 @@
     {
       "type": "collection",
       "id": "collection",
-      "label": "Collection (for Redirection)"
+      "label": "Collection"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_carousel",
+      "label": "Enable Carousel (horizontal scroll)",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "grid_columns_desktop",
+      "label": "Columns on desktop (Grid mode)",
+      "options": [
+        {
+          "value": "2",
+          "label": "2 Columns"
+        },
+        {
+          "value": "3",
+          "label": "3 Columns"
+        },
+        {
+          "value": "4",
+          "label": "4 Columns"
+        },
+        {
+          "value": "5",
+          "label": "5 Columns"
+        }
+      ],
+      "default": "4",
+      "visible_if": "{{ section.settings.enable_carousel == false }}"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "label": "Products to show",
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_full_width",
+      "label": "Enable Full-Width Grid Alignment",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Product info alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "product_info_left_offset",
+      "min": 0,
+      "max": 20,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Product Info Left Offset",
+      "default": 0
     },
     {
       "type": "color_scheme",
@@ -649,12 +911,12 @@
     },
     {
       "type": "header",
-      "content": "Typography Settings"
+      "content": "Collection Title Spacing & Typography"
     },
     {
       "type": "select",
-      "id": "title_font",
-      "label": "Product title font style",
+      "id": "collection_title_font",
+      "label": "Collection title typography preset",
       "options": [
         {
           "value": "default",
@@ -678,10 +940,137 @@
         },
         {
           "value": "custom",
-          "label": "Custom size"
+          "label": "Custom"
         }
       ],
       "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Edit presets in theme settings",
+      "visible_if": "{{ section.settings.collection_title_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "collection_title_custom_font",
+      "label": "Font",
+      "options": [
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        }
+      ],
+      "default": "heading",
+      "visible_if": "{{ section.settings.collection_title_font == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "collection_title_custom_size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Collection title custom font size",
+      "default": 24,
+      "visible_if": "{{ section.settings.collection_title_font == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "title_margin_top",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Title Margin Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "title_margin_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Title Margin Bottom (Gap to grid)",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Product Typography Settings"
+    },
+    {
+      "type": "select",
+      "id": "title_font",
+      "label": "Product title typography preset",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Edit presets in theme settings",
+      "visible_if": "{{ section.settings.title_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "title_custom_font",
+      "label": "Font",
+      "options": [
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        }
+      ],
+      "default": "body",
+      "visible_if": "{{ section.settings.title_font == 'custom' }}"
     },
     {
       "type": "range",
@@ -697,7 +1086,7 @@
     {
       "type": "select",
       "id": "price_font",
-      "label": "Product price font style",
+      "label": "Product price typography preset",
       "options": [
         {
           "value": "default",
@@ -721,10 +1110,40 @@
         },
         {
           "value": "custom",
-          "label": "Custom size"
+          "label": "Custom"
         }
       ],
       "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Edit presets in theme settings",
+      "visible_if": "{{ section.settings.price_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "price_custom_font",
+      "label": "Font",
+      "options": [
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        }
+      ],
+      "default": "body",
+      "visible_if": "{{ section.settings.price_font == 'custom' }}"
     },
     {
       "type": "range",
@@ -938,7 +1357,7 @@
     },
     {
       "type": "header",
-      "content": "Section Padding"
+      "content": "Section Padding & Spacing"
     },
     {
       "type": "range",
@@ -959,6 +1378,26 @@
       "step": 4,
       "unit": "px",
       "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal Padding (Side Padding)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "carousel_gap",
+      "label": "Gap between product images",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 20
     }
   ],
   "blocks": [],
