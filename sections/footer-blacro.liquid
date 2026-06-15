@@ -7,7 +7,142 @@
   assign brand_name = 'BLACRO'
   assign company_menu = linklists[section.settings.company_menu]
   assign policy_menu = linklists[section.settings.policy_menu]
+
+  assign instagram_url = section.settings.social_instagram_link | strip
+  if instagram_url != blank
+    unless instagram_url contains '://'
+      assign instagram_url = instagram_url | prepend: 'https://'
+    endunless
+  endif
+
+  assign facebook_url = section.settings.social_facebook_link | strip
+  if facebook_url != blank
+    unless facebook_url contains '://'
+      assign facebook_url = facebook_url | prepend: 'https://'
+    endunless
+  endif
+
+  assign linkedin_url = section.settings.social_linkedin_link | strip
+  if linkedin_url != blank
+    unless linkedin_url contains '://'
+      assign linkedin_url = linkedin_url | prepend: 'https://'
+    endunless
+  endif
+
+  assign whatsapp_input = section.settings.social_whatsapp_number | strip
+  assign whatsapp_url = ""
+  if whatsapp_input != blank
+    if whatsapp_input contains "wa.me" or whatsapp_input contains "whatsapp.com"
+      assign whatsapp_url = whatsapp_input
+      unless whatsapp_url contains "://"
+        assign whatsapp_url = whatsapp_url | prepend: "https://"
+      endunless
+    else
+      assign clean_phone = whatsapp_input | replace: " ", "" | replace: "+", "" | replace: "-", ""
+      assign whatsapp_url = "https://wa.me/" | append: clean_phone
+    endif
+  endif
 %}
+
+<style>
+  #FooterBlacro-{{ section.id }} .footer-blacro__block-title--preset-body {
+    font-family: var(--font-paragraph--family) !important;
+    font-size: var(--font-paragraph--size, 1.6rem) !important;
+    font-weight: var(--font-paragraph--weight, 400) !important;
+    text-transform: var(--font-paragraph--case, none) !important;
+  }
+  #FooterBlacro-{{ section.id }} .footer-blacro__block-title--preset-subheading {
+    font-family: var(--font-subheading--family) !important;
+    font-size: var(--font-subheading--size, 1.8rem) !important;
+    font-weight: var(--font-subheading--weight, 600) !important;
+    text-transform: var(--font-subheading--case, none) !important;
+  }
+  #FooterBlacro-{{ section.id }} .footer-blacro__block-title--preset-heading {
+    font-family: var(--font-heading--family) !important;
+    font-size: var(--font-heading--size, 2rem) !important;
+    font-weight: var(--font-heading--weight, 700) !important;
+    text-transform: var(--font-heading--case, none) !important;
+  }
+  #FooterBlacro-{{ section.id }} .footer-blacro__block-title--preset-accent {
+    font-family: var(--font-accent--family) !important;
+    font-size: var(--font-accent--size, 1.4rem) !important;
+    font-weight: var(--font-accent--weight, 400) !important;
+    text-transform: var(--font-accent--case, none) !important;
+  }
+  #FooterBlacro-{{ section.id }} .footer-blacro__block-title--preset-custom {
+    font-size: {{ section.settings.footer_title_custom_size }}px !important;
+    {% if section.settings.footer_title_custom_font == 'body' %}
+      font-family: var(--font-paragraph--family) !important;
+      font-weight: var(--font-paragraph--weight, 400) !important;
+      text-transform: var(--font-paragraph--case, none) !important;
+    {% elsif section.settings.footer_title_custom_font == 'subheading' %}
+      font-family: var(--font-subheading--family) !important;
+      font-weight: var(--font-subheading--weight, 600) !important;
+      text-transform: var(--font-subheading--case, none) !important;
+    {% elsif section.settings.footer_title_custom_font == 'heading' %}
+      font-family: var(--font-heading--family) !important;
+      font-weight: var(--font-heading--weight, 700) !important;
+      text-transform: var(--font-heading--case, none) !important;
+    {% elsif section.settings.footer_title_custom_font == 'accent' %}
+      font-family: var(--font-accent--family) !important;
+      font-weight: var(--font-accent--weight, 400) !important;
+      text-transform: var(--font-accent--case, none) !important;
+    {% endif %}
+  }
+
+  #FooterBlacro-{{ section.id }} .footer-blacro__link--preset-body {
+    font-family: var(--font-paragraph--family) !important;
+    font-size: var(--font-paragraph--size, 1.6rem) !important;
+    font-weight: var(--font-paragraph--weight, 400) !important;
+    text-transform: var(--font-paragraph--case, none) !important;
+  }
+  #FooterBlacro-{{ section.id }} .footer-blacro__link--preset-subheading {
+    font-family: var(--font-subheading--family) !important;
+    font-size: var(--font-subheading--size, 1.8rem) !important;
+    font-weight: var(--font-subheading--weight, 600) !important;
+    text-transform: var(--font-subheading--case, none) !important;
+  }
+  #FooterBlacro-{{ section.id }} .footer-blacro__link--preset-heading {
+    font-family: var(--font-heading--family) !important;
+    font-size: var(--font-heading--size, 2rem) !important;
+    font-weight: var(--font-heading--weight, 700) !important;
+    text-transform: var(--font-heading--case, none) !important;
+  }
+  #FooterBlacro-{{ section.id }} .footer-blacro__link--preset-accent {
+    font-family: var(--font-accent--family) !important;
+    font-size: var(--font-accent--size, 1.4rem) !important;
+    font-weight: var(--font-accent--weight, 400) !important;
+    text-transform: var(--font-accent--case, none) !important;
+  }
+  #FooterBlacro-{{ section.id }} .footer-blacro__link--preset-custom {
+    font-size: {{ section.settings.footer_links_custom_size }}px !important;
+    {% if section.settings.footer_links_custom_font == 'body' %}
+      font-family: var(--font-paragraph--family) !important;
+      font-weight: var(--font-paragraph--weight, 400) !important;
+      text-transform: var(--font-paragraph--case, none) !important;
+    {% elsif section.settings.footer_links_custom_font == 'subheading' %}
+      font-family: var(--font-subheading--family) !important;
+      font-weight: var(--font-subheading--weight, 600) !important;
+      text-transform: var(--font-subheading--case, none) !important;
+    {% elsif section.settings.footer_links_custom_font == 'heading' %}
+      font-family: var(--font-heading--family) !important;
+      font-weight: var(--font-heading--weight, 700) !important;
+      text-transform: var(--font-heading--case, none) !important;
+    {% elsif section.settings.footer_links_custom_font == 'accent' %}
+      font-family: var(--font-accent--family) !important;
+      font-weight: var(--font-accent--weight, 400) !important;
+      text-transform: var(--font-accent--case, none) !important;
+    {% endif %}
+  }
+
+  /* Centering SVG icons and making sure they size correctly */
+  #FooterBlacro-{{ section.id }} .footer-blacro__social-link svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    display: block;
+  }
+</style>
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} footer-blacro" id="FooterBlacro-{{ section.id }}" style="padding-block-start: {{ section.settings.padding_block_start }}px; padding-block-end: {{ section.settings.padding_block_end }}px;">
@@ -39,7 +174,7 @@
     <div class="footer-blacro__hero">
       <div class="footer-blacro__hero-copy">
         {% if section.settings.brand_logo_top != blank %}
-          <div class="footer-blacro__brand-logo-wrapper">
+          <div class="footer-blacro__brand-logo-wrapper" style="display: flex; justify-content: {%- if section.settings.brand_logo_top_alignment == 'center' -%}center{%- elsif section.settings.brand_logo_top_alignment == 'right' -%}flex-end{%- else -%}flex-start{%- endif -%};">
             <img 
               src="{{ section.settings.brand_logo_top | image_url: width: 300 }}" 
               alt="{{ shop.name }}"
@@ -68,11 +203,11 @@
       
       <div class="footer-blacro__hero-links">
         <div class="footer-blacro__block">
-          <p class="footer-blacro__block-title">Company</p>
+          <p class="footer-blacro__block-title footer-blacro__block-title--preset-{{ section.settings.footer_title_font }}">Company</p>
           {% if company_menu != blank and company_menu.links.size > 0 %}
             <ul class="footer-blacro__link-list">
               {% for link in company_menu.links %}
-                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                <li><a href="{{ link.url }}" class="footer-blacro__link--preset-{{ section.settings.footer_links_font }}">{{ link.title }}</a></li>
               {% endfor %}
             </ul>
           {% else %}
@@ -81,52 +216,37 @@
         </div>
 
         <div class="footer-blacro__block footer-blacro__social-block">
-          <p class="footer-blacro__block-title">Social</p>
-          {% if section.settings.social_text != blank %}
-            <p class="footer-blacro__social-note">{{ section.settings.social_text }}</p>
-          {% endif %}
-          <ul class="footer-blacro__link-list">
-            {%- liquid
-              # Replace line breaks, newlines, and br tags with standard spaces, then split by space
-              assign raw_links = section.settings.social_links_textarea | newline_to_br | replace: '<br />', ' ' | replace: '<br>', ' ' | strip_newlines
-              assign link_array = raw_links | split: ' '
-            -%}
-            {%- for item in link_array -%}
-              {%- assign link = item | strip | strip_newlines -%}
-              {%- if link != blank and link contains 'http' -%}
-                {%- liquid
-                  assign platform_name = ''
-                  assign platform_url = link
-                  
-                  if link contains 'instagram.com'
-                    assign platform_name = 'Insta'
-                  elsif link contains 'facebook.com' or link contains 'fb.com'
-                    assign platform_name = 'Facebook'
-                  elsif link contains 'linkedin.com'
-                    assign platform_name = 'Linkedin'
-                  elsif link contains 'twitter.com' or link contains 'x.com'
-                    assign platform_name = 'Twitter'
-                  elsif link contains 'tiktok.com'
-                    assign platform_name = 'TikTok'
-                  elsif link contains 'youtube.com' or link contains 'youtu.be'
-                    assign platform_name = 'YouTube'
-                  elsif link contains 'pinterest.com'
-                    assign platform_name = 'Pinterest'
-                  else
-                    assign domain = link | split: '//' | last | remove: 'www.' | split: '.' | first
-                    assign platform_name = domain | capitalize
-                  endif
-                -%}
-                {%- if platform_name != blank -%}
-                  <li>
-                    <a href="{{ platform_url }}" target="_blank" rel="noopener noreferrer">
-                      {{ platform_name }}
-                    </a>
-                  </li>
-                {%- endif -%}
-              {%- endif -%}
-            {%- endfor -%}
-          </ul>
+          <p class="footer-blacro__block-title footer-blacro__block-title--preset-{{ section.settings.footer_title_font }}">Social</p>
+          <div class="footer-blacro__social-list">
+            {%- if instagram_url != blank -%}
+              <a href="{{ instagram_url }}" target="_blank" rel="noopener noreferrer" class="footer-blacro__social-link" aria-label="Instagram">
+                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                  {%- render 'icon', icon: 'instagram' -%}
+                </svg>
+              </a>
+            {%- endif -%}
+            {%- if facebook_url != blank -%}
+              <a href="{{ facebook_url }}" target="_blank" rel="noopener noreferrer" class="footer-blacro__social-link" aria-label="Facebook">
+                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                  {%- render 'icon', icon: 'facebook' -%}
+                </svg>
+              </a>
+            {%- endif -%}
+            {%- if linkedin_url != blank -%}
+              <a href="{{ linkedin_url }}" target="_blank" rel="noopener noreferrer" class="footer-blacro__social-link" aria-label="LinkedIn">
+                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                  {%- render 'icon', icon: 'linkedin' -%}
+                </svg>
+              </a>
+            {%- endif -%}
+            {%- if whatsapp_url != blank -%}
+              <a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="footer-blacro__social-link" aria-label="WhatsApp">
+                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                  {%- render 'icon', icon: 'whatsapp' -%}
+                </svg>
+              </a>
+            {%- endif -%}
+          </div>
         </div>
       </div>
     </div>
@@ -165,7 +285,7 @@
       <div class="footer-blacro__policies">
         {% if policy_menu != blank and policy_menu.links.size > 0 %}
           {% for link in policy_menu.links %}
-            <a href="{{ link.url }}">{{ link.title }}</a>
+            <a href="{{ link.url }}" class="footer-blacro__link--preset-{{ section.settings.footer_links_font }}">{{ link.title }}</a>
           {% endfor %}
         {% else %}
           <span class="footer-blacro__hint">Add a Policies menu in section settings.</span>
@@ -290,12 +410,12 @@
 
   .footer-blacro__block-title {
     margin: 0 0 1.5rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-foreground);
-    opacity: 0.4;
+    opacity: 1;
   }
 
   .footer-blacro__link-list {
@@ -574,6 +694,26 @@
       "default": 120
     },
     {
+      "type": "select",
+      "id": "brand_logo_top_alignment",
+      "label": "Brand Logo Top Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
       "type": "header",
       "content": "Brand Identity (Bottom Logo)"
     },
@@ -626,18 +766,184 @@
       "label": "Policies menu"
     },
     {
-      "type": "text",
-      "id": "social_text",
-      "label": "Social caption",
-      "default": "Follow us for new drops and insider updates"
+      "type": "header",
+      "content": "Social Media Links"
     },
     {
-      "type": "textarea",
-      "id": "social_links_textarea",
-      "label": "Social links (separated by space or line break)",
-      "default": "https://www.instagram.com/blacro.in?igsh=dnM4OWFsdzVxMTAz  https://www.facebook.com/share/1JE6hGXvWz/  https://www.linkedin.com/company/blacro/"
+      "type": "text",
+      "id": "social_instagram_link",
+      "label": "Instagram URL",
+      "default": "https://www.instagram.com/blacro.in?igsh=dnM4OWFsdzVxMTAz"
     },
-
+    {
+      "type": "text",
+      "id": "social_facebook_link",
+      "label": "Facebook URL",
+      "default": "https://www.facebook.com/share/1JE6hGXvWz/"
+    },
+    {
+      "type": "text",
+      "id": "social_linkedin_link",
+      "label": "LinkedIn URL",
+      "default": "https://www.linkedin.com/company/blacro/"
+    },
+    {
+      "type": "text",
+      "id": "social_whatsapp_number",
+      "label": "WhatsApp Number or Link",
+      "default": "919876543210",
+      "info": "Enter your phone number with country code (e.g. 919876543210 for India) or a full link."
+    },
+    {
+      "type": "header",
+      "content": "Footer Typography Presets"
+    },
+    {
+      "type": "select",
+      "id": "footer_title_font",
+      "label": "Footer Title Typography Preset",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Edit presets in theme settings",
+      "visible_if": "{{ section.settings.footer_title_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "footer_title_custom_font",
+      "label": "Footer Title Custom Font",
+      "options": [
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        }
+      ],
+      "default": "heading",
+      "visible_if": "{{ section.settings.footer_title_font == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "footer_title_custom_size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Footer Title Custom Font Size",
+      "default": 14,
+      "visible_if": "{{ section.settings.footer_title_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "footer_links_font",
+      "label": "Footer Links Typography Preset",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Edit presets in theme settings",
+      "visible_if": "{{ section.settings.footer_links_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "footer_links_custom_font",
+      "label": "Footer Links Custom Font",
+      "options": [
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        }
+      ],
+      "default": "body",
+      "visible_if": "{{ section.settings.footer_links_font == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "footer_links_custom_size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Footer Links Custom Font Size",
+      "default": 14,
+      "visible_if": "{{ section.settings.footer_links_font == 'custom' }}"
+    },
     {
       "type": "header",
       "content": "Padding"
