@@ -193,6 +193,54 @@
   #CollectionCarousel-{{ section.id }} .variant-option--swatches {
     margin-left: 0 !important;
     padding-left: 0 !important;
+    gap: 4px !important;
+  }
+
+  #CollectionCarousel-{{ section.id }} .variant-option__color-count {
+    margin-left: 2px !important;
+  }
+
+  #CollectionCarousel-{{ section.id }} .collection-hover-carousel__size-opt {
+    {% if section.settings.size_font == 'body' %}
+      font-family: var(--font-paragraph--family) !important;
+      font-size: var(--font-paragraph--size, 1.4rem) !important;
+      font-weight: var(--font-paragraph--weight, 500) !important;
+      text-transform: var(--font-paragraph--case, none) !important;
+    {% elsif section.settings.size_font == 'subheading' %}
+      font-family: var(--font-subheading--family) !important;
+      font-size: var(--font-subheading--size, 1.4rem) !important;
+      font-weight: var(--font-subheading--weight, 600) !important;
+      text-transform: var(--font-subheading--case, none) !important;
+    {% elsif section.settings.size_font == 'heading' %}
+      font-family: var(--font-heading--family) !important;
+      font-size: var(--font-heading--size, 1.4rem) !important;
+      font-weight: var(--font-heading--weight, 700) !important;
+      text-transform: var(--font-heading--case, none) !important;
+    {% elsif section.settings.size_font == 'accent' %}
+      font-family: var(--font-accent--family) !important;
+      font-size: var(--font-accent--size, 1.2rem) !important;
+      font-weight: var(--font-accent--weight, 500) !important;
+      text-transform: var(--font-accent--case, none) !important;
+    {% elsif section.settings.size_font == 'custom' %}
+      font-size: {{ section.settings.size_custom_size }}px !important;
+      {% if section.settings.size_custom_font == 'body' %}
+        font-family: var(--font-paragraph--family) !important;
+        font-weight: var(--font-paragraph--weight, 500) !important;
+        text-transform: var(--font-paragraph--case, none) !important;
+      {% elsif section.settings.size_custom_font == 'subheading' %}
+        font-family: var(--font-subheading--family) !important;
+        font-weight: var(--font-subheading--weight, 600) !important;
+        text-transform: var(--font-subheading--case, none) !important;
+      {% elsif section.settings.size_custom_font == 'heading' %}
+        font-family: var(--font-heading--family) !important;
+        font-weight: var(--font-heading--weight, 700) !important;
+        text-transform: var(--font-heading--case, none) !important;
+      {% elsif section.settings.size_custom_font == 'accent' %}
+        font-family: var(--font-accent--family) !important;
+        font-weight: var(--font-accent--weight, 500) !important;
+        text-transform: var(--font-accent--case, none) !important;
+      {% endif %}
+    {% endif %}
   }
 
   #CollectionCarousel-{{ section.id }} .page-width {
@@ -315,6 +363,53 @@
                   {% else %}
                     {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'collection-hover-carousel__placeholder-svg' }}
                   {% endif %}
+
+                  {% comment %} --- Custom Quick Add Sizes Overlay --- {% endcomment %}
+                  {%- assign size_option = nil -%}
+                  {%- assign size_option_index = -1 -%}
+                  {%- for option in product.options_with_values -%}
+                    {%- assign name_downcase = option.name | downcase -%}
+                    {%- if name_downcase == 'size' or name_downcase == 'sizes' or name_downcase == 'taille' or name_downcase == 'größe' or name_downcase == 'talla' -%}
+                      {%- assign size_option = option -%}
+                      {%- assign size_option_index = forloop.index0 -%}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+
+                  <div class="collection-hover-carousel__quick-add" data-product-id="{{ product.id }}">
+                    <button class="collection-hover-carousel__quick-add-btn" aria-label="Add to cart / Select size" type="button">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                      <span class="btn-spinner hidden"></span>
+                    </button>
+                    
+                    {%- if size_option != blank -%}
+                      <div class="collection-hover-carousel__sizes-overlay">
+                        <div class="collection-hover-carousel__sizes-list">
+                          {%- for value in size_option.values -%}
+                            <button 
+                              class="collection-hover-carousel__size-opt" 
+                              data-size-value="{{ value | escape }}"
+                              data-size-index="{{ size_option_index }}"
+                              type="button"
+                            >
+                              {{ value }}
+                            </button>
+                          {%- endfor -%}
+                        </div>
+                      </div>
+                      
+                      <script type="application/json" class="product-variants-json">
+                        {{ product.variants | json }}
+                      </script>
+                    {%- else -%}
+                      <script type="application/json" class="product-variants-json">
+                        {{ product.variants | json }}
+                      </script>
+                    {%- endif -%}
+                  </div>
                 </div>
                 <div class="collection-hover-carousel__info">
                   <h4 class="collection-hover-carousel__product-title">{{ title }}</h4>
@@ -380,6 +475,183 @@
 </div>
 
 {% stylesheet %}
+  /* Quick Add Overlay and plus button styling */
+  .collection-hover-carousel__quick-add {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .collection-hover-carousel__quick-add-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: auto;
+    padding: 0;
+  }
+
+  .collection-hover-carousel__quick-add-btn:hover {
+    transform: scale(1.05);
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  .collection-hover-carousel__quick-add-btn svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Show plus button on card hover */
+  @media (hover: hover) {
+    .collection-hover-carousel__card:hover .collection-hover-carousel__quick-add-btn {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Always show plus button on touch devices */
+  @media (hover: none) {
+    .collection-hover-carousel__quick-add-btn {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Spinner element for loading */
+  .btn-spinner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(0,0,0,0.1);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spinner-rotate 0.6s linear infinite;
+  }
+
+  .btn-spinner.hidden {
+    display: none;
+  }
+
+  @keyframes spinner-rotate {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Sizes overlay container */
+  .collection-hover-carousel__sizes-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #000000;
+    z-index: 15;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding: 8px 6px;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+
+  /* Open/Active state */
+  .collection-hover-carousel__quick-add.is-active .collection-hover-carousel__sizes-overlay {
+    transform: translateY(0);
+  }
+
+  @media (hover: hover) {
+    .collection-hover-carousel__quick-add:hover .collection-hover-carousel__sizes-overlay {
+      transform: translateY(0);
+    }
+    .collection-hover-carousel__quick-add:hover .collection-hover-carousel__quick-add-btn {
+      opacity: 1;
+      transform: scale(1);
+      background-color: #000000;
+      color: #ffffff;
+    }
+  }
+
+  .collection-hover-carousel__sizes-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .collection-hover-carousel__size-opt {
+    flex: 0 0 auto;
+    min-width: 42px;
+    height: 32px;
+    border: 1px solid #e2e2e2;
+    background-color: #ffffff;
+    color: #000000;
+    font-family: inherit;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 2px;
+    padding: 0 6px;
+  }
+
+  .collection-hover-carousel__size-opt:hover:not(:disabled) {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;
+  }
+
+  /* Strikethrough for unavailable sizes */
+  .collection-hover-carousel__size-opt:disabled,
+  .collection-hover-carousel__size-opt.is-unavailable {
+    opacity: 0.35;
+    background-color: #f5f5f5;
+    color: #888888;
+    border-color: #e2e2e2;
+    cursor: not-allowed;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .collection-hover-carousel__size-opt.is-unavailable::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #888888;
+    transform: rotate(-45deg);
+  }
+
   .collection-hover-carousel {
     padding: 8px;
     background-color: var(--collection-carousel-bg, var(--color-background, #000000));
@@ -747,15 +1019,255 @@
       observer.observe(section);
     }
 
+    function initQuickAdd(sectionId) {
+      const section = document.getElementById('CollectionCarousel-' + sectionId);
+      if (!section) return;
+
+      const cards = section.querySelectorAll('.collection-hover-carousel__card');
+      cards.forEach(card => {
+        const quickAddContainer = card.querySelector('.collection-hover-carousel__quick-add');
+        if (!quickAddContainer) return;
+
+        const plusBtn = quickAddContainer.querySelector('.collection-hover-carousel__quick-add-btn');
+        const sizesOverlay = quickAddContainer.querySelector('.collection-hover-carousel__sizes-overlay');
+        const sizeButtons = quickAddContainer.querySelectorAll('.collection-hover-carousel__size-opt');
+
+        // Function to update size buttons availability based on selected color swatch
+        function updateAvailability() {
+          const jsonEl = quickAddContainer.querySelector('.product-variants-json');
+          if (!jsonEl) return;
+          const variants = JSON.parse(jsonEl.textContent);
+
+          // Find checked swatch in this card
+          const checkedSwatch = card.querySelector('product-swatches input[type="radio"]:checked');
+          const selectedColor = checkedSwatch ? checkedSwatch.value.trim() : null;
+
+          sizeButtons.forEach(btn => {
+            const sizeValue = btn.dataset.sizeValue.trim();
+            const sizeIndex = parseInt(btn.dataset.sizeIndex, 10);
+
+            // Find if there is an available variant matching this size (+ color if selectedColor exists)
+            let isAvailable = false;
+            for (const variant of variants) {
+              if (!variant.available) continue;
+              if (variant.options[sizeIndex] !== sizeValue) continue;
+
+              if (selectedColor) {
+                let matchesColor = false;
+                for (let i = 0; i < variant.options.length; i++) {
+                  if (i !== sizeIndex && variant.options[i] === selectedColor) {
+                    matchesColor = true;
+                    break;
+                  }
+                }
+                if (!matchesColor) continue;
+              }
+              isAvailable = true;
+              break;
+            }
+
+            if (isAvailable) {
+              btn.classList.remove('is-unavailable');
+              btn.disabled = false;
+            } else {
+              btn.classList.add('is-unavailable');
+              btn.disabled = true;
+            }
+          });
+        }
+
+        // Run availability initially
+        updateAvailability();
+
+        // Re-run availability when swatches change
+        card.addEventListener('change', function(e) {
+          if (e.target.name && e.target.name.includes('-swatch')) {
+            updateAvailability();
+          }
+        });
+
+        // Toggling overlay on click (+ button)
+        if (plusBtn) {
+          plusBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // If there are sizes, show sizes overlay
+            if (sizesOverlay) {
+              // Close all other overlays in this section
+              section.querySelectorAll('.collection-hover-carousel__quick-add').forEach(el => {
+                if (el !== quickAddContainer) el.classList.remove('is-active');
+              });
+              quickAddContainer.classList.toggle('is-active');
+            } else {
+              // No size options: add first available variant directly
+              const jsonEl = quickAddContainer.querySelector('.product-variants-json');
+              if (!jsonEl) return;
+              const variants = JSON.parse(jsonEl.textContent);
+
+              // Find selected color swatch (if any)
+              const checkedSwatch = card.querySelector('product-swatches input[type="radio"]:checked');
+              const selectedColor = checkedSwatch ? checkedSwatch.value.trim() : null;
+
+              let targetVariant = null;
+              // 1. Try matching selected color first
+              if (selectedColor) {
+                targetVariant = variants.find(v => v.available && v.options.includes(selectedColor));
+              }
+              // 2. Fall back to first available variant
+              if (!targetVariant) {
+                targetVariant = variants.find(v => v.available);
+              }
+              // 3. Fall back to first variant of all
+              if (!targetVariant) {
+                targetVariant = variants[0];
+              }
+
+              if (targetVariant) {
+                addToCart(targetVariant.id, quickAddContainer, plusBtn);
+              }
+            }
+          });
+        }
+
+        // Clicking a size option adds that variant to cart
+        sizeButtons.forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const sizeValue = btn.dataset.sizeValue.trim();
+            const sizeIndex = parseInt(btn.dataset.sizeIndex, 10);
+            
+            const jsonEl = quickAddContainer.querySelector('.product-variants-json');
+            if (!jsonEl) return;
+            const variants = JSON.parse(jsonEl.textContent);
+
+            // Find selected color swatch (if any)
+            const checkedSwatch = card.querySelector('product-swatches input[type="radio"]:checked');
+            const selectedColor = checkedSwatch ? checkedSwatch.value.trim() : null;
+
+            let targetVariant = null;
+            // Find variant matching size and color (if present)
+            for (const variant of variants) {
+              if (variant.options[sizeIndex] !== sizeValue) continue;
+              if (selectedColor) {
+                let matchesColor = false;
+                for (let i = 0; i < variant.options.length; i++) {
+                  if (i !== sizeIndex && variant.options[i] === selectedColor) {
+                    matchesColor = true;
+                    break;
+                  }
+                }
+                if (!matchesColor) continue;
+              }
+              targetVariant = variant;
+              // Prefer available variant
+              if (variant.available) {
+                break;
+              }
+            }
+
+            if (targetVariant) {
+              addToCart(targetVariant.id, quickAddContainer, btn);
+            }
+          });
+        });
+      });
+
+      // Close overlays when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.collection-hover-carousel__quick-add')) {
+          section.querySelectorAll('.collection-hover-carousel__quick-add').forEach(el => {
+            el.classList.remove('is-active');
+          });
+        }
+      });
+    }
+
+    // Ajax add to cart function
+    function addToCart(variantId, container, triggerBtn) {
+      if (!variantId) return;
+
+      // Add loading state
+      const spinner = container.querySelector('.btn-spinner');
+      if (spinner) spinner.classList.remove('hidden');
+      triggerBtn.disabled = true;
+
+      // Prepare request
+      const formData = new FormData();
+      formData.append('id', variantId);
+      formData.append('quantity', 1);
+
+      // Query active cart sections to refresh
+      const cartItemsComponents = document.querySelectorAll('cart-items-component');
+      let cartItemComponentsSectionIds = [];
+      cartItemsComponents.forEach((item) => {
+        if (item && item.dataset && item.dataset.sectionId) {
+          cartItemComponentsSectionIds.push(item.dataset.sectionId);
+        }
+      });
+      if (cartItemComponentsSectionIds.length > 0) {
+        formData.append('sections', cartItemComponentsSectionIds.join(','));
+      }
+
+      fetch(window.Shopify?.routes?.root + 'cart/add.js', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(response => {
+        if (response.status) {
+          alert(response.description || response.message);
+        } else {
+          // Success: close overlay and fetch cart to dispatch update event
+          container.classList.remove('is-active');
+
+          fetch(window.Shopify?.routes?.root + 'cart.js')
+            .then(res => res.json())
+            .then(cart => {
+              // Dispatch event to open cart drawer and update bubble
+              const event = new CustomEvent('cart:update', {
+                bubbles: true,
+                detail: {
+                  resource: cart,
+                  sourceId: variantId.toString(),
+                  data: {
+                    source: 'product-form-component',
+                    itemCount: 1,
+                    productId: container.dataset.productId,
+                    sections: response.sections
+                  }
+                }
+              });
+              document.dispatchEvent(event);
+            });
+        }
+      })
+      .catch(err => {
+        console.error('Error adding to cart:', err);
+      })
+      .finally(() => {
+        // Remove loading state
+        if (spinner) spinner.classList.add('hidden');
+        triggerBtn.disabled = false;
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       initCarousel('{{ section.id }}');
       initTitleReveal('{{ section.id }}');
+      initQuickAdd('{{ section.id }}');
     });
 
     document.addEventListener('shopify:section:load', function(event) {
       if (event.detail.sectionId === '{{ section.id }}') {
         initCarousel('{{ section.id }}');
         initTitleReveal('{{ section.id }}');
+        initQuickAdd('{{ section.id }}');
       }
     });
   })();
@@ -1155,6 +1667,83 @@
       "label": "Product price custom font size",
       "default": 14,
       "visible_if": "{{ section.settings.price_font == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Quick Add Size Typography Settings"
+    },
+    {
+      "type": "select",
+      "id": "size_font",
+      "label": "Size option typography preset",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Edit presets in theme settings",
+      "visible_if": "{{ section.settings.size_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "size_custom_font",
+      "label": "Font",
+      "options": [
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        }
+      ],
+      "default": "body",
+      "visible_if": "{{ section.settings.size_font == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "size_custom_size",
+      "min": 8,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Size option custom font size",
+      "default": 12,
+      "visible_if": "{{ section.settings.size_font == 'custom' }}"
     },
     {
       "type": "header",

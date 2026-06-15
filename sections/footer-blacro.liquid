@@ -38,7 +38,21 @@
   <div class="footer-blacro__container">
     <div class="footer-blacro__hero">
       <div class="footer-blacro__hero-copy">
-        <p class="footer-blacro__eyebrow">{{ brand_name }}</p>
+        {% if section.settings.brand_logo_top != blank %}
+          <div class="footer-blacro__brand-logo-wrapper">
+            <img 
+              src="{{ section.settings.brand_logo_top | image_url: width: 300 }}" 
+              alt="{{ shop.name }}"
+              class="footer-blacro__brand-logo"
+              style="max-width: {{ section.settings.brand_logo_top_width }}px;"
+              width="{{ section.settings.brand_logo_top.width }}"
+              height="{{ section.settings.brand_logo_top.height }}"
+              loading="lazy"
+            >
+          </div>
+        {% else %}
+          <p class="footer-blacro__eyebrow">{{ brand_name }}</p>
+        {% endif %}
         <h2 class="footer-blacro__headline">{{ section.settings.hero_heading | default: 'Join Blacro Loyalty' }}</h2>
         <p class="footer-blacro__text">{{ section.settings.hero_text | default: 'Unlock 10% Off Your First Purchase Plus More Rewards And Benefits' }}</p>
         {% if section.settings.hero_button_url != blank %}
@@ -117,9 +131,34 @@
       </div>
     </div>
 
-    <!-- Giant brand watermark -->
+    <!-- Giant brand watermark / Big logo -->
     <div class="footer-blacro__large-brand-wrapper">
-      <span class="footer-blacro__large-brand">{{ brand_name }}</span>
+      {% if section.settings.brand_logo_bottom != blank %}
+        <div class="footer-blacro__large-brand-logo-container" style="max-width: {{ section.settings.brand_logo_bottom_width }}px; margin: 0 auto; position: relative;">
+          <!-- Front Logo -->
+          <img 
+            src="{{ section.settings.brand_logo_bottom | image_url: width: 1400 }}" 
+            alt="{{ shop.name }} Large Logo"
+            class="footer-blacro__large-brand-logo footer-blacro__large-brand-logo--front"
+            style="display: block; width: 100%; height: auto;"
+            loading="lazy"
+            width="{{ section.settings.brand_logo_bottom.width }}"
+            height="{{ section.settings.brand_logo_bottom.height }}"
+          >
+          <!-- Back Logo (Pre-flipped on Y-axis) -->
+          <img 
+            src="{{ section.settings.brand_logo_bottom | image_url: width: 1400 }}" 
+            alt="{{ shop.name }} Large Logo"
+            class="footer-blacro__large-brand-logo footer-blacro__large-brand-logo--back"
+            style="display: block; width: 100%; height: auto;"
+            loading="lazy"
+            width="{{ section.settings.brand_logo_bottom.width }}"
+            height="{{ section.settings.brand_logo_bottom.height }}"
+          >
+        </div>
+      {% else %}
+        <span class="footer-blacro__large-brand">{{ brand_name }}</span>
+      {% endif %}
     </div>
 
     <div class="footer-blacro__bottom">
@@ -342,6 +381,7 @@
     pointer-events: none;
     border-top: 1px solid rgba(var(--color-foreground-rgb), 0.08);
     padding-block-start: 1rem;
+    perspective: 1200px;
   }
 
   .footer-blacro__large-brand {
@@ -354,6 +394,59 @@
     text-transform: uppercase;
     color: var(--color-foreground);
     opacity: 0.05;
+  }
+
+  .footer-blacro__brand-logo-wrapper {
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-blacro__brand-logo {
+    display: block;
+    height: auto;
+  }
+
+  @keyframes footerLogoSpin {
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+
+  .footer-blacro__large-brand-logo-container {
+    display: block;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: footerLogoSpin 12s linear infinite;
+    transform-origin: center;
+  }
+
+  .footer-blacro__large-brand-logo {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    opacity: 1 !important;
+    filter: none !important;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .footer-blacro__large-brand-logo--front {
+    position: relative;
+    z-index: 5;
+    transform: rotateY(0deg);
+  }
+
+  .footer-blacro__large-brand-logo--back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+    transform: rotateY(180deg);
   }
 
   .footer-blacro__bottom {
@@ -460,6 +553,44 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Brand Identity (Top Logo)"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_logo_top",
+      "label": "Brand Logo (Top)"
+    },
+    {
+      "type": "range",
+      "id": "brand_logo_top_width",
+      "label": "Brand Logo Top Width",
+      "min": 50,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "header",
+      "content": "Brand Identity (Bottom Logo)"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_logo_bottom",
+      "label": "Large Watermark Logo (Bottom)"
+    },
+    {
+      "type": "range",
+      "id": "brand_logo_bottom_width",
+      "label": "Large Watermark Logo Width",
+      "min": 200,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
     },
     {
       "type": "text",
