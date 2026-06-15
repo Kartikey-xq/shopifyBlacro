@@ -11,226 +11,39 @@
   "type": "footer",
   "name": "Footer",
   "sections": {
-    "footer_KeYKQ3": {
-      "type": "footer",
-      "blocks": {
-        "logo_wkMFMx": {
-          "type": "logo",
-          "name": "t:names.logo",
-          "settings": {
-            "inverse": false,
-            "font": "heading",
-            "unit": "pixel",
-            "percent_width": 100,
-            "pixel_height": 136,
-            "custom_mobile_size": true,
-            "unit_mobile": "percent",
-            "percent_width_mobile": 25,
-            "pixel_height_mobile": 120,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "social_links_eDDetc": {
-          "type": "social-links",
-          "name": "t:names.social_media_links",
-          "settings": {
-            "facebook_url": "https://www.facebook.com/share/1JE6hGXvWz/",
-            "instagram_url": "https://www.instagram.com/blacro.in?igsh=dnM4OWFsdzVxMTAz",
-            "youtube_url": "",
-            "tiktok_url": "",
-            "twitter_url": "",
-            "threads_url": "",
-            "linkedin_url": "https://www.linkedin.com/company/blacro/",
-            "bluesky_url": "",
-            "snapchat_url": "",
-            "pinterest_url": "",
-            "tumblr_url": "",
-            "vimeo_url": "",
-            "custom_url": ""
-          },
-          "blocks": {}
-        },
-        "menu_UwN7V4": {
-          "type": "menu",
-          "name": "t:names.menu",
-          "settings": {
-            "menu": "policies",
-            "heading": "Our policies",
-            "menu_spacing": 0,
-            "show_as_accordion": true,
-            "accordion_icon": "plus",
-            "accordion_dividers": false,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "heading_preset": "h3",
-            "link_preset": "",
-            "custom_font_sizes": true,
-            "heading_font_size": 22,
-            "link_font_size": 18,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "group_KUFMLP": {
-          "type": "group",
-          "settings": {
-            "content_direction": "column",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "flex-start",
-            "vertical_alignment": "center",
-            "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 6,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "toggle_overlay": false,
-            "overlay_color": "#00000026",
-            "overlay_style": "solid",
-            "gradient_direction": "to top",
-            "link": "",
-            "open_in_new_tab": false,
-            "placeholder": "",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "text_YqL73d": {
-              "type": "text",
-              "settings": {
-                "text": "<h2>Join our email list</h2>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h3",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "text_9LRpix": {
-              "type": "text",
-              "settings": {
-                "text": "<p>Get exclusive deals and early access to new products.</p>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "text_YqL73d",
-            "text_9LRpix"
-          ]
-        },
-        "email_signup_xwe3B6": {
-          "type": "email-signup",
-          "settings": {
-            "width": "custom",
-            "custom_width": 20,
-            "inherit_color_scheme": false,
-            "color_scheme": "scheme-6",
-            "heading": "",
-            "heading_preset": "paragraph",
-            "border_style": "all",
-            "border_width": 0,
-            "border_radius": 0,
-            "input_type_preset": "paragraph",
-            "style_class": "button-unstyled",
-            "display_type": "text",
-            "label": "Sign up",
-            "integrated_button": true,
-            "button_type_preset": "h1",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "payment_icons_LpEMDX": {
-          "type": "payment-icons",
-          "name": "t:names.payment_icons",
-          "settings": {
-            "horizontal_alignment": "flex-start",
-            "gap": 10,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "logo_wkMFMx",
-        "social_links_eDDetc",
-        "menu_UwN7V4",
-        "group_KUFMLP",
-        "email_signup_xwe3B6",
-        "payment_icons_LpEMDX"
-      ],
-      "name": "t:names.footer",
+    "footer_blacro_apHG3w": {
+      "type": "footer-blacro",
+      "name": "Blacro Footer",
       "settings": {
         "section_width": "page-width",
-        "gap": 11,
-        "color_scheme": "scheme-3",
-        "padding-block-start": 26,
-        "padding-block-end": 38
+        "color_scheme": "scheme-2",
+        "brand_logo_top": "shopify://shop_images/Copy_of_Blacro_Logo-23.png",
+        "brand_logo_top_width": 120,
+        "brand_logo_top_alignment": "center",
+        "brand_logo_bottom": "shopify://shop_images/cartfinal.png",
+        "brand_logo_bottom_width": 1200,
+        "hero_heading": "Join Blacro Loyalty",
+        "hero_text": "Unlock 10% Off Your First Purchase Plus More Rewards And Benefits",
+        "hero_button_label": "SIGN UP",
+        "hero_button_url": "",
+        "company_menu": "cs",
+        "policy_menu": "policies",
+        "social_instagram_link": "https://www.instagram.com/blacro.in?igsh=dnM4OWFsdzVxMTAz",
+        "social_facebook_link": "https://www.facebook.com/share/1JE6hGXvWz/",
+        "social_linkedin_link": "https://www.linkedin.com/company/blacro/",
+        "social_whatsapp_number": "919876543210",
+        "footer_title_font": "default",
+        "footer_title_custom_font": "heading",
+        "footer_title_custom_size": 14,
+        "footer_links_font": "default",
+        "footer_links_custom_font": "body",
+        "footer_links_custom_size": 14,
+        "padding_block_start": 40,
+        "padding_block_end": 40
       }
     }
   },
   "order": [
-    "footer_KeYKQ3"
+    "footer_blacro_apHG3w"
   ]
 }
