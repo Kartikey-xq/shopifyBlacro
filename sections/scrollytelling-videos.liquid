@@ -4,75 +4,104 @@
 {% endcomment %}
 
 {% liquid
-  assign text_color = section.settings.color_text
-  assign text_color_active = section.settings.color_text_active
   assign bg_color = section.settings.color_bg
+  assign text_color_inactive = section.settings.color_text_inactive
+  assign text_color_active = section.settings.color_text_active
 %}
 
-<style>
-  #Scrollytelling-{{ section.id }} {
+{%- style -%}
+  {{ section.settings.font_active | font_face: expression: 'font-display: swap;' }}
+  {{ section.settings.font_inactive | font_face: expression: 'font-display: swap;' }}
+
+  #shopify-section-{{ section.id }} {
+    overflow: visible !important;
+  }
+
+  #ScrollytellingSection-{{ section.id }} {
     position: relative;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    padding: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    background-color: {{ bg_color }};
+    overflow: visible !important;
+  }
+
+  #ScrollytellingSection-{{ section.id }} .scrolly-sticky-frame {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
     height: 100vh;
-    width: 100%;
+    width: 100vw;
     overflow: hidden;
     background-color: {{ bg_color }};
   }
 
-  #Scrollytelling-{{ section.id }} .scrollytelling__scroll-container {
-    height: 100%;
-    width: 100%;
-    overflow-y: scroll;
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    /* Hide scrollbars */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
-  }
-
-  #Scrollytelling-{{ section.id }} .scrollytelling__scroll-container::-webkit-scrollbar {
-    display: none; /* Safari and Chrome */
-  }
-
-  #Scrollytelling-{{ section.id }} .scrollytelling__slide {
-    position: relative;
-    height: 100vh;
-    width: 100%;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    overflow: hidden;
-    background-color: {{ bg_color }};
-  }
-
-  #Scrollytelling-{{ section.id }} .scrollytelling__video {
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__video-viewport {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: cover;
-    pointer-events: none;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: {{ bg_color }};
+    z-index: 1;
   }
 
-  #Scrollytelling-{{ section.id }} .scrollytelling__video-placeholder {
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__video-track {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+  }
+
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__slide {
+    flex-shrink: 0;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: {{ bg_color }};
+  }
+
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__video-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: {{ bg_color }};
+  }
+
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__video,
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__image {
+    display: block;
+    width: 100vw !important;
+    height: 100vh !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+  }
+
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__video-placeholder {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 100%;
-    color: {{ text_color }};
+    color: {{ text_color_inactive }};
     opacity: 0.6;
     font-size: 1.25rem;
     font-family: inherit;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    border: 1px dashed rgba(var(--color-foreground-rgb), 0.2);
   }
 
-  #Scrollytelling-{{ section.id }} .scrollytelling__sidebar {
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__sidebar {
     position: absolute;
     z-index: 10;
     top: 50%;
@@ -80,32 +109,44 @@
     pointer-events: none;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    max-width: 500px;
-    transition: all 0.4s ease;
+    box-sizing: border-box;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_top }}px;
+    padding-left: {{ section.settings.padding_left }}%;
+    padding-right: {{ section.settings.padding_left }}%;
+    width: 100%;
   }
 
-  #Scrollytelling-{{ section.id }} .scrollytelling__sidebar--left {
-    left: 8%;
-    text-align: left;
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__sidebar--left {
+    left: 0;
+    align-items: flex-start;
   }
 
-  #Scrollytelling-{{ section.id }} .scrollytelling__sidebar--right {
-    right: 8%;
-    text-align: right;
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__sidebar--center {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    align-items: center;
   }
 
-  #Scrollytelling-{{ section.id }} .scrollytelling__text-list {
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__sidebar--right {
+    right: 0;
+    align-items: flex-end;
+  }
+
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__text-list {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: {{ section.settings.text_gap }}px;
+    text-align: {{ section.settings.text_alignment }};
   }
 
-  #Scrollytelling-{{ section.id }} .scrollytelling__text-item {
-    color: {{ text_color }};
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__text-item {
+    cursor: pointer;
+    font-family: {{ section.settings.font_inactive.family }}, {{ section.settings.font_inactive.fallback_families }};
+    font-size: {{ section.settings.font_size_desktop }}px;
+    font-weight: {{ section.settings.font_weight_inactive }};
+    color: {{ text_color_inactive }};
     opacity: 0.25;
-    font-size: clamp(1.8rem, 3.5vw, 3.2rem);
-    font-weight: 500;
     line-height: 1.1;
     text-transform: uppercase;
     letter-spacing: -0.02em;
@@ -113,136 +154,229 @@
     transform: translateX(-15px);
   }
 
-  #Scrollytelling-{{ section.id }} .scrollytelling__sidebar--right .scrollytelling__text-item {
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__sidebar--right .scrollytelling__text-item {
     transform: translateX(15px);
   }
 
-  #Scrollytelling-{{ section.id }} .scrollytelling__text-item.is-active {
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__sidebar--center .scrollytelling__text-item {
+    transform: translateY(15px);
+  }
+
+  #ScrollytellingSection-{{ section.id }} .scrollytelling__text-item.is-active {
+    font-family: {{ section.settings.font_active.family }}, {{ section.settings.font_active.fallback_families }};
+    font-size: {{ section.settings.font_size_desktop }}px;
+    font-weight: {{ section.settings.font_weight_active }};
     color: {{ text_color_active }};
     opacity: 1;
-    transform: translateX(0);
-    font-weight: 700;
+    transform: translate(0, 0) !important;
   }
 
   @media screen and (max-width: 768px) {
-    #Scrollytelling-{{ section.id }} .scrollytelling__sidebar {
-      left: 6% !important;
-      right: 6% !important;
+    #ScrollytellingSection-{{ section.id }} .scrollytelling__sidebar {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+      padding-bottom: 60px !important;
       top: auto !important;
       bottom: 8% !important;
-      transform: none !important;
-      text-align: left !important;
-      max-width: 100% !important;
+      width: 100% !important;
     }
 
-    #Scrollytelling-{{ section.id }} .scrollytelling__text-item {
-      font-size: clamp(1.4rem, 6vw, 2.2rem) !important;
+    #ScrollytellingSection-{{ section.id }} .scrollytelling__sidebar--left {
+      transform: none !important;
+      left: 0 !important;
+      align-items: flex-start !important;
+    }
+
+    #ScrollytellingSection-{{ section.id }} .scrollytelling__sidebar--center {
+      transform: translateX(-50%) !important;
+      left: 50% !important;
+      align-items: center !important;
+    }
+
+    #ScrollytellingSection-{{ section.id }} .scrollytelling__sidebar--right {
+      transform: none !important;
+      right: 0 !important;
+      align-items: flex-end !important;
+    }
+
+    #ScrollytellingSection-{{ section.id }} .scrollytelling__text-item {
+      font-size: {{ section.settings.font_size_mobile }}px !important;
       transform: translateY(10px) !important;
     }
 
-    #Scrollytelling-{{ section.id }} .scrollytelling__text-item.is-active {
+    #ScrollytellingSection-{{ section.id }} .scrollytelling__text-item.is-active {
+      font-size: {{ section.settings.font_size_mobile }}px !important;
       transform: translateY(0) !important;
     }
   }
-</style>
+{%- endstyle -%}
 
-<div class="scrollytelling" id="Scrollytelling-{{ section.id }}">
-  
-  <!-- Stationary Overlay Text Sidebar -->
-  <div class="scrollytelling__sidebar scrollytelling__sidebar--{{ section.settings.sidebar_alignment }}">
-    <div class="scrollytelling__text-list">
-      {%- for block in section.blocks -%}
-        <div 
-          class="scrollytelling__text-item{% if forloop.first %} is-active{% endif %}" 
-          data-index="{{ forloop.index0 }}" 
-          {{ block.shopify_attributes }}
-        >
-          <span>{{ block.settings.heading | escape }}</span>
-        </div>
-      {%- endfor -%}
-    </div>
-  </div>
-
-  <!-- Scroll Container containing vertical videos -->
-  <div class="scrollytelling__scroll-container">
-    {%- for block in section.blocks -%}
-      <div class="scrollytelling__slide" data-slide-index="{{ forloop.index0 }}">
-        {%- if block.settings.video != blank -%}
-          {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, class: 'scrollytelling__video' }}
-        {%- else -%}
-          <div class="scrollytelling__video-placeholder">
-            <span>Slide {{ forloop.index }} Video Placeholder</span>
+<div class="scrolly-spacer" id="ScrollytellingSection-{{ section.id }}" style="height: {{ section.blocks.size | times: 100 }}vh;" data-video-count="{{ section.blocks.size }}">
+  <div class="scrolly-sticky-frame">
+    
+    <!-- Video Track Container -->
+    <div class="scrollytelling__video-viewport">
+      <div class="scrollytelling__video-track">
+        {%- for block in section.blocks -%}
+          <div class="scrollytelling__slide" data-slide-index="{{ forloop.index0 }}">
+            <div class="scrollytelling__video-container">
+              {%- if block.settings.video != blank -%}
+                {{ block.settings.video | video_tag: loop: true, muted: true, controls: false, playsinline: true, class: 'scrollytelling__video' }}
+              {%- elsif block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 1920 | image_tag: loading: 'lazy', class: 'scrollytelling__image' }}
+              {%- else -%}
+                <div class="scrollytelling__video-placeholder">
+                  <span>Slide {{ forloop.index }} Placeholder</span>
+                </div>
+              {%- endif -%}
+            </div>
           </div>
-        {%- endif -%}
+        {%- endfor -%}
       </div>
-    {%- endfor -%}
-  </div>
+    </div>
 
+    <!-- Stationary Overlay Text Sidebar -->
+    <div class="scrollytelling__sidebar scrollytelling__sidebar--{{ section.settings.sidebar_alignment }}">
+      <div class="scrollytelling__text-list">
+        {%- for block in section.blocks -%}
+          <div 
+            class="scrollytelling__text-item" 
+            data-index="{{ forloop.index0 }}" 
+            {{ block.shopify_attributes }}
+          >
+            <span>{{ block.settings.heading | escape }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
   (function() {
     function init() {
-      const section = document.getElementById('Scrollytelling-{{ section.id }}');
+      const section = document.getElementById('ScrollytellingSection-{{ section.id }}');
       if (!section) return;
 
-      const scrollContainer = section.querySelector('.scrollytelling__scroll-container');
-      const slides = section.querySelectorAll('.scrollytelling__slide');
+      const track = section.querySelector('.scrollytelling__video-track');
       const textItems = section.querySelectorAll('.scrollytelling__text-item');
+      const videos = section.querySelectorAll('.scrollytelling__video');
+      const videoCount = textItems.length;
 
-      if (!scrollContainer || slides.length === 0) return;
+      if (!track || videoCount === 0) return;
+
+      let isIntersecting = false;
+      let ticking = false;
+      const divisor = videoCount > 1 ? videoCount - 1 : 1;
+
+      function updateSection() {
+        const rect = section.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const totalHeight = rect.height;
+        
+        const scrolled = -rect.top;
+        const maxScroll = totalHeight - viewportHeight;
+        
+        let progress = maxScroll > 0 ? scrolled / maxScroll : 0;
+        progress = Math.max(0, Math.min(1, progress));
+        
+        const activeIndex = Math.min(videoCount - 1, Math.floor(progress * videoCount));
+
+        // Detect if section is fully pinned to the viewport
+        const isFullyPinned = rect.top <= 10 && rect.bottom >= (viewportHeight - 10);
+
+        // Move the video track
+        track.style.transform = `translateY(-${activeIndex * 100}vh)`;
+
+        // Highlight text items only when section is fully pinned
+        textItems.forEach(item => {
+          const itemIndex = parseInt(item.getAttribute('data-index'));
+          if (itemIndex === activeIndex && isFullyPinned) {
+            item.classList.add('is-active');
+          } else {
+            item.classList.remove('is-active');
+          }
+        });
+
+        // Play active video when active and section is fully pinned, pause others
+        videos.forEach(video => {
+          const slide = video.closest('.scrollytelling__slide');
+          if (slide) {
+            const slideIndex = parseInt(slide.getAttribute('data-slide-index'));
+            if (slideIndex === activeIndex && isFullyPinned && isIntersecting) {
+              if (video.paused) {
+                video.play().catch(() => {});
+              }
+            } else {
+              if (!video.paused) {
+                video.pause();
+              }
+            }
+          }
+        });
+
+        ticking = false;
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          window.requestAnimationFrame(updateSection);
+          ticking = true;
+        }
+      }
+
+      // Smooth scroll target when text is clicked
+      textItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const i = parseInt(item.getAttribute('data-index'));
+          const rect = section.getBoundingClientRect();
+          const maxScroll = rect.height - window.innerHeight;
+          const targetY = window.scrollY + rect.top + (i / divisor) * maxScroll;
+          window.scrollTo({
+            top: targetY,
+            behavior: 'smooth'
+          });
+        });
+      });
 
       const observerOptions = {
-        root: scrollContainer,
-        threshold: 0.6
+        root: null,
+        threshold: 0,
+        rootMargin: "0px"
       };
 
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const index = entry.target.getAttribute('data-slide-index');
-
-            // Highlight the active text element in the sidebar
-            textItems.forEach(item => {
-              if (item.getAttribute('data-index') === index) {
-                item.classList.add('is-active');
-              } else {
-                item.classList.remove('is-active');
-              }
-            });
-
-            // CPU/Performance Optimization: Play only active video, pause others
-            const activeVideo = entry.target.querySelector('video');
-            if (activeVideo) {
-              activeVideo.play().catch(() => {});
-            }
-
-            slides.forEach(slide => {
-              if (slide.getAttribute('data-slide-index') !== index) {
-                const inactiveVideo = slide.querySelector('video');
-                if (inactiveVideo) {
-                  inactiveVideo.pause();
-                }
+          isIntersecting = entry.isIntersecting;
+          if (isIntersecting) {
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', updateSection, { passive: true });
+            updateSection();
+          } else {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', updateSection);
+            videos.forEach(video => {
+              if (!video.paused) {
+                video.pause();
               }
             });
           }
         });
       }, observerOptions);
 
-      slides.forEach(slide => observer.observe(slide));
+      observer.observe(section);
 
-      // Save observer instance for clean up on unload
       section._scrollyObserver = observer;
+      section._onScroll = onScroll;
     }
 
-    // Initialize on page load
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
     } else {
       init();
     }
 
-    // Handle Shopify Theme Editor events
     document.addEventListener('shopify:section:load', function(event) {
       if (event.detail.sectionId === '{{ section.id }}') {
         init();
@@ -251,9 +385,14 @@
 
     document.addEventListener('shopify:section:unload', function(event) {
       if (event.detail.sectionId === '{{ section.id }}') {
-        const sectionEl = document.getElementById('Scrollytelling-{{ section.id }}');
-        if (sectionEl && sectionEl._scrollyObserver) {
-          sectionEl._scrollyObserver.disconnect();
+        const sectionEl = document.getElementById('ScrollytellingSection-{{ section.id }}');
+        if (sectionEl) {
+          if (sectionEl._scrollyObserver) {
+            sectionEl._scrollyObserver.disconnect();
+          }
+          if (sectionEl._onScroll) {
+            window.removeEventListener('scroll', sectionEl._onScroll);
+          }
         }
       }
     });
@@ -273,10 +412,60 @@
       "default": "#000000"
     },
     {
-      "type": "color",
-      "id": "color_text",
-      "label": "Inactive Text Color",
-      "default": "#ffffff"
+      "type": "select",
+      "id": "sidebar_alignment",
+      "label": "Sidebar Position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Active Text Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_active",
+      "label": "Active Font Family",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "select",
+      "id": "font_weight_active",
+      "label": "Active Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" },
+        { "value": "900", "label": "Black" }
+      ],
+      "default": "700"
     },
     {
       "type": "color",
@@ -285,20 +474,93 @@
       "default": "#ffffff"
     },
     {
+      "type": "header",
+      "content": "Inactive Text Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_inactive",
+      "label": "Inactive Font Family",
+      "default": "work_sans_n4"
+    },
+    {
       "type": "select",
-      "id": "sidebar_alignment",
-      "label": "Sidebar Alignment",
+      "id": "font_weight_inactive",
+      "label": "Inactive Font Weight",
       "options": [
-        {
-          "value": "left",
-          "label": "Left"
-        },
-        {
-          "value": "right",
-          "label": "Right"
-        }
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" },
+        { "value": "900", "label": "Black" }
       ],
-      "default": "left"
+      "default": "500"
+    },
+    {
+      "type": "color",
+      "id": "color_text_inactive",
+      "label": "Inactive Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Sidebar Typography Configuration"
+    },
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Font Size (Desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Font Size (Mobile)",
+      "default": 28
+    },
+    {
+      "type": "header",
+      "content": "Layout & Spacing"
+    },
+    {
+      "type": "range",
+      "id": "text_gap",
+      "min": 5,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between texts",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top/Bottom",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "%",
+      "label": "Padding Left/Right (Desktop)",
+      "default": 8
     }
   ],
   "blocks": [
@@ -311,6 +573,12 @@
           "id": "video",
           "label": "Shopify-hosted Video",
           "info": "Upload or select a vertical video."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Upload or select a vertical image if video is not used."
         },
         {
           "type": "text",
