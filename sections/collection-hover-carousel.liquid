@@ -332,15 +332,16 @@
               assign title = product.title | default: 'Sample Product'
               assign price_text = product.price | money_with_currency
               assign primary_image = product.featured_image
-              assign hover_setting = 'hover_image_' | append: forloop.index
-              assign override_image = section.settings[hover_setting]
-              assign hover_image = override_image | default: product.images[1] | default: primary_image
+              assign hover_image = nil
+              if section.settings.show_secondary_image and product.images.size > 1
+                assign hover_image = product.images[1]
+              endif
               assign card_url = product.url
             %}
             <div class="collection-hover-carousel__item">
               <div class="collection-hover-carousel__card">
                 <a href="{{ card_url }}" class="collection-hover-carousel__card-link-overlay" aria-label="{{ title | escape }}"></a>
-                <div class="collection-hover-carousel__image-wrapper">
+                <div class="collection-hover-carousel__image-wrapper{% if hover_image != blank and hover_image != primary_image %} has-hover-image{% endif %}">
                   {% if primary_image != blank %}
                     <img 
                       src="{{ primary_image | image_url: width: 600 }}" 
@@ -835,7 +836,7 @@
     width: 100%;
     aspect-ratio: 3 / 4;
     overflow: hidden;
-    background-color: var(--color-border, #111111);
+    background-color: transparent;
     margin-bottom: 1.2rem;
   }
 
@@ -854,18 +855,24 @@
     z-index: 1;
   }
 
-  .collection-hover-carousel__card:hover .collection-hover-carousel__img--hover {
+  .collection-hover-carousel__card:hover .has-hover-image .collection-hover-carousel__img--hover {
     opacity: 1;
+    z-index: 2;
   }
 
-  .collection-hover-carousel__card:hover .collection-hover-carousel__img--primary {
+  .collection-hover-carousel__card:hover .has-hover-image .collection-hover-carousel__img--primary {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+
+  .collection-hover-carousel__card:hover .collection-hover-carousel__image-wrapper:not(.has-hover-image) .collection-hover-carousel__img--primary {
     transform: scale(1.03);
   }
 
   .collection-hover-carousel__placeholder-svg {
     width: 100%;
     height: 100%;
-    background-color: var(--color-border, #111111);
+    background-color: transparent;
     fill: var(--color-foreground-muted, #222222);
   }
 
@@ -1902,48 +1909,10 @@
       "visible_if": "{{ section.settings.show_swatches }}"
     },
     {
-      "type": "header",
-      "content": "Hover image overrides"
-    },
-    {
-      "type": "image_picker",
-      "id": "hover_image_1",
-      "label": "Hover image override 1"
-    },
-    {
-      "type": "image_picker",
-      "id": "hover_image_2",
-      "label": "Hover image override 2"
-    },
-    {
-      "type": "image_picker",
-      "id": "hover_image_3",
-      "label": "Hover image override 3"
-    },
-    {
-      "type": "image_picker",
-      "id": "hover_image_4",
-      "label": "Hover image override 4"
-    },
-    {
-      "type": "image_picker",
-      "id": "hover_image_5",
-      "label": "Hover image override 5"
-    },
-    {
-      "type": "image_picker",
-      "id": "hover_image_6",
-      "label": "Hover image override 6"
-    },
-    {
-      "type": "image_picker",
-      "id": "hover_image_7",
-      "label": "Hover image override 7"
-    },
-    {
-      "type": "image_picker",
-      "id": "hover_image_8",
-      "label": "Hover image override 8"
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "label": "Show second image on hover",
+      "default": true
     },
     {
       "type": "header",
