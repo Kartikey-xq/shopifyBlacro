@@ -48,6 +48,17 @@
         assign cols_mobile = desktop_cols
       endif
     endif
+
+    assign desktop_image_height = 'auto'
+    if section.settings.desktop_card_height == 'small'
+      assign desktop_image_height = '280px'
+    elsif section.settings.desktop_card_height == 'medium'
+      assign desktop_image_height = '380px'
+    elsif section.settings.desktop_card_height == 'large'
+      assign desktop_image_height = '480px'
+    elsif section.settings.desktop_card_height == 'custom'
+      assign desktop_image_height = section.settings.desktop_card_custom_height | append: 'px'
+    endif
   %}
 
   .section-collection-carousel-hover {
@@ -68,6 +79,7 @@
     --cols-mobile: {{ cols_mobile }};
     --product-info-left-offset: {{ section.settings.product_info_left_offset | default: 0 }}px;
     --collection-carousel-aspect-ratio: {{ aspect_ratio }};
+    --desktop-image-height: {{ desktop_image_height }};
     width: 100% !important;
     max-width: 100% !important;
     padding-left: 0 !important;
@@ -320,6 +332,21 @@
         flex: 0 0 calc((100% - (var(--cols-mobile) - 1) * var(--carousel-gap, 20px)) / var(--cols-mobile));
       {% endif %}
     }
+  }
+
+  @media screen and (min-width: 750px) {
+    {% if section.settings.desktop_card_height != 'adapt' %}
+      #CollectionCarousel-{{ section.id }} .collection-hover-carousel__image-wrapper {
+        height: var(--desktop-image-height) !important;
+        max-height: var(--desktop-image-height) !important;
+        aspect-ratio: auto !important;
+      }
+      #CollectionCarousel-{{ section.id }} .collection-hover-carousel__img {
+        object-fit: cover !important;
+        height: 100% !important;
+        width: 100% !important;
+      }
+    {% endif %}
   }
 {% endstyle %}
 
@@ -2123,6 +2150,45 @@
         }
       ],
       "default": "portrait"
+    },
+    {
+      "type": "select",
+      "id": "desktop_card_height",
+      "label": "Desktop Card Image Height",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image ratio"
+        },
+        {
+          "value": "small",
+          "label": "Small (280px)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (380px)"
+        },
+        {
+          "value": "large",
+          "label": "Large (480px)"
+        },
+        {
+          "value": "custom",
+          "label": "Custom height"
+        }
+      ],
+      "default": "adapt"
+    },
+    {
+      "type": "range",
+      "id": "desktop_card_custom_height",
+      "min": 200,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Custom Desktop Image Height",
+      "default": 380,
+      "visible_if": "{{ section.settings.desktop_card_height == 'custom' }}"
     },
     {
       "type": "header",
