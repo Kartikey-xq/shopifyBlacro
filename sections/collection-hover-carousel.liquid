@@ -383,7 +383,6 @@
                         alt: title
                     }}
                     {% if hover_image != blank and hover_image != primary_image %}
-                      {% assign hover_alt = title | append: ' (alternate view)' %}
                       {{ hover_image 
                         | image_url: width: 1200 
                         | image_tag: 
@@ -391,7 +390,7 @@
                           sizes: '(min-width: 750px) 25vw, 50vw', 
                           widths: '200, 300, 400, 500, 600, 800, 1000, 1200', 
                           class: 'collection-hover-carousel__img collection-hover-carousel__img--hover',
-                          alt: hover_alt
+                          alt: ''
                       }}
                     {% endif %}
                   {% else %}
