@@ -12,7 +12,7 @@
   {% endunless %}
 {% endcapture %}
 
-{% render 'card-gallery', children: children %}
+{% render 'card-gallery', children: children, block: block, section: section %}
 
 {% stylesheet %}
   .featured-product-section .card-gallery .quick-add__button {

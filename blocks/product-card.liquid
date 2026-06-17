@@ -8,7 +8,7 @@
   {% content_for 'blocks', closest.product: product %}
 {% endcapture %}
 
-{% render 'product-card', children: children, product: product %}
+{% render 'product-card', children: children, product: product, block: block %}
 
 {% schema %}
 {
