@@ -50,6 +50,16 @@
     endif
   %}
 
+  .section-collection-carousel-hover {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
   #CollectionCarousel-{{ section.id }} {
     --carousel-gap: {{ section.settings.carousel_gap }}px;
     --carousel-padding-horizontal: {{ section.settings.padding_horizontal }}px;
@@ -58,6 +68,13 @@
     --cols-mobile: {{ cols_mobile }};
     --product-info-left-offset: {{ section.settings.product_info_left_offset | default: 0 }}px;
     --collection-carousel-aspect-ratio: {{ aspect_ratio }};
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
   }
 
   #CollectionCarousel-{{ section.id }} .collection-hover-carousel__header {
@@ -263,38 +280,37 @@
   }
 
   #CollectionCarousel-{{ section.id }} .page-width {
-    padding-left: var(--carousel-padding-horizontal, 2rem);
-    padding-right: var(--carousel-padding-horizontal, 2rem);
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #CollectionCarousel-{{ section.id }} .collection-hover-carousel__header {
+    padding-left: calc(var(--carousel-padding-horizontal, 0px) + var(--page-margin, 2rem)) !important;
+    padding-right: calc(var(--carousel-padding-horizontal, 0px) + var(--page-margin, 2rem)) !important;
+  }
+
+  #CollectionCarousel-{{ section.id }} .collection-hover-carousel__track {
+    padding-left: var(--carousel-padding-horizontal, 0px) !important;
+    padding-right: var(--carousel-padding-horizontal, 0px) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
   }
 
   @media screen and (max-width: 768px) {
     #CollectionCarousel-{{ section.id }} .collection-hover-carousel__track {
-      padding-left: var(--carousel-padding-horizontal, 2rem);
-      padding-right: var(--carousel-padding-horizontal, 2rem);
-    }
-  }
-
-  {% if section.settings.enable_full_width %}
-    #CollectionCarousel-{{ section.id }} .page-width {
-      max-width: 100% !important;
-      padding-left: 0 !important;
-      padding-right: 0 !important;
+      padding-left: var(--carousel-padding-horizontal, 0px) !important;
+      padding-right: var(--carousel-padding-horizontal, 0px) !important;
     }
     #CollectionCarousel-{{ section.id }} .collection-hover-carousel__header {
-      padding-left: var(--carousel-padding-horizontal, 2rem) !important;
-      padding-right: var(--carousel-padding-horizontal, 2rem) !important;
+      padding-left: calc(var(--carousel-padding-horizontal, 0px) + 2rem) !important;
+      padding-right: calc(var(--carousel-padding-horizontal, 0px) + 2rem) !important;
     }
-    #CollectionCarousel-{{ section.id }} .collection-hover-carousel__track {
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-    }
-    @media screen and (max-width: 768px) {
-      #CollectionCarousel-{{ section.id }} .collection-hover-carousel__track {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-      }
-    }
-  {% endif %}
+  }
 
   @media screen and (max-width: 480px) {
     #CollectionCarousel-{{ section.id }} .collection-hover-carousel__item {
@@ -541,6 +557,32 @@
     transform: scale(0.9);
     pointer-events: auto;
     padding: 0;
+    overflow: hidden;
+  }
+
+  .collection-hover-carousel__quick-add-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    transition: none;
+  }
+
+  @media (hover: hover) {
+    .collection-hover-carousel__quick-add-btn:hover::after {
+      left: 150%;
+      transition: left 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    }
   }
 
   .collection-hover-carousel__quick-add-btn:hover {
@@ -616,16 +658,12 @@
     transform: translateY(0);
   }
 
-  @media (hover: hover) {
-    .collection-hover-carousel__quick-add:hover .collection-hover-carousel__sizes-overlay {
-      transform: translateY(0);
-    }
-    .collection-hover-carousel__quick-add:hover .collection-hover-carousel__quick-add-btn {
-      opacity: 1;
-      transform: scale(1);
-      background-color: #000000;
-      color: #ffffff;
-    }
+  /* Lock plus button state when size options overlay is open */
+  .collection-hover-carousel__quick-add.is-active .collection-hover-carousel__quick-add-btn {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    background-color: #000000 !important;
+    color: #ffffff !important;
   }
 
   .collection-hover-carousel__sizes-list {
@@ -714,7 +752,7 @@
   }
 
   .collection-hover-carousel {
-    padding: 8px;
+    padding: 8px 0;
     background-color: var(--collection-carousel-bg, var(--color-background, #000000));
     color: var(--collection-carousel-text, var(--color-foreground, #ffffff));
     overflow: hidden;
@@ -1145,6 +1183,25 @@
           }
         });
 
+        let dismissTimeout = null;
+
+        function startDismissTimer() {
+          clearDismissTimer();
+          dismissTimeout = setTimeout(() => {
+            quickAddContainer.classList.remove('is-active');
+          }, 3000);
+        }
+
+        function clearDismissTimer() {
+          if (dismissTimeout) {
+            clearTimeout(dismissTimeout);
+            dismissTimeout = null;
+          }
+        }
+
+        // Store clear function on container for external dismiss triggers
+        quickAddContainer._clearDismissTimer = clearDismissTimer;
+
         // Toggling overlay on click (+ button)
         if (plusBtn) {
           plusBtn.addEventListener('click', function(e) {
@@ -1155,9 +1212,22 @@
             if (sizesOverlay) {
               // Close all other overlays in this section
               section.querySelectorAll('.collection-hover-carousel__quick-add').forEach(el => {
-                if (el !== quickAddContainer) el.classList.remove('is-active');
+                if (el !== quickAddContainer) {
+                  el.classList.remove('is-active');
+                  if (typeof el._clearDismissTimer === 'function') {
+                    el._clearDismissTimer();
+                  }
+                }
               });
-              quickAddContainer.classList.toggle('is-active');
+
+              const isActive = quickAddContainer.classList.contains('is-active');
+              if (isActive) {
+                quickAddContainer.classList.remove('is-active');
+                clearDismissTimer();
+              } else {
+                quickAddContainer.classList.add('is-active');
+                startDismissTimer();
+              }
             } else {
               // No size options: add first available variant directly
               const jsonEl = quickAddContainer.querySelector('.product-variants-json');
@@ -1186,6 +1256,26 @@
                 addToCart(targetVariant.id, quickAddContainer, plusBtn);
               }
             }
+          });
+        }
+
+        // Desktop hover inactivity check
+        card.addEventListener('mouseenter', function() {
+          clearDismissTimer();
+        });
+
+        card.addEventListener('mouseleave', function() {
+          if (quickAddContainer.classList.contains('is-active')) {
+            startDismissTimer();
+          }
+        });
+
+        // Clicking overlay resets timer
+        if (sizesOverlay) {
+          sizesOverlay.addEventListener('click', function(e) {
+            e.stopPropagation(); // Stop propagation so it doesn't trigger card link click
+            clearDismissTimer();
+            startDismissTimer();
           });
         }
 
@@ -1228,6 +1318,7 @@
             }
 
             if (targetVariant) {
+              clearDismissTimer();
               addToCart(targetVariant.id, quickAddContainer, btn);
             }
           });
@@ -1239,6 +1330,9 @@
         if (!e.target.closest('.collection-hover-carousel__quick-add')) {
           section.querySelectorAll('.collection-hover-carousel__quick-add').forEach(el => {
             el.classList.remove('is-active');
+            if (typeof el._clearDismissTimer === 'function') {
+              el._clearDismissTimer();
+            }
           });
         }
       });
