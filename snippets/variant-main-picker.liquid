@@ -193,7 +193,7 @@
             endif
           %}
 
-          <div class="variant-option variant-option--dropdowns">
+          <div class="variant-option variant-option--dropdowns{% if is_size_option %} variant-option--size-dropdown{% endif %}">
             <label for="Option-{{ block.id }}-{{ forloop.index0 }}">{{ product_option.name | escape }}</label>
             <div
               class="variant-option__select-wrapper"

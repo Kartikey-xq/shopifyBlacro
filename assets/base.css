@@ -5027,6 +5027,24 @@ product-recommendations:has([data-has-recommendations='false']) {
   width: 100%;
 }
 
+/* Strikethrough/diagonal cut for unavailable sizes in segmented row */
+.variant-option--size-segmented .variant-option__button-label svg {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.variant-option--size-segmented .variant-option__button-label svg line {
+  stroke-width: 1px !important;
+}
+
+.variant-option--size-segmented .variant-option__button-label svg line:last-of-type {
+  clip-path: none !important;
+  stroke: rgb(var(--color-variant-text-rgb) / var(--opacity-60)) !important;
+}
+
+
 /* Warning Shake Animation */
 @keyframes size-picker-shake {
   0%, 100% { transform: translateX(0); }

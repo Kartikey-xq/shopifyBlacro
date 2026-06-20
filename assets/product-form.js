@@ -70,24 +70,7 @@ export class AddToCartComponent extends Component {
   handleClick(event) {
     const form = this.closest('form');
     if (!form?.checkValidity()) return;
-
-    // Check if adding would exceed max before animating
-    const productForm = /** @type {ProductFormComponent | null} */ (this.closest('product-form-component'));
-    const quantitySelector = productForm?.refs.quantitySelector;
-    if (quantitySelector?.canAddToCart) {
-      const validation = quantitySelector.canAddToCart();
-      // Don't animate if it would exceed max
-      if (!validation.canAdd) {
-        return;
-      }
-    }
-    if (this.refs.addToCartButton.dataset.puppet !== 'true') {
-      const animationEnabled = this.dataset.addToCartAnimation === 'true';
-      if (animationEnabled && !event.target.closest('.quick-add-modal')) {
-        this.#animateFlyToCart();
-      }
-      this.animateAddToCart();
-    }
+    // Success animations stripped out completely
   }
 
   #preloadImage = () => {
@@ -259,6 +242,15 @@ class ProductFormComponent extends Component {
     this.addEventListener('click', (event) => {
       const isPaymentBtn = event.target.closest('[ref="acceleratedCheckoutButtonContainer"]') || event.target.closest('add-to-cart-component');
       if (isPaymentBtn) {
+        // Intercept click on Mobile Sticky ATC
+        const stickyWrapper = event.target.closest('mobile-sticky-atc');
+        if (stickyWrapper && stickyWrapper.classList.contains('is-sticky')) {
+          event.preventDefault();
+          event.stopPropagation();
+          stickyWrapper.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          return;
+        }
+
         const validation = this.#checkSizeSelection();
         if (!validation.isValid) {
           event.preventDefault();
@@ -425,6 +417,20 @@ class ProductFormComponent extends Component {
 
     const fetchCfg = fetchConfig('javascript', { body: formData });
 
+    // Store original texts and show loading state
+    const originalTexts = new Map();
+    allAddToCartContainers.forEach((container) => {
+      const btn = container.refs.addToCartButton;
+      if (btn) {
+        btn.disabled = true;
+        const textContentEl = btn.querySelector('.add-to-cart-text__content');
+        if (textContentEl) {
+          originalTexts.set(textContentEl, textContentEl.innerHTML);
+          textContentEl.textContent = 'Adding to cart...';
+        }
+      }
+    });
+
     fetch(Theme.routes.cart_add_url, {
       ...fetchCfg,
       headers: {
@@ -501,6 +507,12 @@ class ProductFormComponent extends Component {
           // Fetch the updated cart to get the actual total quantity for this variant
           await this.#fetchAndUpdateCartQuantity();
 
+          // Immediately trigger sliding cart drawer to open
+          const cartDrawer = document.querySelector('cart-drawer-component');
+          if (cartDrawer) {
+            cartDrawer.open();
+          }
+
           this.dispatchEvent(
             new CartAddEvent({}, id.toString(), {
               source: 'product-form-component',
@@ -516,6 +528,17 @@ class ProductFormComponent extends Component {
       })
       .finally(() => {
         cartPerformance.measureFromEvent('add:user-action', event);
+        // Restore button state
+        allAddToCartContainers.forEach((container) => {
+          const btn = container.refs.addToCartButton;
+          if (btn) {
+            btn.disabled = false;
+            const textContentEl = btn.querySelector('.add-to-cart-text__content');
+            if (textContentEl && originalTexts.has(textContentEl)) {
+              textContentEl.innerHTML = originalTexts.get(textContentEl);
+            }
+          }
+        });
       });
   }
 
@@ -705,4 +728,48 @@ class ProductFormComponent extends Component {
 
 if (!customElements.get('product-form-component')) {
   customElements.define('product-form-component', ProductFormComponent);
+}
+
+class MobileStickyAtc extends HTMLElement {
+  connectedCallback() {
+    // Only run on mobile viewport
+    if (window.innerWidth >= 750) return;
+
+    this.btnContainer = this.querySelector('add-to-cart-component');
+    if (!this.btnContainer) return;
+
+    // Use IntersectionObserver to see if the element is in viewport
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Natural position is visible, unstick
+          this.classList.remove('is-sticky');
+        } else {
+          // If the element is below the viewport (scroll position is ABOVE the actual ATC layout position),
+          // its top relative to the viewport is positive.
+          if (entry.boundingClientRect.top > 0) {
+            this.classList.add('is-sticky');
+          } else {
+            // If the element is above the viewport (scroll position is BELOW the actual ATC layout position),
+            // its top relative to the viewport is negative or 0.
+            this.classList.remove('is-sticky');
+          }
+        }
+      });
+    }, {
+      threshold: 0
+    });
+
+    this.observer.observe(this);
+  }
+
+  disconnectedCallback() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+}
+
+if (!customElements.get('mobile-sticky-atc')) {
+  customElements.define('mobile-sticky-atc', MobileStickyAtc);
 }

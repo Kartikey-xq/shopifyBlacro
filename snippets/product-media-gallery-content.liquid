@@ -116,6 +116,20 @@
   else
     assign sorted_media = selected_product.media
   endif
+
+  # Filter out first 2 images on product templates
+  assign filtered_media = '' | split: ','
+  assign image_skip_counter = 0
+  for media in sorted_media
+    if media.media_type == 'image' and image_skip_counter < 2
+      assign image_skip_counter = image_skip_counter | plus: 1
+    else
+      assign media_item_array = sorted_media | where: 'id', media.id
+      assign filtered_media = filtered_media | concat: media_item_array
+    endif
+  endfor
+  assign sorted_media = filtered_media
+
   assign has_image_drop = sorted_media | has: 'media_type', 'image'
 
   # Determine if we're in single column mode (carousel or grid with one column)
