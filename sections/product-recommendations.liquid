@@ -523,8 +523,11 @@
 
   .collection-hover-carousel__info {
     display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
   }
 
   .collection-hover-carousel__product-title {
@@ -534,6 +537,9 @@
     color: var(--color-foreground-heading, var(--color-foreground, inherit));
     letter-spacing: normal;
     text-transform: none;
+    flex: 1;
+    min-width: 0;
+    text-align: left;
   }
 
   .collection-hover-carousel__product-price {
@@ -543,7 +549,11 @@
     line-height: var(--font-paragraph--line-height);
     font-weight: var(--font-weight-regular);
     color: var(--color-foreground-muted, rgba(var(--color-foreground-rgb), 0.6));
+    flex-shrink: 0;
+    text-align: right;
+    white-space: nowrap;
   }
+
 
   /* Responsiveness */
   @media screen and (max-width: 1024px) {
@@ -666,31 +676,33 @@
           <div class="collection-hover-carousel__heading">
             <h2 class="collection-hover-carousel__title">{{ section_title }}</h2>
           </div>
-          <div class="collection-hover-carousel__nav">
-            <button 
-              class="collection-hover-carousel__btn collection-hover-carousel__btn--prev"
-              aria-label="Previous slide"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-              </svg>
-            </button>
-            <button 
-              class="collection-hover-carousel__btn collection-hover-carousel__btn--next"
-              aria-label="Next slide"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
-          </div>
+          {% if section.settings.enable_carousel %}
+            <div class="collection-hover-carousel__nav">
+              <button 
+                class="collection-hover-carousel__btn collection-hover-carousel__btn--prev"
+                aria-label="Previous slide"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+              </button>
+              <button 
+                class="collection-hover-carousel__btn collection-hover-carousel__btn--next"
+                aria-label="Next slide"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+          {% endif %}
         </div>
 
         <!-- Carousel Track Wrapper -->
         <div class="collection-hover-carousel__track-wrapper">
-          <div class="collection-hover-carousel__track">
+          <div class="collection-hover-carousel__track{% unless section.settings.enable_carousel %} collection-hover-carousel__track--grid{% endunless %}">
             {% if products != blank and products.size > 0 %}
               {% for product in products limit: section.settings.max_products %}
                 {% liquid
@@ -845,7 +857,7 @@
     {% comment %} Skeleton glow loaders before perform API callback {% endcomment %}
     <div class="collection-hover-carousel">
       <div class="page-width">
-        <div class="collection-hover-carousel__track">
+        <div class="collection-hover-carousel__track{% unless section.settings.enable_carousel %} collection-hover-carousel__track--grid{% endunless %}">
           {% for i in (1..section.settings.columns) %}
             <div class="collection-hover-carousel__item">
               <div class="collection-hover-carousel__card">
@@ -945,6 +957,16 @@
       "max": 24,
       "step": 1,
       "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_carousel",
+      "label": "Enable Carousel (horizontal scroll)",
+      "default": true
     },
     {
       "type": "range",
