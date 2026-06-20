@@ -549,10 +549,44 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "custom_50_50_split": {
+      "type": "product-split-features-video",
+      "settings": {
+        "video_source": "uploaded",
+        "video": "shopify:\/\/files\/videos\/0520.mov",
+        "video_fit": "cover",
+        "desktop_layout": "text_left",
+        "mobile_video_height": "60vh",
+        "color_scheme": "scheme-3"
+      },
+      "blocks": {
+        "text_1": {
+          "type": "text_point",
+          "settings": {
+            "text": "<p>Detail Point 1: Custom product features go here.<\/p>",
+            "font_preset": "heading",
+            "margin_bottom": 16
+          }
+        },
+        "text_2": {
+          "type": "text_point",
+          "settings": {
+            "text": "<p>Detail Point 2: Custom product details map to metafields.<\/p>",
+            "font_preset": "body",
+            "margin_bottom": 16
+          }
+        }
+      },
+      "block_order": [
+        "text_1",
+        "text_2"
+      ]
     }
   },
   "order": [
     "main",
+    "custom_50_50_split",
     "product_recommendations_qggXJq"
   ]
 }

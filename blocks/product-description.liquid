@@ -12,54 +12,242 @@
   endif
 %}
 
-{% capture header_style %}
-  {% if block_settings.header_font == 'body' %}
-    font-family: var(--font-paragraph--family) !important;
-    font-size: var(--font-paragraph--size, 1.6rem) !important;
-    font-weight: var(--font-paragraph--weight, 400) !important;
-    text-transform: var(--font-paragraph--case, none) !important;
-  {% elsif block_settings.header_font == 'subheading' %}
-    font-family: var(--font-subheading--family) !important;
-    font-size: var(--font-subheading--size, 1.8rem) !important;
-    font-weight: var(--font-subheading--weight, 600) !important;
-    text-transform: var(--font-subheading--case, none) !important;
-  {% elsif block_settings.header_font == 'heading' %}
-    font-family: var(--font-heading--family) !important;
-    font-size: var(--font-heading--size, 2rem) !important;
-    font-weight: var(--font-heading--weight, 700) !important;
-    text-transform: var(--font-heading--case, none) !important;
-  {% elsif block_settings.header_font == 'accent' %}
-    font-family: var(--font-accent--family) !important;
-    font-size: var(--font-accent--size, 1.4rem) !important;
-    font-weight: var(--font-accent--weight, 400) !important;
-    text-transform: var(--font-accent--case, none) !important;
-  {% elsif block_settings.header_font == 'custom' %}
-    font-size: {{ block_settings.header_custom_size }}px !important;
-  {% endif %}
-{% endcapture %}
+{%- if block_settings.background -%}
+  {%- assign bg_color = block_settings.background_color -%}
+  {%- assign bg_color_transparent = bg_color | color_modify: 'alpha', 0 -%}
+{%- else -%}
+  {%- assign bg_color = 'var(--color-background)' -%}
+  {%- assign bg_color_transparent = 'rgb(var(--color-background-rgb) / 0)' -%}
+{%- endif -%}
 
-{% if block_settings.enable_accordion %}
-  <accordion-custom
-    {% if block_settings.open_by_default %}
-      open-by-default-on-desktop
-      open-by-default-on-mobile
+{% style %}
+  .block-{{ block.id }} {
+    {% render 'spacing-padding', settings: block_settings %}
+    {% if block_settings.background %}
+      background-color: {{ block_settings.background_color | default: 'rgb(255 255 255 / 1.0)' }};
+      border-radius: {{ block_settings.corner_radius }}px;
     {% endif %}
-  >
-    <details class="details product-details-accordion" {% if block_settings.open_by_default %}open{% endif %}>
-      <summary class="details__header" style="{{ header_style | strip_newlines | strip }}">
-        {{ block_settings.accordion_title }}
-        <span class="svg-wrapper icon-plus">
-          {{- 'icon-plus.svg' | inline_asset_content -}}
-        </span>
-      </summary>
-      <div class="details-content">
-        {% render 'text', fallback_text: text, block: block %}
+  }
+
+  .block-{{ block.id }} .expandable-description__title {
+    margin: 0 0 1rem 0;
+    {% if block_settings.title_font == 'body' %}
+      font-family: var(--font-paragraph--family);
+      font-size: var(--font-paragraph--size, 1.6rem);
+      font-weight: var(--font-paragraph--weight, 400);
+      text-transform: var(--font-paragraph--case, none);
+    {% elsif block_settings.title_font == 'subheading' %}
+      font-family: var(--font-subheading--family);
+      font-size: var(--font-subheading--size, 1.8rem);
+      font-weight: var(--font-subheading--weight, 600);
+      text-transform: var(--font-subheading--case, none);
+    {% elsif block_settings.title_font == 'heading' %}
+      font-family: var(--font-heading--family);
+      font-size: var(--font-heading--size, 2rem);
+      font-weight: var(--font-heading--weight, 700);
+      text-transform: var(--font-heading--case, none);
+    {% elsif block_settings.title_font == 'accent' %}
+      font-family: var(--font-accent--family);
+      font-size: var(--font-accent--size, 1.4rem);
+      font-weight: var(--font-accent--weight, 400);
+      text-transform: var(--font-accent--case, none);
+    {% elsif block_settings.title_font == 'custom' %}
+      font-family: {{ block_settings.title_font_family }};
+      font-size: {{ block_settings.title_custom_size }}px;
+      font-weight: {{ block_settings.title_font_weight }};
+      text-transform: {{ block_settings.title_text_transform }};
+    {% endif %}
+    {% if block_settings.title_color != blank %}
+      color: {{ block_settings.title_color }};
+    {% endif %}
+  }
+
+  .block-{{ block.id }} .expandable-description__content {
+    {% if block_settings.body_font == 'body' %}
+      font-family: var(--font-paragraph--family);
+      font-size: var(--font-paragraph--size, 1.6rem);
+      font-weight: var(--font-paragraph--weight, 400);
+      text-transform: var(--font-paragraph--case, none);
+    {% elsif block_settings.body_font == 'subheading' %}
+      font-family: var(--font-subheading--family);
+      font-size: var(--font-subheading--size, 1.8rem);
+      font-weight: var(--font-subheading--weight, 600);
+      text-transform: var(--font-subheading--case, none);
+    {% elsif block_settings.body_font == 'heading' %}
+      font-family: var(--font-heading--family);
+      font-size: var(--font-heading--size, 2rem);
+      font-weight: var(--font-heading--weight, 700);
+      text-transform: var(--font-heading--case, none);
+    {% elsif block_settings.body_font == 'accent' %}
+      font-family: var(--font-accent--family);
+      font-size: var(--font-accent--size, 1.4rem);
+      font-weight: var(--font-accent--weight, 400);
+      text-transform: var(--font-accent--case, none);
+    {% elsif block_settings.body_font == 'custom' %}
+      font-family: {{ block_settings.body_font_family }};
+      font-size: {{ block_settings.body_custom_size }}px;
+      font-weight: {{ block_settings.body_font_weight }};
+      line-height: var(--line-height--body-{{ block_settings.body_line_height }});
+    {% endif %}
+    {% if block_settings.body_color != blank %}
+      color: {{ block_settings.body_color }};
+    {% endif %}
+  }
+
+  .block-{{ block.id }} .expandable-description__button {
+    background: none;
+    border: none;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline-flex;
+    align-items: center;
+    {% if block_settings.read_more_font == 'body' %}
+      font-family: var(--font-paragraph--family);
+      font-size: var(--font-paragraph--size, 1.6rem);
+      font-weight: var(--font-paragraph--weight, 400);
+      text-transform: var(--font-paragraph--case, none);
+    {% elsif block_settings.read_more_font == 'subheading' %}
+      font-family: var(--font-subheading--family);
+      font-size: var(--font-subheading--size, 1.8rem);
+      font-weight: var(--font-subheading--weight, 600);
+      text-transform: var(--font-subheading--case, none);
+    {% elsif block_settings.read_more_font == 'heading' %}
+      font-family: var(--font-heading--family);
+      font-size: var(--font-heading--size, 2rem);
+      font-weight: var(--font-heading--weight, 700);
+      text-transform: var(--font-heading--case, none);
+    {% elsif block_settings.read_more_font == 'accent' %}
+      font-family: var(--font-accent--family);
+      font-size: var(--font-accent--size, 1.4rem);
+      font-weight: var(--font-accent--weight, 400);
+      text-transform: var(--font-accent--case, none);
+    {% elsif block_settings.read_more_font == 'custom' %}
+      font-family: {{ block_settings.read_more_font_family }};
+      font-size: {{ block_settings.read_more_custom_size }}px;
+      font-weight: {{ block_settings.read_more_font_weight }};
+      text-transform: {{ block_settings.read_more_text_transform }};
+    {% endif %}
+    {% if block_settings.read_more_color != blank %}
+      color: {{ block_settings.read_more_color }};
+    {% else %}
+      color: var(--color-primary, currentColor);
+    {% endif %}
+  }
+
+  .block-{{ block.id }} .expandable-description {
+    display: block;
+  }
+  .block-{{ block.id }} .expandable-description__container {
+    position: relative;
+    max-height: 80px;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .block-{{ block.id }} .expandable-description__container::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3.5rem;
+    background: linear-gradient(to bottom, {{ bg_color_transparent }} 0%, {{ bg_color }} 85%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .block-{{ block.id }} .expandable-description.is-expanded .expandable-description__container::after {
+    opacity: 0;
+  }
+  .block-{{ block.id }} .expandable-description__button:hover {
+    opacity: 0.8;
+  }
+{% endstyle %}
+
+<div class="block-{{ block.id }}">
+  <expandable-description class="expandable-description" data-truncated-height="80" {{ block.shopify_attributes }}>
+    {%- if block_settings.title != blank -%}
+      <h3 class="expandable-description__title">{{ block_settings.title }}</h3>
+    {%- endif -%}
+    <div class="expandable-description__container">
+      <div class="expandable-description__content rte">
+        {{ text }}
       </div>
-    </details>
-  </accordion-custom>
-{% else %}
-  {% render 'text', fallback_text: text, block: block %}
-{% endif %}
+    </div>
+    <button type="button" class="expandable-description__button" aria-expanded="false" style="display: none;">
+      <span class="expandable-description__button-text">{{ 'Read More' }}</span>
+    </button>
+  </expandable-description>
+</div>
+
+<script>
+  if (!customElements.get('expandable-description')) {
+    class ExpandableDescription extends HTMLElement {
+      connectedCallback() {
+        this.container = this.querySelector('.expandable-description__container');
+        this.content = this.querySelector('.expandable-description__content');
+        this.button = this.querySelector('.expandable-description__button');
+        this.buttonText = this.querySelector('.expandable-description__button-text');
+        this.truncatedHeight = parseInt(this.getAttribute('data-truncated-height') || '80', 10);
+        
+        if (this.button) {
+          this.button.addEventListener('click', () => this.toggle());
+        }
+
+        this.resizeObserver = new ResizeObserver(() => this.checkTruncation());
+        this.resizeObserver.observe(this.content);
+      }
+
+      disconnectedCallback() {
+        if (this.resizeObserver) {
+          this.resizeObserver.disconnect();
+        }
+      }
+
+      checkTruncation() {
+        if (this.classList.contains('is-expanded')) return;
+
+        const scrollHeight = this.content.scrollHeight;
+        if (scrollHeight <= this.truncatedHeight + 10) {
+          this.button.style.display = 'none';
+          this.container.style.maxHeight = 'none';
+        } else {
+          this.button.style.display = 'inline-flex';
+          this.container.style.maxHeight = `${this.truncatedHeight}px`;
+        }
+      }
+
+      toggle() {
+        const isExpanded = this.classList.contains('is-expanded');
+        if (isExpanded) {
+          const scrollHeight = this.content.scrollHeight;
+          this.container.style.maxHeight = `${scrollHeight}px`;
+          this.container.offsetHeight; // force reflow
+          this.container.style.maxHeight = `${this.truncatedHeight}px`;
+          this.classList.remove('is-expanded');
+          this.buttonText.textContent = 'Read More';
+          this.button.setAttribute('aria-expanded', 'false');
+          this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          const scrollHeight = this.content.scrollHeight;
+          this.container.style.maxHeight = `${scrollHeight}px`;
+          this.classList.add('is-expanded');
+          this.buttonText.textContent = 'Read Less';
+          this.button.setAttribute('aria-expanded', 'true');
+          
+          const onTransitionEnd = (e) => {
+            if (e.propertyName === 'max-height' && this.classList.contains('is-expanded')) {
+              this.container.style.maxHeight = 'none';
+              this.container.removeEventListener('transitionend', onTransitionEnd);
+            }
+          };
+          this.container.addEventListener('transitionend', onTransitionEnd);
+        }
+      }
+    }
+    customElements.define('expandable-description', ExpandableDescription);
+  }
+</script>
 
 {% schema %}
 {
@@ -67,368 +255,235 @@
   "tag": null,
   "settings": [
     {
-      "type": "checkbox",
-      "id": "enable_accordion",
-      "label": "Enable accordion layout",
-      "default": true
-    },
-    {
       "type": "text",
-      "id": "accordion_title",
-      "label": "Accordion title",
+      "id": "title",
+      "label": "Block Title",
       "default": "Product Details"
-    },
-    {
-      "type": "checkbox",
-      "id": "open_by_default",
-      "label": "Open accordion by default",
-      "default": false
-    },
-    {
-      "type": "select",
-      "id": "header_font",
-      "label": "Accordion header font style",
-      "options": [
-        {
-          "value": "default",
-          "label": "Default"
-        },
-        {
-          "value": "body",
-          "label": "Body"
-        },
-        {
-          "value": "subheading",
-          "label": "Subheading"
-        },
-        {
-          "value": "heading",
-          "label": "Heading"
-        },
-        {
-          "value": "accent",
-          "label": "Accent"
-        },
-        {
-          "value": "custom",
-          "label": "Custom size"
-        }
-      ],
-      "default": "default"
-    },
-    {
-      "type": "range",
-      "id": "header_custom_size",
-      "min": 10,
-      "max": 80,
-      "step": 1,
-      "unit": "px",
-      "label": "Header custom font size",
-      "default": 16,
-      "visible_if": "{{ block.settings.header_font == 'custom' }}"
     },
     {
       "type": "richtext",
       "id": "text",
-      "label": "t:settings.text"
+      "label": "t:settings.text",
+      "info": "Leave blank to dynamically connect to the product description resource."
     },
     {
       "type": "header",
-      "content": "t:content.layout"
+      "content": "Title Typography"
     },
     {
       "type": "select",
-      "id": "width",
-      "label": "t:settings.width",
+      "id": "title_font",
+      "label": "Title Font Preset",
       "options": [
-        {
-          "value": "fit-content",
-          "label": "t:options.fit"
-        },
-        {
-          "value": "100%",
-          "label": "t:options.fill"
-        }
+        { "value": "body", "label": "Body" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "heading", "label": "Heading" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "custom", "label": "Custom size" }
       ],
-      "default": "fit-content"
+      "default": "heading"
     },
     {
       "type": "select",
-      "id": "max_width",
-      "label": "t:settings.max_width",
+      "id": "title_font_family",
+      "label": "Title Font Family",
       "options": [
-        {
-          "value": "narrow",
-          "label": "t:options.narrow"
-        },
-        {
-          "value": "normal",
-          "label": "t:options.normal"
-        },
-        {
-          "value": "none",
-          "label": "t:options.none"
-        }
+        { "value": "var(--font-body--family)", "label": "Body" },
+        { "value": "var(--font-subheading--family)", "label": "Subheading" },
+        { "value": "var(--font-heading--family)", "label": "Heading" },
+        { "value": "var(--font-accent--family)", "label": "Accent" }
       ],
-      "default": "normal"
+      "default": "var(--font-heading--family)",
+      "visible_if": "{{ block.settings.title_font == 'custom' }}"
     },
     {
-      "type": "text_alignment",
-      "id": "alignment",
-      "label": "t:settings.alignment",
-      "default": "left",
-      "visible_if": "{{ block.settings.width == '100%' }}"
-    },
-    {
-      "type": "header",
-      "content": "t:content.typography"
+      "type": "range",
+      "id": "title_custom_size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Custom Font Size",
+      "default": 20,
+      "visible_if": "{{ block.settings.title_font == 'custom' }}"
     },
     {
       "type": "select",
-      "id": "type_preset",
-      "label": "t:settings.preset",
+      "id": "title_font_weight",
+      "label": "Title Font Weight",
       "options": [
-        {
-          "value": "rte",
-          "label": "t:options.default"
-        },
-        {
-          "value": "paragraph",
-          "label": "t:options.paragraph"
-        },
-        {
-          "value": "h1",
-          "label": "t:options.h1"
-        },
-        {
-          "value": "h2",
-          "label": "t:options.h2"
-        },
-        {
-          "value": "h3",
-          "label": "t:options.h3"
-        },
-        {
-          "value": "h4",
-          "label": "t:options.h4"
-        },
-        {
-          "value": "h5",
-          "label": "t:options.h5"
-        },
-        {
-          "value": "h6",
-          "label": "t:options.h6"
-        },
-        {
-          "value": "custom",
-          "label": "t:options.custom"
-        }
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" },
+        { "value": "900", "label": "Black" }
       ],
-      "default": "rte",
-      "info": "t:info.edit_presets_in_theme_settings"
+      "default": "700",
+      "visible_if": "{{ block.settings.title_font == 'custom' }}"
     },
     {
       "type": "select",
-      "id": "font",
-      "label": "t:settings.font",
+      "id": "title_text_transform",
+      "label": "Title Case",
       "options": [
-        {
-          "value": "var(--font-body--family)",
-          "label": "t:options.body"
-        },
-        {
-          "value": "var(--font-subheading--family)",
-          "label": "t:options.subheading"
-        },
-        {
-          "value": "var(--font-heading--family)",
-          "label": "t:options.heading"
-        },
-        {
-          "value": "var(--font-accent--family)",
-          "label": "t:options.accent"
-        }
-      ],
-      "default": "var(--font-body--family)",
-      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
-    },
-    {
-      "type": "select",
-      "id": "font_size",
-      "label": "t:settings.size",
-      "options": [
-        {
-          "value": "",
-          "label": "t:options.default"
-        },
-        {
-          "value": "0.625rem",
-          "label": "10px"
-        },
-        {
-          "value": "0.75rem",
-          "label": "12px"
-        },
-        {
-          "value": "0.875rem",
-          "label": "14px"
-        },
-        {
-          "value": "1rem",
-          "label": "16px"
-        },
-        {
-          "value": "1.125rem",
-          "label": "18px"
-        },
-        {
-          "value": "1.25rem",
-          "label": "20px"
-        },
-        {
-          "value": "1.5rem",
-          "label": "24px"
-        },
-        {
-          "value": "2rem",
-          "label": "32px"
-        },
-        {
-          "value": "2.5rem",
-          "label": "40px"
-        },
-        {
-          "value": "3rem",
-          "label": "48px"
-        },
-        {
-          "value": "3.5rem",
-          "label": "56px"
-        },
-        {
-          "value": "4.5rem",
-          "label": "72px"
-        },
-        {
-          "value": "5.5rem",
-          "label": "88px"
-        },
-        {
-          "value": "7.5rem",
-          "label": "120px"
-        },
-        {
-          "value": "9.5rem",
-          "label": "152px"
-        },
-        {
-          "value": "11.5rem",
-          "label": "184px"
-        }
-      ],
-      "default": "1rem",
-      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
-    },
-    {
-      "type": "select",
-      "id": "line_height",
-      "label": "t:settings.line_height",
-      "options": [
-        {
-          "value": "tight",
-          "label": "t:options.tight"
-        },
-        {
-          "value": "normal",
-          "label": "t:options.normal"
-        },
-        {
-          "value": "loose",
-          "label": "t:options.loose"
-        }
-      ],
-      "default": "normal",
-      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
-    },
-    {
-      "type": "select",
-      "id": "letter_spacing",
-      "label": "t:settings.letter_spacing",
-      "options": [
-        {
-          "value": "tight",
-          "label": "t:options.tight"
-        },
-        {
-          "value": "normal",
-          "label": "t:options.normal"
-        },
-        {
-          "value": "loose",
-          "label": "t:options.loose"
-        }
-      ],
-      "default": "normal",
-      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
-    },
-    {
-      "type": "select",
-      "id": "case",
-      "label": "t:settings.case",
-      "options": [
-        {
-          "value": "none",
-          "label": "t:options.default"
-        },
-        {
-          "value": "uppercase",
-          "label": "t:options.uppercase"
-        }
+        { "value": "none", "label": "Normal" },
+        { "value": "uppercase", "label": "Uppercase" }
       ],
       "default": "none",
-      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+      "visible_if": "{{ block.settings.title_font == 'custom' }}"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "alpha": true
+    },
+    {
+      "type": "header",
+      "content": "Body Typography"
     },
     {
       "type": "select",
-      "id": "wrap",
-      "label": "t:settings.wrap",
+      "id": "body_font",
+      "label": "Body Font Preset",
       "options": [
-        {
-          "value": "pretty",
-          "label": "t:options.pretty"
-        },
-        {
-          "value": "balance",
-          "label": "t:options.balance"
-        },
-        {
-          "value": "nowrap",
-          "label": "t:options.none"
-        }
+        { "value": "body", "label": "Body" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "heading", "label": "Heading" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "custom", "label": "Custom size" }
       ],
-      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+      "default": "body"
     },
     {
       "type": "select",
-      "id": "color",
-      "label": "t:settings.color",
+      "id": "body_font_family",
+      "label": "Body Font Family",
       "options": [
-        {
-          "value": "var(--color-foreground)",
-          "label": "t:options.text"
-        },
-        {
-          "value": "var(--color-foreground-heading)",
-          "label": "t:options.heading"
-        },
-        {
-          "value": "var(--color-primary)",
-          "label": "t:options.link"
-        }
+        { "value": "var(--font-body--family)", "label": "Body" },
+        { "value": "var(--font-subheading--family)", "label": "Subheading" },
+        { "value": "var(--font-heading--family)", "label": "Heading" },
+        { "value": "var(--font-accent--family)", "label": "Accent" }
       ],
-      "default": "var(--color-foreground)",
-      "visible_if": "{{ block.settings.type_preset != 'rte' }}"
+      "default": "var(--font-body--family)",
+      "visible_if": "{{ block.settings.body_font == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "body_custom_size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Body Custom Font Size",
+      "default": 16,
+      "visible_if": "{{ block.settings.body_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "body_font_weight",
+      "label": "Body Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400",
+      "visible_if": "{{ block.settings.body_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "body_line_height",
+      "label": "Body Line Height",
+      "options": [
+        { "value": "tight", "label": "Tight" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "loose", "label": "Loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.body_font == 'custom' }}"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body Color",
+      "alpha": true
+    },
+    {
+      "type": "header",
+      "content": "Read More Typography"
+    },
+    {
+      "type": "select",
+      "id": "read_more_font",
+      "label": "Read More Font Preset",
+      "options": [
+        { "value": "body", "label": "Body" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "heading", "label": "Heading" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "custom", "label": "Custom size" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "select",
+      "id": "read_more_font_family",
+      "label": "Read More Font Family",
+      "options": [
+        { "value": "var(--font-body--family)", "label": "Body" },
+        { "value": "var(--font-subheading--family)", "label": "Subheading" },
+        { "value": "var(--font-heading--family)", "label": "Heading" },
+        { "value": "var(--font-accent--family)", "label": "Accent" }
+      ],
+      "default": "var(--font-body--family)",
+      "visible_if": "{{ block.settings.read_more_font == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "read_more_custom_size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Read More Custom Font Size",
+      "default": 14,
+      "visible_if": "{{ block.settings.read_more_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "read_more_font_weight",
+      "label": "Read More Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600",
+      "visible_if": "{{ block.settings.read_more_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "read_more_text_transform",
+      "label": "Read More Case",
+      "options": [
+        { "value": "none", "label": "Normal" },
+        { "value": "uppercase", "label": "Uppercase" }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.read_more_font == 'custom' }}"
+    },
+    {
+      "type": "color",
+      "id": "read_more_color",
+      "label": "Read More Color",
+      "alpha": true
     },
     {
       "type": "header",
@@ -506,11 +561,9 @@
   "presets": [
     {
       "name": "t:names.product_description",
-      "category": "t:categories.product",
-      "settings": {
-        "text": "{{ closest.product.description }}"
-      }
+      "category": "t:categories.product"
     }
   ]
 }
 {% endschema %}
+

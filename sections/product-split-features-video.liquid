@@ -1,0 +1,617 @@
+{% liquid
+  assign sec_settings = section.settings
+  assign scheme = sec_settings.color_scheme
+  if scheme != blank
+    assign bg_color = scheme.settings.background
+    assign text_color = scheme.settings.foreground
+  else
+    assign bg_color = 'var(--color-background)'
+    assign text_color = 'var(--color-foreground)'
+  endif
+%}
+
+{%- style -%}
+  #Section-{{ section.id }} {
+    {%- if sec_settings.custom_bg_color != blank -%}
+      background-color: {{ sec_settings.custom_bg_color }};
+      --color-background: {{ sec_settings.custom_bg_color }};
+    {%- elsif bg_color != blank -%}
+      background-color: {{ bg_color }};
+      --color-background: {{ bg_color }};
+    {%- endif -%}
+    {%- if sec_settings.custom_text_color != blank -%}
+      color: {{ sec_settings.custom_text_color }};
+      --color-foreground: {{ sec_settings.custom_text_color }};
+    {%- elsif text_color != blank -%}
+      color: {{ text_color }};
+      --color-foreground: {{ text_color }};
+    {%- endif -%}
+    --video-fit: {{ sec_settings.video_fit }};
+    --mobile-video-height: {{ sec_settings.mobile_video_height }};
+  }
+
+  #Section-{{ section.id }} .product-split-features__text-column {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    --color-background: #ffffff !important;
+    --color-foreground: #000000 !important;
+    --color-foreground-rgb: 0, 0, 0 !important;
+  }
+
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'text_point' -%}
+      .block-{{ block.id }} .product-split-features__point-title {
+        margin: 0 0 0.5rem 0;
+        {%- if block.settings.title_text_color != blank -%}
+          color: {{ block.settings.title_text_color }};
+        {%- else -%}
+          color: #000000 !important;
+        {%- endif -%}
+
+        {%- if block.settings.title_font_preset == 'body' -%}
+          font-family: var(--font-paragraph--family);
+          font-size: var(--font-paragraph--size, 1.6rem);
+          font-weight: var(--font-paragraph--weight, 400);
+          text-transform: var(--font-paragraph--case, none);
+        {%- elsif block.settings.title_font_preset == 'subheading' -%}
+          font-family: var(--font-subheading--family);
+          font-size: var(--font-subheading--size, 1.8rem);
+          font-weight: var(--font-subheading--weight, 600);
+          text-transform: var(--font-subheading--case, none);
+        {%- elsif block.settings.title_font_preset == 'heading' -%}
+          font-family: var(--font-heading--family);
+          font-size: var(--font-heading--size, 2rem);
+          font-weight: var(--font-heading--weight, 700);
+          text-transform: var(--font-heading--case, none);
+        {%- elsif block.settings.title_font_preset == 'accent' -%}
+          font-family: var(--font-accent--family);
+          font-size: var(--font-accent--size, 1.4rem);
+          font-weight: var(--font-accent--weight, 400);
+          text-transform: var(--font-accent--case, none);
+        {%- elsif block.settings.title_font_preset == 'custom' -%}
+          font-family: {{ block.settings.title_font_family }};
+          font-size: {{ block.settings.title_custom_size }}px;
+          font-weight: {{ block.settings.title_font_weight }};
+          text-transform: {{ block.settings.title_text_transform }};
+        {%- endif -%}
+      }
+
+      .block-{{ block.id }} .product-split-features__point-text {
+        {%- if block.settings.body_text_color != blank -%}
+          color: {{ block.settings.body_text_color }};
+        {%- else -%}
+          color: #000000 !important;
+        {%- endif -%}
+
+        {%- if block.settings.body_font_preset == 'body' -%}
+          font-family: var(--font-paragraph--family);
+          font-size: var(--font-paragraph--size, 1.6rem);
+          font-weight: var(--font-paragraph--weight, 400);
+          text-transform: var(--font-paragraph--case, none);
+        {%- elsif block.settings.body_font_preset == 'subheading' -%}
+          font-family: var(--font-subheading--family);
+          font-size: var(--font-subheading--size, 1.8rem);
+          font-weight: var(--font-subheading--weight, 600);
+          text-transform: var(--font-subheading--case, none);
+        {%- elsif block.settings.body_font_preset == 'heading' -%}
+          font-family: var(--font-heading--family);
+          font-size: var(--font-heading--size, 2rem);
+          font-weight: var(--font-heading--weight, 700);
+          text-transform: var(--font-heading--case, none);
+        {%- elsif block.settings.body_font_preset == 'accent' -%}
+          font-family: var(--font-accent--family);
+          font-size: var(--font-accent--size, 1.4rem);
+          font-weight: var(--font-accent--weight, 400);
+          text-transform: var(--font-accent--case, none);
+        {%- elsif block.settings.body_font_preset == 'custom' -%}
+          font-family: {{ block.settings.body_font_family }};
+          font-size: {{ block.settings.body_custom_size }}px;
+          font-weight: {{ block.settings.body_font_weight }};
+          text-transform: {{ block.settings.body_text_transform }};
+          line-height: var(--line-height--body-{{ block.settings.body_line_height }});
+        {%- endif -%}
+      }
+
+      .block-{{ block.id }} {
+        margin-bottom: {{ block.settings.margin_bottom }}px;
+      }
+    {%- endif -%}
+  {%- endfor -%}
+{%- endstyle -%}
+
+{% stylesheet %}
+  .product-split-features {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 750px) {
+    .product-split-features {
+      flex-direction: row;
+      min-height: 100vh;
+    }
+    .product-split-features--text_left {
+      flex-direction: row;
+    }
+    .product-split-features--text_right {
+      flex-direction: row-reverse;
+    }
+  }
+
+  .product-split-features__text-column {
+    width: 100%;
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 5rem 2.5rem;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  @media screen and (min-width: 750px) {
+    .product-split-features__text-column {
+      width: 50%;
+      flex: 1 1 50%;
+      min-height: 100vh;
+      padding: 8rem 5rem;
+    }
+  }
+
+  .product-split-features__text-container {
+    max-width: 580px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-split-features__point ul,
+  .product-split-features__point ol {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .product-split-features__point li {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .product-split-features__point li::before {
+    content: none !important;
+  }
+
+  .product-split-features__video-column {
+    width: 100%;
+    flex: none;
+    position: relative;
+    overflow: hidden;
+    height: var(--mobile-video-height, 60vh);
+  }
+
+  @media screen and (min-width: 750px) {
+    .product-split-features__video-column {
+      width: 50%;
+      flex: 1 1 50%;
+      height: 100vh;
+    }
+  }
+
+  .product-split-features__video-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(var(--color-foreground-rgb) / 0.05);
+  }
+
+  .product-split-features__video {
+    width: 100%;
+    height: 100%;
+    object-fit: var(--video-fit, cover);
+    display: block;
+    border: none;
+  }
+
+  .product-split-features__video-wrapper svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    fill: rgb(var(--color-foreground-rgb) / 0.15);
+  }
+{% endstylesheet %}
+
+<div
+  id="Section-{{ section.id }}"
+  class="product-split-features color-{{ sec_settings.color_scheme }} product-split-features--{{ sec_settings.desktop_layout }}"
+>
+  <div class="product-split-features__text-column">
+    <div class="product-split-features__text-container">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'text_point' -%}
+          {%- liquid
+            assign block_title = block.settings.title
+            if block_title == blank
+              assign text_val = block.settings.text | strip_html | strip
+              for ns in product.metafields
+                assign namespace = ns | first
+                for field in product.metafields[namespace]
+                  assign key = field | first
+                  assign metafield_obj = field | last
+                  assign meta_val = metafield_obj.value | strip_html | strip
+                  if meta_val != blank and meta_val == text_val
+                    assign block_title = key | replace: '_', ' ' | replace: '-', ' ' | capitalize
+                    break
+                  endif
+                endfor
+                if block_title != blank
+                  break
+                endif
+              endfor
+            endif
+          -%}
+          
+          <div class="product-split-features__point block-{{ block.id }}" {{ block.shopify_attributes }}>
+            {%- if block_title != blank -%}
+              <h4 class="product-split-features__point-title">{{ block_title }}</h4>
+            {%- endif -%}
+            <div class="product-split-features__point-text">
+              {{ block.settings.text }}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="product-split-features__video-column">
+    <div class="product-split-features__video-wrapper">
+      {%- if sec_settings.video_source == 'uploaded' and sec_settings.video != blank -%}
+        {{
+          sec_settings.video
+          | video_tag:
+            autoplay: true,
+            loop: true,
+            muted: true,
+            controls: false,
+            playsinline: true,
+            class: 'product-split-features__video'
+        }}
+      {%- elsif sec_settings.video_source == 'url' and sec_settings.video_url != blank -%}
+        {%- if sec_settings.video_url.type == 'youtube' -%}
+          <iframe
+            src="https://www.youtube.com/embed/{{ sec_settings.video_url.id }}?autoplay=1&mute=1&loop=1&playlist={{ sec_settings.video_url.id }}&controls=0&modestbranding=1&playsinline=1&showinfo=0&rel=0"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            class="product-split-features__video"
+            title="Video Player"
+          ></iframe>
+        {%- elsif sec_settings.video_url.type == 'vimeo' -%}
+          <iframe
+            src="https://player.vimeo.com/video/{{ sec_settings.video_url.id }}?autoplay=1&muted=1&loop=1&background=1&playsinline=1"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            class="product-split-features__video"
+            title="Video Player"
+          ></iframe>
+        {%- endif -%}
+      {%- elsif sec_settings.video_source == 'custom_mp4' and sec_settings.custom_mp4_url != blank -%}
+        <video
+          autoplay
+          loop
+          muted
+          playsinline
+          class="product-split-features__video"
+        >
+          <source src="{{ sec_settings.custom_mp4_url }}" type="video/mp4">
+        </video>
+      {%- else -%}
+        {{ 'hero-apparel-3' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Custom 50/50 Video Split",
+  "tag": "section",
+  "class": "section-product-split-features-video",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video Settings"
+    },
+    {
+      "type": "select",
+      "id": "video_source",
+      "label": "Video Source",
+      "options": [
+        { "value": "uploaded", "label": "Shopify Hosted Video" },
+        { "value": "url", "label": "External Video (YouTube/Vimeo)" },
+        { "value": "custom_mp4", "label": "Custom MP4 URL" }
+      ],
+      "default": "uploaded"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Shopify Hosted Video"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "External Video URL",
+      "accept": ["youtube", "vimeo"]
+    },
+    {
+      "type": "text",
+      "id": "custom_mp4_url",
+      "label": "Custom MP4 Video URL",
+      "info": "Paste a direct MP4 file URL from your files section."
+    },
+    {
+      "type": "select",
+      "id": "video_fit",
+      "label": "Video Aspect Ratio / Fit",
+      "options": [
+        { "value": "cover", "label": "Cover (Full height split)" },
+        { "value": "contain", "label": "Contain (Original ratio)" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "select",
+      "id": "desktop_layout",
+      "label": "Desktop Layout",
+      "options": [
+        { "value": "text_left", "label": "Text Left / Video Right" },
+        { "value": "text_right", "label": "Video Left / Text Right" }
+      ],
+      "default": "text_left"
+    },
+    {
+      "type": "select",
+      "id": "mobile_video_height",
+      "label": "Mobile Video Height",
+      "options": [
+        { "value": "30vh", "label": "Small (30vh)" },
+        { "value": "50vh", "label": "Medium (50vh)" },
+        { "value": "60vh", "label": "Large (60vh)" },
+        { "value": "80vh", "label": "Extra Large (80vh)" },
+        { "value": "100vh", "label": "Full Screen (100vh)" }
+      ],
+      "default": "60vh"
+    },
+    {
+      "type": "header",
+      "content": "Section Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "custom_bg_color",
+      "label": "Custom Background Color Override",
+      "alpha": true
+    },
+    {
+      "type": "color",
+      "id": "custom_text_color",
+      "label": "Custom Text Color Override",
+      "alpha": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text_point",
+      "name": "Bullet Text Point",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Bullet Point Title",
+          "info": "Leave blank to automatically detect name from metafield."
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Bullet Point Text",
+          "default": "<p>Dynamically link to metafield or write descriptive features.</p>"
+        },
+        {
+          "type": "header",
+          "content": "Title Typography"
+        },
+        {
+          "type": "select",
+          "id": "title_font_preset",
+          "label": "Title Font Preset",
+          "options": [
+            { "value": "body", "label": "Body" },
+            { "value": "subheading", "label": "Subheading" },
+            { "value": "heading", "label": "Heading" },
+            { "value": "accent", "label": "Accent" },
+            { "value": "custom", "label": "Custom size" }
+          ],
+          "default": "subheading"
+        },
+        {
+          "type": "select",
+          "id": "title_font_family",
+          "label": "Title Font Family",
+          "options": [
+            { "value": "var(--font-body--family)", "label": "Body" },
+            { "value": "var(--font-subheading--family)", "label": "Subheading" },
+            { "value": "var(--font-heading--family)", "label": "Heading" },
+            { "value": "var(--font-accent--family)", "label": "Accent" }
+          ],
+          "default": "var(--font-subheading--family)",
+          "visible_if": "{{ block.settings.title_font_preset == 'custom' }}"
+        },
+        {
+          "type": "range",
+          "id": "title_custom_size",
+          "min": 10,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "label": "Title Custom Font Size",
+          "default": 18,
+          "visible_if": "{{ block.settings.title_font_preset == 'custom' }}"
+        },
+        {
+          "type": "select",
+          "id": "title_font_weight",
+          "label": "Title Font Weight",
+          "options": [
+            { "value": "300", "label": "Light" },
+            { "value": "400", "label": "Normal" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Semi-Bold" },
+            { "value": "700", "label": "Bold" }
+          ],
+          "default": "600",
+          "visible_if": "{{ block.settings.title_font_preset == 'custom' }}"
+        },
+        {
+          "type": "select",
+          "id": "title_text_transform",
+          "label": "Title Case",
+          "options": [
+            { "value": "none", "label": "Normal" },
+            { "value": "uppercase", "label": "Uppercase" }
+          ],
+          "default": "none",
+          "visible_if": "{{ block.settings.title_font_preset == 'custom' }}"
+        },
+        {
+          "type": "color",
+          "id": "title_text_color",
+          "label": "Title Text Color Override",
+          "alpha": true
+        },
+        {
+          "type": "header",
+          "content": "Body Typography"
+        },
+        {
+          "type": "select",
+          "id": "body_font_preset",
+          "label": "Body Font Preset",
+          "options": [
+            { "value": "body", "label": "Body" },
+            { "value": "subheading", "label": "Subheading" },
+            { "value": "heading", "label": "Heading" },
+            { "value": "accent", "label": "Accent" },
+            { "value": "custom", "label": "Custom size" }
+          ],
+          "default": "body"
+        },
+        {
+          "type": "select",
+          "id": "body_font_family",
+          "label": "Body Font Family",
+          "options": [
+            { "value": "var(--font-body--family)", "label": "Body" },
+            { "value": "var(--font-subheading--family)", "label": "Subheading" },
+            { "value": "var(--font-heading--family)", "label": "Heading" },
+            { "value": "var(--font-accent--family)", "label": "Accent" }
+          ],
+          "default": "var(--font-body--family)",
+          "visible_if": "{{ block.settings.body_font_preset == 'custom' }}"
+        },
+        {
+          "type": "range",
+          "id": "body_custom_size",
+          "min": 10,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "label": "Body Custom Font Size",
+          "default": 16,
+          "visible_if": "{{ block.settings.body_font_preset == 'custom' }}"
+        },
+        {
+          "type": "select",
+          "id": "body_font_weight",
+          "label": "Body Font Weight",
+          "options": [
+            { "value": "300", "label": "Light" },
+            { "value": "400", "label": "Normal" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Semi-Bold" },
+            { "value": "700", "label": "Bold" }
+          ],
+          "default": "400",
+          "visible_if": "{{ block.settings.body_font_preset == 'custom' }}"
+        },
+        {
+          "type": "select",
+          "id": "body_line_height",
+          "label": "Body Line Height",
+          "options": [
+            { "value": "tight", "label": "Tight" },
+            { "value": "normal", "label": "Normal" },
+            { "value": "loose", "label": "Loose" }
+          ],
+          "default": "normal",
+          "visible_if": "{{ block.settings.body_font_preset == 'custom' }}"
+        },
+        {
+          "type": "select",
+          "id": "body_text_transform",
+          "label": "Body Case",
+          "options": [
+            { "value": "none", "label": "Normal" },
+            { "value": "uppercase", "label": "Uppercase" }
+          ],
+          "default": "none",
+          "visible_if": "{{ block.settings.body_font_preset == 'custom' }}"
+        },
+        {
+          "type": "color",
+          "id": "body_text_color",
+          "label": "Body Text Color Override",
+          "alpha": true
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom",
+          "label": "Bottom Spacing",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "default": 16
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom 50/50 Video Split",
+      "blocks": [
+        { "type": "text_point" },
+        { "type": "text_point" },
+        { "type": "text_point" }
+      ]
+    }
+  ]
+}
+{% endschema %}
