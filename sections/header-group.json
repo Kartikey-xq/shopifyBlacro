@@ -75,8 +75,8 @@
         "color_scheme_transparent": "scheme-1",
         "enable_transparent_header_home": true,
         "home_color_scheme": "inverse",
-        "enable_transparent_header_product": true,
-        "product_color_scheme": "default",
+        "enable_transparent_header_product": false,
+        "product_color_scheme": "inverse",
         "enable_transparent_header_collection": true,
         "collection_color_scheme": "inverse"
       }

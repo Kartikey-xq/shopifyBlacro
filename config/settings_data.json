@@ -9,9 +9,6 @@
  */
 {
   "current": {
-    "social_instagram_link": "https://www.instagram.com/blacro.in?igsh=dnM4OWFsdzVxMTAz",
-    "social_facebook_link": "https://www.facebook.com/share/1JE6hGXvWz/",
-    "social_linkedin_link": "https://www.linkedin.com/company/blacro/",
     "intro_audio_file": "",
     "intro_desktop_video": "",
     "intro_mobile_video": "",
@@ -99,6 +96,9 @@
     "variant_button_border_width": 0,
     "variant_button_radius": 0,
     "variant_button_width": "default-width-buttons",
+    "social_facebook_link": "https://www.facebook.com/share/1JE6hGXvWz/",
+    "social_instagram_link": "https://www.instagram.com/blacro.in?igsh=dnM4OWFsdzVxMTAz",
+    "social_linkedin_link": "https://www.linkedin.com/company/blacro/",
     "content_for_index": [],
     "color_schemes": {
       "scheme-1": {
@@ -376,7 +376,7 @@
       },
       "scheme-ee7615b0-d2f3-4aef-a279-360959bc9ece": {
         "settings": {
-          "background": "#000000",
+          "background": "#F5F5F5",
           "foreground_heading": "#aed5af",
           "foreground": "#ffffff",
           "primary": "#589426",
