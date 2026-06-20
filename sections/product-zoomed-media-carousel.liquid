@@ -15,11 +15,11 @@
 {%- endstyle -%}
 
 {%- liquid
-  # Future-proofing: We pull product images here. Currently limiting to 3 images.
+  # Future-proofing: We pull product images here. Currently limiting to 2 images (which are skipped by the main media gallery).
   # Later, we can apply custom filters (e.g. checking alt tags, metafields) to this array.
   assign raw_media_items = product.media | where: "media_type", "image"
   
-  assign image_limit = 3
+  assign image_limit = 2
   assign image_count = 0
 -%}
 
@@ -41,9 +41,9 @@
 
 {%- if image_count == 0 -%}
   {%- comment -%} Onboarding placeholders when product has no images or in empty editor state {%- endcomment -%}
-  {%- assign image_count = 3 -%}
+  {%- assign image_count = 2 -%}
   {%- capture slides -%}
-    {%- for i in (1..3) -%}
+    {%- for i in (1..2) -%}
       <div class="zoomed-media-carousel__slide" data-index="{{ forloop.index0 }}">
         {%- assign placeholder_name = 'hero-apparel-' | append: i -%}
         {{ placeholder_name | placeholder_svg_tag: 'placeholder-svg zoomed-media-carousel__image' }}
