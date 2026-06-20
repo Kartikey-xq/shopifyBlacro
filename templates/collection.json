@@ -231,7 +231,7 @@
       "name": "Collection Carousel Hover",
       "settings": {
         "collection_title": "Featured Collection",
-        "show_collection_title": true,
+        "show_collection_title": false,
         "title_animation": "fade-up",
         "title_animation_duration": 700,
         "collection": "relic",

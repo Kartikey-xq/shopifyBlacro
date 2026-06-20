@@ -134,6 +134,136 @@
     {% endif %}
   }
 
+  /* Section Title and Product Typography Mappings */
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__title {
+    {% if section.settings.collection_title_font == 'body' %}
+      font-family: var(--font-paragraph--family) !important;
+      font-size: var(--font-paragraph--size, 1.6rem) !important;
+      font-weight: var(--font-paragraph--weight, 400) !important;
+      text-transform: var(--font-paragraph--case, none) !important;
+    {% elsif section.settings.collection_title_font == 'subheading' %}
+      font-family: var(--font-subheading--family) !important;
+      font-size: var(--font-subheading--size, 1.8rem) !important;
+      font-weight: var(--font-subheading--weight, 600) !important;
+      text-transform: var(--font-subheading--case, none) !important;
+    {% elsif section.settings.collection_title_font == 'heading' %}
+      font-family: var(--font-heading--family) !important;
+      font-size: var(--font-heading--size, 2rem) !important;
+      font-weight: var(--font-heading--weight, 700) !important;
+      text-transform: var(--font-heading--case, none) !important;
+    {% elsif section.settings.collection_title_font == 'accent' %}
+      font-family: var(--font-accent--family) !important;
+      font-size: var(--font-accent--size, 1.4rem) !important;
+      font-weight: var(--font-accent--weight, 400) !important;
+      text-transform: var(--font-accent--case, none) !important;
+    {% elsif section.settings.collection_title_font == 'custom' %}
+      font-size: {{ section.settings.collection_title_custom_size }}px !important;
+      {% if section.settings.collection_title_custom_font == 'body' %}
+        font-family: var(--font-paragraph--family) !important;
+        font-weight: var(--font-paragraph--weight, 400) !important;
+        text-transform: var(--font-paragraph--case, none) !important;
+      {% elsif section.settings.collection_title_custom_font == 'subheading' %}
+        font-family: var(--font-subheading--family) !important;
+        font-weight: var(--font-subheading--weight, 600) !important;
+        text-transform: var(--font-subheading--case, none) !important;
+      {% elsif section.settings.collection_title_custom_font == 'heading' %}
+        font-family: var(--font-heading--family) !important;
+        font-weight: var(--font-heading--weight, 700) !important;
+        text-transform: var(--font-heading--case, none) !important;
+      {% elsif section.settings.collection_title_custom_font == 'accent' %}
+        font-family: var(--font-accent--family) !important;
+        font-weight: var(--font-accent--weight, 400) !important;
+        text-transform: var(--font-accent--case, none) !important;
+      {% endif %}
+    {% endif %}
+  }
+
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__product-title {
+    {% if section.settings.title_font == 'body' %}
+      font-family: var(--font-paragraph--family) !important;
+      font-size: var(--font-paragraph--size, 1.6rem) !important;
+      font-weight: var(--font-paragraph--weight, 400) !important;
+      text-transform: var(--font-paragraph--case, none) !important;
+    {% elsif section.settings.title_font == 'subheading' %}
+      font-family: var(--font-subheading--family) !important;
+      font-size: var(--font-subheading--size, 1.8rem) !important;
+      font-weight: var(--font-subheading--weight, 600) !important;
+      text-transform: var(--font-subheading--case, none) !important;
+    {% elsif section.settings.title_font == 'heading' %}
+      font-family: var(--font-heading--family) !important;
+      font-size: var(--font-heading--size, 2rem) !important;
+      font-weight: var(--font-heading--weight, 700) !important;
+      text-transform: var(--font-heading--case, none) !important;
+    {% elsif section.settings.title_font == 'accent' %}
+      font-family: var(--font-accent--family) !important;
+      font-size: var(--font-accent--size, 1.4rem) !important;
+      font-weight: var(--font-accent--weight, 400) !important;
+      text-transform: var(--font-accent--case, none) !important;
+    {% elsif section.settings.title_font == 'custom' %}
+      font-size: {{ section.settings.title_custom_size }}px !important;
+      {% if section.settings.title_custom_font == 'body' %}
+        font-family: var(--font-paragraph--family) !important;
+        font-weight: var(--font-paragraph--weight, 400) !important;
+        text-transform: var(--font-paragraph--case, none) !important;
+      {% elsif section.settings.title_custom_font == 'subheading' %}
+        font-family: var(--font-subheading--family) !important;
+        font-weight: var(--font-subheading--weight, 600) !important;
+        text-transform: var(--font-subheading--case, none) !important;
+      {% elsif section.settings.title_custom_font == 'heading' %}
+        font-family: var(--font-heading--family) !important;
+        font-weight: var(--font-heading--weight, 700) !important;
+        text-transform: var(--font-heading--case, none) !important;
+      {% elsif section.settings.title_custom_font == 'accent' %}
+        font-family: var(--font-accent--family) !important;
+        font-weight: var(--font-accent--weight, 400) !important;
+        text-transform: var(--font-accent--case, none) !important;
+      {% endif %}
+    {% endif %}
+  }
+
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__product-price {
+    {% if section.settings.price_font == 'body' %}
+      font-family: var(--font-paragraph--family) !important;
+      font-size: var(--font-paragraph--size, 1.6rem) !important;
+      font-weight: var(--font-paragraph--weight, 400) !important;
+      text-transform: var(--font-paragraph--case, none) !important;
+    {% elsif section.settings.price_font == 'subheading' %}
+      font-family: var(--font-subheading--family) !important;
+      font-size: var(--font-subheading--size, 1.8rem) !important;
+      font-weight: var(--font-subheading--weight, 600) !important;
+      text-transform: var(--font-subheading--case, none) !important;
+    {% elsif section.settings.price_font == 'heading' %}
+      font-family: var(--font-heading--family) !important;
+      font-size: var(--font-heading--size, 2rem) !important;
+      font-weight: var(--font-heading--weight, 700) !important;
+      text-transform: var(--font-heading--case, none) !important;
+    {% elsif section.settings.price_font == 'accent' %}
+      font-family: var(--font-accent--family) !important;
+      font-size: var(--font-accent--size, 1.4rem) !important;
+      font-weight: var(--font-accent--weight, 400) !important;
+      text-transform: var(--font-accent--case, none) !important;
+    {% elsif section.settings.price_font == 'custom' %}
+      font-size: {{ section.settings.price_custom_size }}px !important;
+      {% if section.settings.price_custom_font == 'body' %}
+        font-family: var(--font-paragraph--family) !important;
+        font-weight: var(--font-paragraph--weight, 400) !important;
+        text-transform: var(--font-paragraph--case, none) !important;
+      {% elsif section.settings.price_custom_font == 'subheading' %}
+        font-family: var(--font-subheading--family) !important;
+        font-weight: var(--font-subheading--weight, 600) !important;
+        text-transform: var(--font-subheading--case, none) !important;
+      {% elsif section.settings.price_custom_font == 'heading' %}
+        font-family: var(--font-heading--family) !important;
+        font-weight: var(--font-heading--weight, 700) !important;
+        text-transform: var(--font-heading--case, none) !important;
+      {% elsif section.settings.price_custom_font == 'accent' %}
+        font-family: var(--font-accent--family) !important;
+        font-weight: var(--font-accent--weight, 400) !important;
+        text-transform: var(--font-accent--case, none) !important;
+      {% endif %}
+    {% endif %}
+  }
+
   /* Quick Add Overlay and plus button styling */
   .collection-hover-carousel__quick-add {
     position: absolute;
@@ -523,11 +653,8 @@
 
   .collection-hover-carousel__info {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 0.4rem;
+    flex-direction: column;
+    gap: 0.4rem;
   }
 
   .collection-hover-carousel__product-title {
@@ -537,9 +664,6 @@
     color: var(--color-foreground-heading, var(--color-foreground, inherit));
     letter-spacing: normal;
     text-transform: none;
-    flex: 1;
-    min-width: 0;
-    text-align: left;
   }
 
   .collection-hover-carousel__product-price {
@@ -549,9 +673,27 @@
     line-height: var(--font-paragraph--line-height);
     font-weight: var(--font-weight-regular);
     color: var(--color-foreground-muted, rgba(var(--color-foreground-rgb), 0.6));
-    flex-shrink: 0;
-    text-align: right;
-    white-space: nowrap;
+  }
+
+  .collection-hover-carousel__info--justify {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+    margin-bottom: 0.4rem !important;
+    width: 100%;
+  }
+
+  .collection-hover-carousel__info--justify .collection-hover-carousel__product-title {
+    flex: 1 !important;
+    min-width: 0 !important;
+    text-align: left !important;
+  }
+
+  .collection-hover-carousel__info--justify .collection-hover-carousel__product-price {
+    flex-shrink: 0 !important;
+    text-align: right !important;
+    white-space: nowrap !important;
   }
 
 
@@ -791,7 +933,7 @@
                         {%- endif -%}
                       </div>
                     </div>
-                    <div class="collection-hover-carousel__info">
+                    <div class="collection-hover-carousel__info{% if section.settings.justify_title_price %} collection-hover-carousel__info--justify{% endif %}">
                       <h4 class="collection-hover-carousel__product-title">{{ title }}</h4>
                       <p class="collection-hover-carousel__product-price">{{ price_text }}</p>
                     </div>
@@ -841,7 +983,7 @@
                     <div class="collection-hover-carousel__image-wrapper">
                       {{ 'product-' | append: placeholder_index | placeholder_svg_tag: 'collection-hover-carousel__placeholder-svg' }}
                     </div>
-                    <div class="collection-hover-carousel__info">
+                    <div class="collection-hover-carousel__info{% if section.settings.justify_title_price %} collection-hover-carousel__info--justify{% endif %}">
                       <h4 class="collection-hover-carousel__product-title">Sample Product {{ i }}</h4>
                       <p class="collection-hover-carousel__product-price">Rs. 1,200.00 INR</p>
                     </div>
@@ -966,6 +1108,12 @@
       "type": "checkbox",
       "id": "enable_carousel",
       "label": "Enable Carousel (horizontal scroll)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "justify_title_price",
+      "label": "Justify Title & Price side-by-side",
       "default": true
     },
     {
@@ -1226,6 +1374,229 @@
       "id": "swatches_border_color",
       "label": "Border color",
       "default": "#dddddd"
+    },
+    {
+      "type": "header",
+      "content": "Typography Settings"
+    },
+    {
+      "type": "select",
+      "id": "collection_title_font",
+      "label": "Section title typography preset",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Edit presets in theme settings",
+      "visible_if": "{{ section.settings.collection_title_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "collection_title_custom_font",
+      "label": "Font",
+      "options": [
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        }
+      ],
+      "default": "heading",
+      "visible_if": "{{ section.settings.collection_title_font == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "collection_title_custom_size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Section title custom font size",
+      "default": 24,
+      "visible_if": "{{ section.settings.collection_title_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "title_font",
+      "label": "Product title typography preset",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Edit presets in theme settings",
+      "visible_if": "{{ section.settings.title_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "title_custom_font",
+      "label": "Font",
+      "options": [
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        }
+      ],
+      "default": "body",
+      "visible_if": "{{ section.settings.title_font == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "title_custom_size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Product title custom font size",
+      "default": 14,
+      "visible_if": "{{ section.settings.title_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "price_font",
+      "label": "Product price typography preset",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Edit presets in theme settings",
+      "visible_if": "{{ section.settings.price_font == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "price_custom_font",
+      "label": "Font",
+      "options": [
+        {
+          "value": "heading",
+          "label": "Heading"
+        },
+        {
+          "value": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "body",
+          "label": "Body"
+        }
+      ],
+      "default": "body",
+      "visible_if": "{{ section.settings.price_font == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "price_custom_size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Product price custom font size",
+      "default": 14,
+      "visible_if": "{{ section.settings.price_font == 'custom' }}"
     },
     {
       "type": "header",
