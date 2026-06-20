@@ -2,6 +2,7 @@
   assign desktop_height = section.settings.desktop_height
   assign mobile_height = section.settings.mobile_height
   assign image_fit = section.settings.image_fit
+  assign show_arrows = section.settings.show_arrows
 %}
 
 {%- style -%}
@@ -15,11 +16,11 @@
 {%- endstyle -%}
 
 {%- liquid
-  # Future-proofing: We pull product images here. Currently limiting to 2 images (which are skipped by the main media gallery).
+  # Future-proofing: We pull product images here. Currently limiting to 3 images.
   # Later, we can apply custom filters (e.g. checking alt tags, metafields) to this array.
   assign raw_media_items = product.media | where: "media_type", "image"
   
-  assign image_limit = 2
+  assign image_limit = 3
   assign image_count = 0
 -%}
 
@@ -41,9 +42,9 @@
 
 {%- if image_count == 0 -%}
   {%- comment -%} Onboarding placeholders when product has no images or in empty editor state {%- endcomment -%}
-  {%- assign image_count = 2 -%}
+  {%- assign image_count = 3 -%}
   {%- capture slides -%}
-    {%- for i in (1..2) -%}
+    {%- for i in (1..3) -%}
       <div class="zoomed-media-carousel__slide" data-index="{{ forloop.index0 }}">
         {%- assign placeholder_name = 'hero-apparel-' | append: i -%}
         {{ placeholder_name | placeholder_svg_tag: 'placeholder-svg zoomed-media-carousel__image' }}
@@ -60,20 +61,13 @@
     </div>
 
     <!-- Navigation Controls -->
-    {%- if image_count > 1 -%}
+    {%- if show_arrows and image_count > 1 -%}
       <button class="zoomed-media-carousel__arrow zoomed-media-carousel__arrow--prev" aria-label="Previous slide" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
       </button>
       <button class="zoomed-media-carousel__arrow zoomed-media-carousel__arrow--next" aria-label="Next slide" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
       </button>
-
-      <!-- Dot Indicators -->
-      <div class="zoomed-media-carousel__dots">
-        {%- for i in (1..image_count) -%}
-          <button class="zoomed-media-carousel__dot{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}" type="button"></button>
-        {%- endfor -%}
-      </div>
     {%- endif -%}
   </div>
 </zoomed-media-carousel>
@@ -96,6 +90,8 @@
     margin-right: -50vw;
     overflow: hidden;
     background-color: #000000;
+    height: var(--desktop-height, 100vh);
+    height: calc(var(--desktop-height, 100) * 1svh);
   }
 
   .zoomed-media-carousel__scroller {
@@ -109,28 +105,40 @@
     width: 100%;
     height: 100%;
     scrollbar-width: none; /* Firefox */
+    cursor: grab;
   }
 
   .zoomed-media-carousel__scroller::-webkit-scrollbar {
     display: none; /* Chrome/Safari */
   }
 
+  .zoomed-media-carousel__scroller.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+  }
+
   .zoomed-media-carousel__slide {
-    flex: 0 0 100vw;
-    width: 100vw;
-    height: var(--desktop-height, 100vh);
+    height: 100% !important;
+    width: auto !important;
+    flex: 0 0 auto;
     scroll-snap-align: start;
     margin: 0;
     padding: 0;
     position: relative;
     box-sizing: border-box;
+    overflow: hidden;
   }
 
   .zoomed-media-carousel__image {
-    width: 100%;
-    height: 100%;
+    height: 100% !important;
+    width: auto !important;
+    max-width: none !important;
     object-fit: var(--image-fit, cover);
-    display: block;
+    display: block !important;
+    pointer-events: none; /* Prevent ghost image dragging */
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   .zoomed-media-carousel__slide .placeholder-svg {
@@ -179,35 +187,10 @@
     height: 24px;
   }
 
-  .zoomed-media-carousel__dots {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-    z-index: 10;
-  }
-
-  .zoomed-media-carousel__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.4);
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    transition: background 0.3s ease, transform 0.3s ease;
-  }
-
-  .zoomed-media-carousel__dot.is-active {
-    background: #ffffff;
-    transform: scale(1.3);
-  }
-
   @media screen and (max-width: 749px) {
-    .zoomed-media-carousel__slide {
-      height: var(--mobile-height, 60vh);
+    .zoomed-media-carousel-wrapper {
+      height: var(--mobile-height, 100vh);
+      height: calc(var(--mobile-height, 100) * 1svh);
     }
     .zoomed-media-carousel__arrow {
       width: 40px;
@@ -223,9 +206,6 @@
       width: 20px;
       height: 20px;
     }
-    .zoomed-media-carousel__dots {
-      bottom: 20px;
-    }
   }
 {% endstylesheet %}
 
@@ -236,7 +216,36 @@
         const scroller = this.querySelector('.zoomed-media-carousel__scroller');
         const prevBtn = this.querySelector('.zoomed-media-carousel__arrow--prev');
         const nextBtn = this.querySelector('.zoomed-media-carousel__arrow--next');
-        const dots = this.querySelectorAll('.zoomed-media-carousel__dot');
+
+        // Drag to scroll logic for desktop
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        scroller.addEventListener('mousedown', (e) => {
+          isDown = true;
+          scroller.classList.add('is-dragging');
+          startX = e.pageX - scroller.offsetLeft;
+          scrollLeft = scroller.scrollLeft;
+        });
+
+        scroller.addEventListener('mouseleave', () => {
+          isDown = false;
+          scroller.classList.remove('is-dragging');
+        });
+
+        scroller.addEventListener('mouseup', () => {
+          isDown = false;
+          scroller.classList.remove('is-dragging');
+        });
+
+        scroller.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - scroller.offsetLeft;
+          const walk = (x - startX) * 1.5; // multiplier for drag sensitivity
+          scroller.scrollLeft = scrollLeft - walk;
+        });
 
         if (prevBtn && nextBtn) {
           prevBtn.addEventListener('click', () => {
@@ -244,23 +253,6 @@
           });
           nextBtn.addEventListener('click', () => {
             scroller.scrollBy({ left: scroller.clientWidth, behavior: 'smooth' });
-          });
-        }
-
-        if (dots.length > 0) {
-          scroller.addEventListener('scroll', () => {
-            const slideWidth = scroller.clientWidth;
-            if (slideWidth === 0) return;
-            const index = Math.round(scroller.scrollLeft / slideWidth);
-            dots.forEach((dot, i) => {
-              dot.classList.toggle('is-active', i === index);
-            });
-          });
-
-          dots.forEach((dot, i) => {
-            dot.addEventListener('click', () => {
-              scroller.scrollTo({ left: i * scroller.clientWidth, behavior: 'smooth' });
-            });
           });
         }
       }
@@ -298,7 +290,7 @@
       "step": 5,
       "unit": "vh",
       "label": "Mobile Height (viewport height)",
-      "default": 60
+      "default": 100
     },
     {
       "type": "select",
@@ -309,6 +301,12 @@
         { "value": "contain", "label": "Contain (Letterbox to fit slide)" }
       ],
       "default": "cover"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show Desktop Navigation Arrows",
+      "default": false
     }
   ],
   "presets": [
