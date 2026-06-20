@@ -582,20 +582,11 @@
         "text_1",
         "text_2"
       ]
-    },
-    "zoomed_media_carousel": {
-      "type": "product-zoomed-media-carousel",
-      "settings": {
-        "desktop_height": 100,
-        "mobile_height": 60,
-        "image_fit": "cover"
-      }
     }
   },
   "order": [
     "main",
     "custom_50_50_split",
-    "zoomed_media_carousel",
     "product_recommendations_qggXJq"
   ]
 }
