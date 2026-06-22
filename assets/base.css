@@ -5172,3 +5172,95 @@ dialog-component:has(dialog[open]) .icon-plus {
     padding-block: var(--padding-sm) !important;
   }
 }
+
+/* Custom positioning and typography system for custom blocks */
+.custom-position-block {
+  position: absolute !important;
+  z-index: var(--z-index, 10);
+  top: var(--pos-top, auto);
+  bottom: var(--pos-bottom, auto);
+  left: var(--pos-left, auto);
+  right: var(--pos-right, auto);
+  width: var(--custom-width, 100%) !important;
+  height: auto !important;
+  max-width: 100%;
+  box-sizing: border-box !important;
+}
+
+.custom-position-block > * {
+  display: inline-block !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+@media screen and (max-width: 749px) {
+  .custom-position-block {
+    top: var(--pos-top-mobile, var(--pos-top, auto)) !important;
+    bottom: var(--pos-bottom-mobile, var(--pos-bottom, auto)) !important;
+    left: var(--pos-left-mobile, var(--pos-left, auto)) !important;
+    right: var(--pos-right-mobile, var(--pos-right, auto)) !important;
+    height: auto !important;
+  }
+}
+
+.custom-font-style {
+  font-family: var(--custom-font-family, inherit) !important;
+  font-size: var(--custom-font-size, inherit) !important;
+  font-weight: var(--custom-font-weight, inherit) !important;
+  line-height: var(--custom-line-height, inherit) !important;
+  letter-spacing: var(--custom-letter-spacing, inherit) !important;
+  color: var(--custom-text-color, inherit) !important;
+  text-transform: var(--custom-text-transform, inherit) !important;
+}
+
+.custom-font-style * {
+  line-height: inherit !important;
+  font-size: inherit !important;
+  letter-spacing: var(--custom-letter-spacing, inherit) !important;
+  text-transform: var(--custom-text-transform, inherit) !important;
+}
+
+/* Ensure Shopify editor wrappers for custom blocks use display: contents so the editor's visual boundaries align with the child element's true rendered dimensions */
+.shopify-block:has(> .custom-position-block),
+shopify-block:has(> .custom-position-block) {
+  display: contents !important;
+}
+
+/* Custom button styles */
+.custom-button {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--custom-btn-icon-spacing, 8px);
+  padding: var(--custom-btn-padding-top, 12px) var(--custom-btn-padding-right, 24px) var(--custom-btn-padding-bottom, 12px) var(--custom-btn-padding-left, 24px) !important;
+  border-radius: var(--custom-btn-border-radius, 4px) !important;
+  background-color: var(--custom-btn-bg-color, transparent) !important;
+  color: var(--custom-btn-text-color, inherit) !important;
+  border: var(--custom-btn-border-width, 1px) var(--custom-btn-border-style, solid) var(--custom-btn-border-color, currentColor) !important;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.custom-button:hover {
+  opacity: 0.9;
+}
+
+.custom-button-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-button-icon svg,
+.custom-button-icon img {
+  width: var(--custom-btn-icon-size, 16px);
+  height: var(--custom-btn-icon-size, 16px);
+  object-fit: contain;
+}
+

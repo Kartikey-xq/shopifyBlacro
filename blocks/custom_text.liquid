@@ -1,0 +1,192 @@
+{% comment %}
+  Custom Text block. Absolute positioning, custom or preset typography.
+{% endcomment %}
+
+<div 
+  class="custom-position-block custom-font-style custom-text-block rte"
+  style="
+    {% render 'custom-block-styles', settings: block.settings, type: 'text' %}
+    text-align: {{ block.settings.text_alignment | default: 'left' }};
+  "
+  {{ block.shopify_attributes }}
+>
+  {{ block.settings.text | default: '<p>Custom rich text content goes here.</p>' }}
+</div>
+
+{% schema %}
+{
+  "name": "Custom Text",
+  "tag": null,
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text Content",
+      "default": "<p>Custom rich text content goes here.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Sizing Settings"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width",
+      "options": [
+        { "value": "fit-content", "label": "Fit" },
+        { "value": "100%", "label": "Fill" }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Typography Settings"
+    },
+    {
+      "type": "select",
+      "id": "font_preset",
+      "label": "Font Preset",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "select",
+      "id": "custom_font_family",
+      "label": "Font family",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 110,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "line_height",
+      "label": "Line height",
+      "min": 0.8,
+      "max": 3.0,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing",
+      "min": -5,
+      "max": 20,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Positioning Settings"
+    },
+    {
+      "type": "text",
+      "id": "pos_top",
+      "label": "Top Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_bottom",
+      "label": "Bottom Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_left",
+      "label": "Left Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_right",
+      "label": "Right Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_top_mobile",
+      "label": "Top Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_bottom_mobile",
+      "label": "Bottom Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_left_mobile",
+      "label": "Left Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_right_mobile",
+      "label": "Right Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "range",
+      "id": "z_index",
+      "label": "Z-index",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Text"
+    }
+  ]
+}
+{% endschema %}

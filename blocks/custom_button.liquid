@@ -1,0 +1,336 @@
+{% comment %}
+  Custom Button block. Absolute positioning, custom button styles (padding, background, border, colors), optional custom icon upload.
+{% endcomment %}
+
+<div 
+  class="custom-position-block custom-font-style"
+  style="{% render 'custom-block-styles', settings: block.settings, type: 'button' %}"
+  {{ block.shopify_attributes }}
+>
+  <a
+    {% if block.settings.link == blank %}
+      role="link"
+      aria-disabled="true"
+    {% else %}
+      href="{{ block.settings.link }}"
+    {% endif %}
+    class="custom-button"
+    {%- if block.settings.open_in_new_tab -%}
+      target="_blank"
+      rel="noopener noreferrer"
+    {%- endif -%}
+  >
+    {%- if block.settings.icon_image != blank and block.settings.icon_position == 'left' -%}
+      <span class="custom-button-icon">
+        {{ block.settings.icon_image | image_url: width: 100 | image_tag: loading: 'lazy', alt: block.settings.icon_image.alt }}
+      </span>
+    {%- endif -%}
+
+    <span>{{ block.settings.label | default: 'Click here' }}</span>
+
+    {%- if block.settings.icon_image != blank and block.settings.icon_position == 'right' -%}
+      <span class="custom-button-icon">
+        {{ block.settings.icon_image | image_url: width: 100 | image_tag: loading: 'lazy', alt: block.settings.icon_image.alt }}
+      </span>
+    {%- endif -%}
+  </a>
+</div>
+
+{% schema %}
+{
+  "name": "Custom Button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Button Label",
+      "default": "Click here"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open in new tab",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Layout & Sizing Settings"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width",
+      "options": [
+        { "value": "fit-content", "label": "Fit" },
+        { "value": "100%", "label": "Fill" }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "header",
+      "content": "Button Styling"
+    },
+    {
+      "type": "text",
+      "id": "pad_top",
+      "label": "Padding Top",
+      "default": "12px",
+      "info": "e.g. 12px, 1.5rem"
+    },
+    {
+      "type": "text",
+      "id": "pad_bottom",
+      "label": "Padding Bottom",
+      "default": "12px",
+      "info": "e.g. 12px, 1.5rem"
+    },
+    {
+      "type": "text",
+      "id": "pad_left",
+      "label": "Padding Left",
+      "default": "24px",
+      "info": "e.g. 24px, 2rem"
+    },
+    {
+      "type": "text",
+      "id": "pad_right",
+      "label": "Padding Right",
+      "default": "24px",
+      "info": "e.g. 24px, 2rem"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border Width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "default": 1,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Border Style",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "solid", "label": "Solid" },
+        { "value": "dashed", "label": "Dashed" },
+        { "value": "dotted", "label": "Dotted" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Icon Support"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_image",
+      "label": "Icon Image"
+    },
+    {
+      "type": "select",
+      "id": "icon_position",
+      "label": "Icon Position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon Size",
+      "min": 8,
+      "max": 100,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "label": "Icon Spacing",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Typography Settings"
+    },
+    {
+      "type": "select",
+      "id": "font_preset",
+      "label": "Font Preset",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "select",
+      "id": "custom_font_family",
+      "label": "Font family",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Custom Typography Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Custom Font Size (px)",
+      "min": 10,
+      "max": 110,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "line_height",
+      "label": "Line height",
+      "min": 0.8,
+      "max": 3.0,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing",
+      "min": -5,
+      "max": 20,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Positioning Settings"
+    },
+    {
+      "type": "text",
+      "id": "pos_top",
+      "label": "Top Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_bottom",
+      "label": "Bottom Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_left",
+      "label": "Left Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_right",
+      "label": "Right Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_top_mobile",
+      "label": "Top Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_bottom_mobile",
+      "label": "Bottom Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_left_mobile",
+      "label": "Left Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_right_mobile",
+      "label": "Right Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "range",
+      "id": "z_index",
+      "label": "Z-index",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Button"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,108 @@
+{% comment %}
+  Renders custom inline styles (positioning, typography, padding, border etc.) for custom blocks.
+  Accepts:
+  - settings: block.settings (object)
+  - type: 'heading' | 'text' | 'button' (string)
+{% endcomment %}
+{%- liquid
+  # Determine font preset to use (either the direct preset or the custom_font_family choice)
+  assign active_font = settings.font_preset
+  if settings.font_preset == 'custom'
+    assign active_font = settings.custom_font_family
+  endif
+
+  case active_font
+    when 'heading'
+      assign font_family = 'var(--font-heading--family)'
+      assign font_weight = 'var(--font-heading--weight)'
+      assign text_transform = 'var(--font-heading--case)'
+      assign preset_line_height = 'var(--line-height--heading-default)'
+      assign preset_letter_spacing = 'var(--letter-spacing--heading-default)'
+    when 'subheading'
+      assign font_family = 'var(--font-subheading--family)'
+      assign font_weight = 'var(--font-subheading--weight)'
+      assign text_transform = 'var(--font-subheading--case)'
+      assign preset_line_height = 'var(--line-height--subheading-default)'
+      assign preset_letter_spacing = 'var(--letter-spacing--subheading-default)'
+    when 'accent'
+      assign font_family = 'var(--font-accent--family)'
+      assign font_weight = 'var(--font-accent--weight)'
+      assign text_transform = 'var(--font-accent--case)'
+      assign preset_line_height = 'var(--line-height--accent-default)'
+      assign preset_letter_spacing = 'var(--letter-spacing--accent-default)'
+    when 'body'
+      assign font_family = 'var(--font-body--family)'
+      assign font_weight = 'var(--font-body--weight)'
+      assign text_transform = 'var(--font-body--case)'
+      assign preset_line_height = 'var(--line-height--body-default)'
+      assign preset_letter_spacing = 'var(--letter-spacing--body-default)'
+  endcase
+-%}
+
+{%- liquid
+  assign pos_top = settings.pos_top | default: 'auto'
+  assign pos_bottom = settings.pos_bottom | default: 'auto'
+  if pos_top != 'auto' and pos_top != blank and pos_bottom != 'auto' and pos_bottom != blank
+    assign pos_bottom = 'auto'
+  endif
+
+  assign pos_left = settings.pos_left | default: 'auto'
+  assign pos_right = settings.pos_right | default: 'auto'
+  if pos_left != 'auto' and pos_left != blank and pos_right != 'auto' and pos_right != blank
+    assign pos_right = 'auto'
+  endif
+
+  assign pos_top_mobile = settings.pos_top_mobile | default: 'auto'
+  assign pos_bottom_mobile = settings.pos_bottom_mobile | default: 'auto'
+  if pos_top_mobile != 'auto' and pos_top_mobile != blank and pos_bottom_mobile != 'auto' and pos_bottom_mobile != blank
+    assign pos_bottom_mobile = 'auto'
+  endif
+
+  assign pos_left_mobile = settings.pos_left_mobile | default: 'auto'
+  assign pos_right_mobile = settings.pos_right_mobile | default: 'auto'
+  if pos_left_mobile != 'auto' and pos_left_mobile != blank and pos_right_mobile != 'auto' and pos_right_mobile != blank
+    assign pos_right_mobile = 'auto'
+  endif
+-%}
+
+--z-index: {{ settings.z_index | default: 10 }};
+--pos-top: {{ pos_top }};
+--pos-bottom: {{ pos_bottom }};
+--pos-left: {{ pos_left }};
+--pos-right: {{ pos_right }};
+--pos-top-mobile: {{ pos_top_mobile }};
+--pos-bottom-mobile: {{ pos_bottom_mobile }};
+--pos-left-mobile: {{ pos_left_mobile }};
+--pos-right-mobile: {{ pos_right_mobile }};
+
+--custom-font-family: {{ font_family }};
+--custom-font-weight: {{ font_weight }};
+--custom-text-transform: {{ text_transform }};
+--custom-width: {{ settings.width | default: 'fit-content' }};
+
+{%- if settings.font_preset == 'custom' -%}
+  --custom-font-size: {{ settings.font_size }}px;
+  --custom-line-height: {{ settings.line_height | default: '1.2' }};
+  --custom-letter-spacing: {{ settings.letter_spacing | default: '0' }}px;
+  --custom-text-color: {{ settings.color_text | default: 'inherit' }};
+{%- else -%}
+  --custom-font-size: inherit;
+  --custom-line-height: {{ preset_line_height | default: 'inherit' }};
+  --custom-letter-spacing: {{ preset_letter_spacing | default: 'inherit' }};
+  --custom-text-color: inherit;
+{%- endif -%}
+
+{%- if type == 'button' -%}
+  --custom-btn-padding-top: {{ settings.pad_top | default: '12px' }};
+  --custom-btn-padding-right: {{ settings.pad_right | default: '24px' }};
+  --custom-btn-padding-bottom: {{ settings.pad_bottom | default: '12px' }};
+  --custom-btn-padding-left: {{ settings.pad_left | default: '24px' }};
+  --custom-btn-border-radius: {{ settings.border_radius | default: '4px' }}px;
+  --custom-btn-bg-color: {{ settings.bg_color | default: 'transparent' }};
+  --custom-btn-text-color: {{ settings.btn_text_color | default: 'inherit' }};
+  --custom-btn-border-width: {{ settings.border_width | default: '1px' }}px;
+  --custom-btn-border-style: {{ settings.border_style | default: 'solid' }};
+  --custom-btn-border-color: {{ settings.border_color | default: 'currentColor' }};
+  --custom-btn-icon-size: {{ settings.icon_size | default: '16' }}px;
+  --custom-btn-icon-spacing: {{ settings.icon_spacing | default: '8' }}px;
+{%- endif -%}
