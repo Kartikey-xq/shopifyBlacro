@@ -1,6 +1,11 @@
 
 
-{% render 'jumbo-text' %}
+<div 
+  class="custom-position-block"
+  style="{% render 'custom-block-styles', settings: block.settings, type: 'jumbo' %}"
+>
+  {% render 'jumbo-text' %}
+</div>
 
 {% schema %}
 {
@@ -125,6 +130,80 @@
       "label": "t:settings.animation_repeat",
       "default": false,
       "visible_if": "{{ block.settings.text_effect == \"blur\" or block.settings.text_effect == \"reveal\" }}"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Sizing Settings"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width",
+      "options": [
+        { "value": "fit-content", "label": "Fit" },
+        { "value": "100%", "label": "Fill" }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "header",
+      "content": "Positioning Settings"
+    },
+    {
+      "type": "text",
+      "id": "pos_top",
+      "label": "Top Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_bottom",
+      "label": "Bottom Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_left",
+      "label": "Left Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_right",
+      "label": "Right Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_top_mobile",
+      "label": "Top Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_bottom_mobile",
+      "label": "Bottom Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_left_mobile",
+      "label": "Left Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_right_mobile",
+      "label": "Right Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
     }
   ],
   "presets": [

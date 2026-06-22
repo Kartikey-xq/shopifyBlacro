@@ -1175,7 +1175,18 @@
       "id": "overlay_color",
       "label": "t:settings.overlay_color",
       "alpha": true,
-      "default": "#00000026",
+      "default": "#000000",
+      "visible_if": "{{ section.settings.toggle_overlay }}"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 15,
+      "unit": "%",
       "visible_if": "{{ section.settings.toggle_overlay }}"
     },
     {
@@ -1196,20 +1207,31 @@
       "visible_if": "{{ section.settings.toggle_overlay }}"
     },
     {
-      "type": "select",
-      "id": "gradient_direction",
-      "label": "t:settings.gradient_direction",
-      "options": [
-        {
-          "value": "to top",
-          "label": "t:options.up"
-        },
-        {
-          "value": "to bottom",
-          "label": "t:options.down"
-        }
-      ],
-      "default": "to top",
+      "type": "checkbox",
+      "id": "gradient_up",
+      "label": "Gradient Up",
+      "default": false,
+      "visible_if": "{{ section.settings.toggle_overlay and section.settings.overlay_style == 'gradient' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "gradient_down",
+      "label": "Gradient Down",
+      "default": false,
+      "visible_if": "{{ section.settings.toggle_overlay and section.settings.overlay_style == 'gradient' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "gradient_left",
+      "label": "Gradient Left",
+      "default": false,
+      "visible_if": "{{ section.settings.toggle_overlay and section.settings.overlay_style == 'gradient' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "gradient_right",
+      "label": "Gradient Right",
+      "default": false,
       "visible_if": "{{ section.settings.toggle_overlay and section.settings.overlay_style == 'gradient' }}"
     },
     {
@@ -1507,7 +1529,7 @@
         "padding-block-end": 40,
         "toggle_overlay": true,
         "overlay_style": "gradient",
-        "gradient_direction": "to top"
+        "gradient_up": true
       }
     }
   ]

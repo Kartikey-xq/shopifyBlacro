@@ -8,13 +8,48 @@
   {% render 'overlay', settings: section.settings, layer: 'var(--layer-raised)' %}
 {%- enddoc -%}
 
+{%- liquid
+  # Resolve base color (either the setting color, or fallback to black)
+  assign base_color = settings.overlay_color | default: '#000000'
+
+  # Resolve opacity (either the setting, or default to 15 if not set)
+  assign opacity_val = settings.overlay_opacity | default: 15 | divided_by: 100.0
+
+  # Apply opacity to color
+  assign overlay_color = base_color | color_modify: 'alpha', opacity_val
+  assign overlay_color_end = overlay_color | color_modify: 'alpha', 0
+
+  assign gradients = ''
+  
+  if settings.gradient_up
+    assign gradients = gradients | append: 'linear-gradient(to top, var(--overlay-color), var(--overlay-color--end)),'
+  endif
+  if settings.gradient_down
+    assign gradients = gradients | append: 'linear-gradient(to bottom, var(--overlay-color), var(--overlay-color--end)),'
+  endif
+  if settings.gradient_left
+    assign gradients = gradients | append: 'linear-gradient(to left, var(--overlay-color), var(--overlay-color--end)),'
+  endif
+  if settings.gradient_right
+    assign gradients = gradients | append: 'linear-gradient(to right, var(--overlay-color), var(--overlay-color--end)),'
+  endif
+
+  if gradients == ''
+    assign dir = settings.gradient_direction | default: 'to top'
+    assign gradients = 'linear-gradient(' | append: dir | append: ', var(--overlay-color), var(--overlay-color--end)),'
+  endif
+
+  assign gradients_len = gradients | size | minus: 1
+  assign gradients_css = gradients | slice: 0, gradients_len
+-%}
+
 <div
   class="overlay overlay--{{ settings.overlay_style | default: 'gradient' }}"
   style="
     --overlay-layer: {{ layer | default: 'var(--layer-flat)' }};
-    --overlay-color: {{ settings.overlay_color | default: 'rgb(0 0 0 / var(--opacity-25))' }};
-    --overlay-color--end: {{ settings.overlay_color | color_modify: 'alpha', 0 | default: 'rgb(0 0 0 / 0)' }};
-    --overlay-direction: {{ settings.gradient_direction | default: 'to top' }};
+    --overlay-color: {{ overlay_color }};
+    --overlay-color--end: {{ overlay_color_end }};
+    --overlay-background: {{ gradients_css }};
     {%- if settings.border_radius %} --overlay-border-radius: {{ settings.border_radius | default: '0' }}px;{% endif -%}
   "
 ></div>
@@ -33,6 +68,6 @@
   }
 
   .overlay--gradient {
-    background: linear-gradient(var(--overlay-direction), var(--overlay-color), var(--overlay-color--end));
+    background: var(--overlay-background);
   }
 {% endstylesheet %}

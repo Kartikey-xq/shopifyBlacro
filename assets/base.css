@@ -5176,7 +5176,7 @@ dialog-component:has(dialog[open]) .icon-plus {
 /* Custom positioning and typography system for custom blocks */
 .custom-position-block {
   position: absolute !important;
-  z-index: var(--z-index, 10);
+  z-index: var(--z-index, auto);
   top: var(--pos-top, auto);
   bottom: var(--pos-bottom, auto);
   left: var(--pos-left, auto);
@@ -5216,8 +5216,9 @@ dialog-component:has(dialog[open]) .icon-plus {
 .custom-font-style * {
   line-height: inherit !important;
   font-size: inherit !important;
-  letter-spacing: var(--custom-letter-spacing, inherit) !important;
-  text-transform: var(--custom-text-transform, inherit) !important;
+  color: inherit !important;
+  letter-spacing: inherit !important;
+  text-transform: inherit !important;
 }
 
 /* Ensure Shopify editor wrappers for custom blocks use display: contents so the editor's visual boundaries align with the child element's true rendered dimensions */
