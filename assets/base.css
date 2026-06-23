@@ -5187,6 +5187,12 @@ dialog-component:has(dialog[open]) .icon-plus {
   box-sizing: border-box !important;
 }
 
+.custom-position-block--centered {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+}
+
 .custom-position-block > *:not(.custom-button) {
   display: inline-block !important;
   width: auto !important;

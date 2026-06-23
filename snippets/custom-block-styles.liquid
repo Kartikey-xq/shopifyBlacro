@@ -93,10 +93,10 @@
 {%- endif -%}
 
 {%- if type == 'button' -%}
-  --custom-btn-padding-top: {{ settings.pad_top | default: '12px' }};
-  --custom-btn-padding-right: {{ settings.pad_right | default: '24px' }};
-  --custom-btn-padding-bottom: {{ settings.pad_bottom | default: '12px' }};
-  --custom-btn-padding-left: {{ settings.pad_left | default: '24px' }};
+  --custom-btn-padding-top: {{ settings.pad_top | default: 12 }}px;
+  --custom-btn-padding-right: {{ settings.pad_right | default: 24 }}px;
+  --custom-btn-padding-bottom: {{ settings.pad_bottom | default: 12 }}px;
+  --custom-btn-padding-left: {{ settings.pad_left | default: 24 }}px;
   --custom-btn-border-radius: {{ settings.border_radius | default: '4px' }}px;
   --custom-btn-bg-color: {{ settings.bg_color | default: 'transparent' }};
   --custom-btn-text-color: {{ settings.btn_text_color | default: 'inherit' }};

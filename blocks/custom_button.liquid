@@ -3,7 +3,7 @@
 {% endcomment %}
 
 <div 
-  class="custom-position-block custom-font-style"
+  class="custom-position-block custom-font-style{% if block.settings.center_horizontally %} custom-position-block--centered{% endif %}"
   style="{% render 'custom-block-styles', settings: block.settings, type: 'button' %}"
   {{ block.shopify_attributes }}
 >
@@ -93,35 +93,47 @@
       "content": "Button Styling"
     },
     {
-      "type": "text",
+      "type": "range",
       "id": "pad_top",
       "label": "Padding Top",
-      "default": "12px",
-      "info": "e.g. 12px, 1.5rem",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 12,
+      "unit": "px",
       "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
-      "type": "text",
+      "type": "range",
       "id": "pad_bottom",
       "label": "Padding Bottom",
-      "default": "12px",
-      "info": "e.g. 12px, 1.5rem",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 12,
+      "unit": "px",
       "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
-      "type": "text",
+      "type": "range",
       "id": "pad_left",
       "label": "Padding Left",
-      "default": "24px",
-      "info": "e.g. 24px, 2rem",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 24,
+      "unit": "px",
       "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
-      "type": "text",
+      "type": "range",
       "id": "pad_right",
       "label": "Padding Right",
-      "default": "24px",
-      "info": "e.g. 24px, 2rem",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 24,
+      "unit": "px",
       "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
@@ -302,6 +314,12 @@
       "content": "Positioning Settings"
     },
     {
+      "type": "checkbox",
+      "id": "center_horizontally",
+      "label": "Center Horizontally",
+      "default": false
+    },
+    {
       "type": "text",
       "id": "pos_top",
       "label": "Top Position (Desktop)",
@@ -320,14 +338,16 @@
       "id": "pos_left",
       "label": "Left Position (Desktop)",
       "default": "auto",
-      "info": "e.g. 10%, 50px, auto"
+      "info": "e.g. 10%, 50px, auto",
+      "visible_if": "{{ block.settings.center_horizontally == false }}"
     },
     {
       "type": "text",
       "id": "pos_right",
       "label": "Right Position (Desktop)",
       "default": "auto",
-      "info": "e.g. 10%, 50px, auto"
+      "info": "e.g. 10%, 50px, auto",
+      "visible_if": "{{ block.settings.center_horizontally == false }}"
     },
     {
       "type": "text",
@@ -348,14 +368,16 @@
       "id": "pos_left_mobile",
       "label": "Left Position (Mobile)",
       "default": "auto",
-      "info": "e.g. 10%, 50px, auto"
+      "info": "e.g. 10%, 50px, auto",
+      "visible_if": "{{ block.settings.center_horizontally == false }}"
     },
     {
       "type": "text",
       "id": "pos_right_mobile",
       "label": "Right Position (Mobile)",
       "default": "auto",
-      "info": "e.g. 10%, 50px, auto"
+      "info": "e.g. 10%, 50px, auto",
+      "visible_if": "{{ block.settings.center_horizontally == false }}"
     },
     {
       "type": "range",
