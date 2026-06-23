@@ -269,6 +269,44 @@
         "padding-block-end": 0
       }
     },
+    "hero_tAFGje": {
+      "type": "hero",
+      "name": "t:names.hero",
+      "settings": {
+        "media_type_1": "image",
+        "media_type_2": "image",
+        "stack_media_on_mobile": false,
+        "custom_mobile_media": false,
+        "media_type_1_mobile": "image",
+        "media_type_2_mobile": "image",
+        "link": "",
+        "open_in_new_tab": false,
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "section_width": "page-width",
+        "section_height": "large",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-5",
+        "toggle_overlay": true,
+        "overlay_color": "#EEE5DC",
+        "overlay_opacity": 100,
+        "overlay_style": "solid",
+        "gradient_up": false,
+        "gradient_down": false,
+        "gradient_left": false,
+        "gradient_right": false,
+        "blurred_reflection": false,
+        "reflection_opacity": 75,
+        "padding-block-start": 40,
+        "padding-block-end": 40
+      }
+    },
     "collection_hover_carousel_Hj7YGa": {
       "type": "collection-hover-carousel",
       "name": "Collection Carousel Hover",
@@ -1239,6 +1277,7 @@
   },
   "order": [
     "hero_jVaWmY",
+    "hero_tAFGje",
     "collection_hover_carousel_Hj7YGa",
     "hero_UfGnmC",
     "hero_fbm97N",
