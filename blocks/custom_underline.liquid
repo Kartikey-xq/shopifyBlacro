@@ -7,7 +7,12 @@
   #shopify-block-{{ block.id }} {
     display: contents !important;
   }
-  #underline-{{ block.id }} {
+</style>
+
+<div
+  id="underline-{{ block.id }}"
+  class="custom-underline-block"
+  style="
     position: absolute;
     display: block;
     width: {{ block.settings.underline_width }}px;
@@ -16,10 +21,9 @@
     top: {{ block.settings.top_position }}px;
     left: {{ block.settings.left_position }}px;
     z-index: 999;
-  }
-</style>
-
-<div id="underline-{{ block.id }}" class="custom-underline-block" {{ block.shopify_attributes }}></div>
+  "
+  {{ block.shopify_attributes }}
+></div>
 
 {% schema %}
 {

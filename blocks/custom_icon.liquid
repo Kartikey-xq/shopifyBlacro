@@ -1,0 +1,109 @@
+{% comment %}
+  Custom Icon block.
+  Supports SVG/Image file picker, absolute positioning and scaling.
+{% endcomment %}
+
+<style>
+  #shopify-block-{{ block.id }} {
+    display: contents !important;
+  }
+  #custom-icon-{{ block.id }} img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+</style>
+
+<div
+  id="custom-icon-{{ block.id }}"
+  class="custom-icon-block"
+  style="
+    position: absolute;
+    display: block;
+    top: {{ block.settings.top_position }}px;
+    left: {{ block.settings.left_position }}px;
+    width: {{ block.settings.icon_width | divided_by: 10.0 }}px;
+    height: {{ block.settings.icon_height | divided_by: 10.0 }}px;
+    z-index: 999;
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- if block.settings.icon_file != blank -%}
+    <img src="{{ block.settings.icon_file | image_url }}" alt="" width="100" height="100">
+  {%- else -%}
+    <!-- Simple visible fallback placeholder in editor if no file is selected -->
+    <div style="width: 100%; height: 100%; border: 2px dashed rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 10px;">SVG</div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Custom Icon",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Icon Source"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_file",
+      "label": "Upload SVG"
+    },
+    {
+      "type": "header",
+      "content": "Positioning"
+    },
+    {
+      "type": "range",
+      "id": "top_position",
+      "label": "Top Position",
+      "min": 0,
+      "max": 1000,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "left_position",
+      "label": "Left Position",
+      "min": 0,
+      "max": 1000,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Sizing"
+    },
+    {
+      "type": "range",
+      "id": "icon_width",
+      "label": "Icon Width",
+      "min": 5,
+      "max": 5005,
+      "step": 50,
+      "default": 505,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_height",
+      "label": "Icon Height",
+      "min": 5,
+      "max": 5005,
+      "step": 50,
+      "default": 505,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Icon"
+    }
+  ]
+}
+{% endschema %}
