@@ -1,0 +1,93 @@
+{% comment %}
+  Custom Underline block.
+  Absolute positioning anywhere on the screen using range sliders for Top, Left, Width, Thickness, and Color.
+{% endcomment %}
+
+<style>
+  #shopify-block-{{ block.id }} {
+    display: contents !important;
+  }
+  #shopify-block-{{ block.id }} .custom-underline-block {
+    position: absolute;
+    top: {{ block.settings.pos_top }}px;
+    left: {{ block.settings.pos_left }}px;
+    width: {{ block.settings.underline_width }}px;
+    height: {{ block.settings.underline_thickness }}px;
+    background-color: {{ block.settings.underline_color }};
+    z-index: 5;
+  }
+</style>
+
+<div class="custom-underline-block"></div>
+
+{% schema %}
+{
+  "name": "Custom Underline",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Positioning"
+    },
+    {
+      "type": "range",
+      "id": "pos_top",
+      "label": "Top Position",
+      "min": 0,
+      "max": 1000,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "pos_left",
+      "label": "Left Position",
+      "min": 0,
+      "max": 1000,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Dimensions"
+    },
+    {
+      "type": "range",
+      "id": "underline_width",
+      "label": "Underline Width",
+      "min": 1,
+      "max": 1000,
+      "step": 5,
+      "default": 100,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "underline_thickness",
+      "label": "Underline Thickness",
+      "min": 1,
+      "max": 50,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Styling"
+    },
+    {
+      "type": "color",
+      "id": "underline_color",
+      "label": "Underline Color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Underline"
+    }
+  ]
+}
+{% endschema %}
