@@ -59,7 +59,7 @@
           "name": "Custom Button",
           "settings": {
             "label": "SHOP RELIC",
-            "link": "",
+            "link": "shopify://collections/relic",
             "open_in_new_tab": false,
             "button_style": "custom",
             "width": "fit-content",
