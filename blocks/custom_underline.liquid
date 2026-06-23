@@ -1,26 +1,24 @@
 {% comment %}
   Custom Underline block.
-  Absolute positioning anywhere on the screen using range sliders for Top, Left, Width, Thickness, and Color.
+  Absolute positioning anywhere on the screen using unified styling parameters.
 {% endcomment %}
 
 <style>
   #shopify-block-{{ block.id }} {
     display: contents !important;
   }
+  #underline-{{ block.id }} {
+    height: {{ block.settings.underline_thickness }}px !important;
+  }
 </style>
 
 <div
   id="underline-{{ block.id }}"
-  class="custom-underline-block"
+  class="custom-position-block custom-underline-block"
   style="
-    position: absolute;
-    display: block;
-    width: {{ block.settings.underline_width }}px;
-    height: {{ block.settings.underline_thickness }}px;
+    {% render 'custom-block-styles', settings: block.settings, type: 'text' %}
+    --custom-width: {{ block.settings.underline_width }}px;
     background: {{ block.settings.underline_color }};
-    top: {{ block.settings.top_position }}px;
-    left: {{ block.settings.left_position }}px;
-    z-index: 999;
   "
   {{ block.shopify_attributes }}
 ></div>
@@ -32,27 +30,72 @@
   "settings": [
     {
       "type": "header",
-      "content": "Positioning"
+      "content": "Positioning Settings"
+    },
+    {
+      "type": "text",
+      "id": "pos_top",
+      "label": "Top Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_bottom",
+      "label": "Bottom Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_left",
+      "label": "Left Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_right",
+      "label": "Right Position (Desktop)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_top_mobile",
+      "label": "Top Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_bottom_mobile",
+      "label": "Bottom Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_left_mobile",
+      "label": "Left Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_right_mobile",
+      "label": "Right Position (Mobile)",
+      "default": "auto",
+      "info": "e.g. 10%, 50px, auto"
     },
     {
       "type": "range",
-      "id": "top_position",
-      "label": "Top Position",
+      "id": "z_index",
+      "label": "Z-index",
       "min": 0,
-      "max": 1000,
-      "step": 10,
-      "default": 100,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "left_position",
-      "label": "Left Position",
-      "min": 0,
-      "max": 1000,
-      "step": 10,
-      "default": 100,
-      "unit": "px"
+      "max": 100,
+      "step": 1,
+      "default": 10
     },
     {
       "type": "header",
