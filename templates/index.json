@@ -222,6 +222,18 @@
             "z_index": 10
           },
           "blocks": {}
+        },
+        "custom_underline_test": {
+          "type": "custom_underline",
+          "name": "Custom Underline",
+          "settings": {
+            "pos_top": 400,
+            "pos_left": 100,
+            "underline_width": 200,
+            "underline_thickness": 4,
+            "underline_color": "#ffffff"
+          },
+          "blocks": {}
         }
       },
       "block_order": [
@@ -231,7 +243,8 @@
         "custom_text_Ce8yeA",
         "custom_text_dKEgph",
         "custom_heading_BxU8QJ",
-        "custom_heading_t4YG4d"
+        "custom_heading_t4YG4d",
+        "custom_underline_test"
       ],
       "name": "t:names.hero",
       "settings": {
