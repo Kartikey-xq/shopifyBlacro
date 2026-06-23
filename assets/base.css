@@ -5187,7 +5187,7 @@ dialog-component:has(dialog[open]) .icon-plus {
   box-sizing: border-box !important;
 }
 
-.custom-position-block > * {
+.custom-position-block > *:not(.custom-button) {
   display: inline-block !important;
   width: auto !important;
   height: auto !important;
@@ -5234,18 +5234,22 @@ shopify-block:has(> .custom-position-block) {
   font-weight: inherit;
   line-height: inherit;
   letter-spacing: inherit;
-  display: inline-flex;
-  align-items: center;
+  display: inline-flex !important;
+  align-items: center !important;
   justify-content: center;
   gap: var(--custom-btn-icon-spacing, 8px);
+  word-spacing: calc(-1 * var(--custom-letter-spacing, 0px)) !important;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.custom-button:not(.button):not(.button-secondary):not(.link) {
   padding: var(--custom-btn-padding-top, 12px) var(--custom-btn-padding-right, 24px) var(--custom-btn-padding-bottom, 12px) var(--custom-btn-padding-left, 24px) !important;
   border-radius: var(--custom-btn-border-radius, 4px) !important;
   background-color: var(--custom-btn-bg-color, transparent) !important;
   color: var(--custom-btn-text-color, inherit) !important;
   border: var(--custom-btn-border-width, 1px) var(--custom-btn-border-style, solid) var(--custom-btn-border-color, currentColor) !important;
-  text-decoration: none;
-  cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.1s ease;
 }
 
 .custom-button:hover {
@@ -5263,5 +5267,56 @@ shopify-block:has(> .custom-position-block) {
   width: var(--custom-btn-icon-size, 16px);
   height: var(--custom-btn-icon-size, 16px);
   object-fit: contain;
+}
+
+/* Ensure the custom button icon (SVG/Image) uses the configured icon color */
+.custom-button .custom-button-icon svg {
+  fill: var(--custom-btn-icon-color, #ffffff) !important;
+}
+
+.custom-button .custom-button-icon svg * {
+  fill: var(--custom-btn-icon-color, #ffffff) !important;
+}
+
+.custom-button .custom-button-icon svg [stroke] {
+  stroke: var(--custom-btn-icon-color, #ffffff) !important;
+  fill: none !important;
+}
+
+.custom-button .custom-button-icon img {
+  background-color: var(--custom-btn-icon-color, #ffffff) !important;
+  -webkit-mask: var(--icon-mask) no-repeat center / contain !important;
+  mask: var(--icon-mask) no-repeat center / contain !important;
+}
+
+/* Position and alignment styling based on selected icon position setting */
+.custom-button--icon-left {
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+.custom-button--icon-left-top {
+  flex-direction: row !important;
+  align-items: flex-start !important;
+}
+
+.custom-button--icon-right-center {
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+.custom-button--icon-right-top {
+  flex-direction: row !important;
+  align-items: flex-start !important;
+}
+
+.custom-button--icon-top {
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+.custom-button--icon-bottom {
+  flex-direction: column !important;
+  align-items: center !important;
 }
 

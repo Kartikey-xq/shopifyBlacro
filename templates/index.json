@@ -31,7 +31,7 @@
             "border_style": "solid",
             "border_color": "#000000",
             "icon_image": "shopify://shop_images/arrow-sm-right-svgrepo-com.svg",
-            "icon_position": "right",
+            "icon_position": "right-center",
             "icon_size": 16,
             "icon_spacing": 0,
             "font_preset": "custom",

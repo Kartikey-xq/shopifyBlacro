@@ -14,24 +14,28 @@
     {% else %}
       href="{{ block.settings.link }}"
     {% endif %}
-    class="custom-button"
+    class="custom-button custom-button--icon-{{ block.settings.icon_position }}{% if block.settings.button_style != 'custom' %} {{ block.settings.button_style }}{% endif %}"
     {%- if block.settings.open_in_new_tab -%}
       target="_blank"
       rel="noopener noreferrer"
     {%- endif -%}
   >
-    {%- if block.settings.icon_image != blank and block.settings.icon_position == 'left' -%}
-      <span class="custom-button-icon">
-        {{ block.settings.icon_image | image_url: width: 100 | image_tag: loading: 'lazy', alt: block.settings.icon_image.alt }}
-      </span>
+    {%- if block.settings.icon_image != blank -%}
+      {%- if block.settings.icon_position == 'left' or block.settings.icon_position == 'left-top' or block.settings.icon_position == 'top' -%}
+        <span class="custom-button-icon" style="--icon-mask: url('{{ block.settings.icon_image | image_url: width: 100 }}');">
+          {{ block.settings.icon_image | image_url: width: 100 | image_tag: loading: 'lazy', alt: block.settings.icon_image.alt }}
+        </span>
+      {%- endif -%}
     {%- endif -%}
 
     <span>{{ block.settings.label | default: 'Click here' }}</span>
 
-    {%- if block.settings.icon_image != blank and block.settings.icon_position == 'right' -%}
-      <span class="custom-button-icon">
-        {{ block.settings.icon_image | image_url: width: 100 | image_tag: loading: 'lazy', alt: block.settings.icon_image.alt }}
-      </span>
+    {%- if block.settings.icon_image != blank -%}
+      {%- if block.settings.icon_position == 'right-center' or block.settings.icon_position == 'right-top' or block.settings.icon_position == 'bottom' -%}
+        <span class="custom-button-icon" style="--icon-mask: url('{{ block.settings.icon_image | image_url: width: 100 }}');">
+          {{ block.settings.icon_image | image_url: width: 100 | image_tag: loading: 'lazy', alt: block.settings.icon_image.alt }}
+        </span>
+      {%- endif -%}
     {%- endif -%}
   </a>
 </div>
@@ -59,6 +63,18 @@
       "default": false
     },
     {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button Style",
+      "options": [
+        { "value": "custom", "label": "Custom" },
+        { "value": "button", "label": "Primary" },
+        { "value": "button-secondary", "label": "Secondary" },
+        { "value": "link", "label": "Link" }
+      ],
+      "default": "custom"
+    },
+    {
       "type": "header",
       "content": "Layout & Sizing Settings"
     },
@@ -81,28 +97,32 @@
       "id": "pad_top",
       "label": "Padding Top",
       "default": "12px",
-      "info": "e.g. 12px, 1.5rem"
+      "info": "e.g. 12px, 1.5rem",
+      "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
       "type": "text",
       "id": "pad_bottom",
       "label": "Padding Bottom",
       "default": "12px",
-      "info": "e.g. 12px, 1.5rem"
+      "info": "e.g. 12px, 1.5rem",
+      "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
       "type": "text",
       "id": "pad_left",
       "label": "Padding Left",
       "default": "24px",
-      "info": "e.g. 24px, 2rem"
+      "info": "e.g. 24px, 2rem",
+      "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
       "type": "text",
       "id": "pad_right",
       "label": "Padding Right",
       "default": "24px",
-      "info": "e.g. 24px, 2rem"
+      "info": "e.g. 24px, 2rem",
+      "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
       "type": "range",
@@ -112,21 +132,24 @@
       "max": 50,
       "step": 1,
       "default": 4,
-      "unit": "px"
+      "unit": "px",
+      "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
       "type": "color",
       "id": "bg_color",
       "label": "Background Color",
       "alpha": true,
-      "default": "#ffffff"
+      "default": "#ffffff",
+      "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
       "type": "color",
       "id": "btn_text_color",
       "label": "Button Text Color",
       "alpha": true,
-      "default": "#000000"
+      "default": "#000000",
+      "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
       "type": "range",
@@ -136,7 +159,8 @@
       "max": 10,
       "step": 1,
       "default": 1,
-      "unit": "px"
+      "unit": "px",
+      "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
       "type": "select",
@@ -148,14 +172,16 @@
         { "value": "dashed", "label": "Dashed" },
         { "value": "dotted", "label": "Dotted" }
       ],
-      "default": "solid"
+      "default": "solid",
+      "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
       "type": "color",
       "id": "border_color",
       "label": "Border Color",
       "alpha": true,
-      "default": "#000000"
+      "default": "#000000",
+      "visible_if": "{{ block.settings.button_style == \"custom\" }}"
     },
     {
       "type": "header",
@@ -172,9 +198,19 @@
       "label": "Icon Position",
       "options": [
         { "value": "left", "label": "Left" },
-        { "value": "right", "label": "Right" }
+        { "value": "left-top", "label": "Left Top" },
+        { "value": "right-center", "label": "Right Center" },
+        { "value": "right-top", "label": "Right Top" },
+        { "value": "top", "label": "Top" },
+        { "value": "bottom", "label": "Bottom" }
       ],
       "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon Color",
+      "default": "#ffffff"
     },
     {
       "type": "range",
