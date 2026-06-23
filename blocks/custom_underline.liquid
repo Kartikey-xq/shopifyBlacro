@@ -7,18 +7,19 @@
   #shopify-block-{{ block.id }} {
     display: contents !important;
   }
-  #shopify-block-{{ block.id }} .custom-underline-block {
+  #underline-{{ block.id }} {
     position: absolute;
-    top: {{ block.settings.pos_top }}px;
-    left: {{ block.settings.pos_left }}px;
+    display: block;
     width: {{ block.settings.underline_width }}px;
     height: {{ block.settings.underline_thickness }}px;
-    background-color: {{ block.settings.underline_color }};
-    z-index: 5;
+    background: {{ block.settings.underline_color }};
+    top: {{ block.settings.top_position }}px;
+    left: {{ block.settings.left_position }}px;
+    z-index: 999;
   }
 </style>
 
-<div class="custom-underline-block" {{ block.shopify_attributes }}></div>
+<div id="underline-{{ block.id }}" class="custom-underline-block" {{ block.shopify_attributes }}></div>
 
 {% schema %}
 {
@@ -31,7 +32,7 @@
     },
     {
       "type": "range",
-      "id": "pos_top",
+      "id": "top_position",
       "label": "Top Position",
       "min": 0,
       "max": 1000,
@@ -41,7 +42,7 @@
     },
     {
       "type": "range",
-      "id": "pos_left",
+      "id": "left_position",
       "label": "Left Position",
       "min": 0,
       "max": 1000,

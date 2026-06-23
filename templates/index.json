@@ -227,8 +227,8 @@
           "type": "custom_underline",
           "name": "Custom Underline",
           "settings": {
-            "pos_top": 400,
-            "pos_left": 100,
+            "top_position": 400,
+            "left_position": 100,
             "underline_width": 200,
             "underline_thickness": 4,
             "underline_color": "#ffffff"
