@@ -59,8 +59,8 @@
       aria-label="{{ 'accessibility.menu' | t }}"
       on:click="/toggle"
     >
-      <span class="svg-wrapper header-drawer-icon header-drawer-icon--open">
-        {{- 'icon-menu.svg' | inline_asset_content -}}
+      <span class="header-drawer-icon header-drawer-icon--open mobile-menu-text-trigger">
+        {{- section.settings.menu_label | default: 'Menu' -}}
       </span>
       <span class="svg-wrapper header-drawer-icon header-drawer-icon--close">
         {{- 'icon-close.svg' | inline_asset_content -}}
@@ -761,7 +761,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: var(--padding-lg);
+    padding: 0 var(--padding-lg);
+    min-height: var(--minimum-touch-target);
+    @media screen and (max-width: 749px) {
+      min-height: unset !important;
+      height: auto !important;
+      padding-block: 8px !important;
+      padding-inline: 0 !important;
+      line-height: inherit;
+    }
+  }
+
+  .header:not(.header--compact) .menu-drawer-container .header__icon--summary {
+    min-height: var(--header-drawer-min-height, 60px);
+    @media screen and (max-width: 749px) {
+      min-height: unset !important;
+    }
   }
 
   .header__icon--summary .header-drawer-icon {
@@ -775,11 +790,19 @@
     display: flex;
     min-height: var(--header-drawer-min-height);
     align-items: center;
+    @media screen and (max-width: 749px) {
+      min-height: unset !important;
+      height: auto !important;
+    }
   }
 
   #header-component[data-menu-style='drawer'] .header__drawer {
     display: flex;
     min-height: var(--header-drawer-min-height);
+    @media screen and (max-width: 749px) {
+      min-height: unset !important;
+      height: auto !important;
+    }
   }
 
   @media screen and (min-width: 750px) {

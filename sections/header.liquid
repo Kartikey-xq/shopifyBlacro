@@ -1,6 +1,4 @@
-
-
-{% liquid
+{%- liquid
   assign order = 'logo,menu,localization,search,drawer_search,actions'
 
   if shop.customer_accounts_enabled
@@ -261,19 +259,49 @@
   {% endif %}
 {% endcapture %}
 
-<script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "Organization",
-    "name": {{ shop.name | json }},
-    {% if settings.logo %}
-      "logo": {{ settings.logo | image_url: width: 500 | prepend: "https:" | json }},
-    {% endif %}
-    "url": {{ request.origin | append: page.url | json }}
-  }
-</script>
+{%- liquid
+  # Determine font preset to use (either the direct preset or the custom choices)
+  assign active_font = section.settings.menu_font_preset
+  if section.settings.menu_font_preset == 'custom'
+    assign active_font = section.settings.menu_font_family
+  endif
 
-<header-component
+  case active_font
+    when 'heading'
+      assign menu_font_family = 'var(--font-heading--family)'
+      assign menu_font_weight = 'var(--font-heading--weight)'
+      assign menu_text_transform = 'var(--font-heading--case)'
+      assign menu_letter_spacing = 'var(--letter-spacing--heading-default)'
+    when 'subheading'
+      assign menu_font_family = 'var(--font-subheading--family)'
+      assign menu_font_weight = 'var(--font-subheading--weight)'
+      assign menu_text_transform = 'var(--font-subheading--case)'
+      assign menu_letter_spacing = 'var(--letter-spacing--subheading-default)'
+    when 'accent'
+      assign menu_font_family = 'var(--font-accent--family)'
+      assign menu_font_weight = 'var(--font-accent--weight)'
+      assign menu_text_transform = 'var(--font-accent--case)'
+      assign menu_letter_spacing = 'var(--letter-spacing--accent-default)'
+    when 'body'
+      assign menu_font_family = 'var(--font-body--family)'
+      assign menu_font_weight = 'var(--font-body--weight)'
+      assign menu_text_transform = 'var(--font-body--case)'
+      assign menu_letter_spacing = 'var(--letter-spacing--body-default)'
+  endcase
+
+  # If preset is custom, override values with custom settings
+  if section.settings.menu_font_preset == 'custom'
+    assign menu_font_size = section.settings.menu_font_size | append: 'px'
+    assign menu_font_weight = section.settings.menu_font_weight
+    assign menu_letter_spacing = section.settings.menu_letter_spacing | append: 'px'
+    assign menu_text_transform = section.settings.menu_text_transform
+    assign menu_text_color = section.settings.menu_color
+  else
+    # default presets sizes/colors
+    assign menu_font_size = 'inherit'
+    assign menu_text_color = 'inherit'
+  endif
+-%}<header-component
   id="header-component"
   class="{{ class }}"
   data-theme-color="rgb({{ section.settings.color_scheme_top.settings.background.rgb }})"
@@ -286,6 +314,34 @@
   data-skip-node-update
   data-scroll-direction="none"
 >
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      {% if settings.logo %}
+        "logo": {{ settings.logo | image_url: width: 500 | prepend: "https:" | json }},
+      {% endif %}
+      "url": {{ request.origin | append: page.url | json }}
+    }
+  </script>
+  <style>
+    #header-component .mobile-menu-text-trigger {
+      font-family: {{ menu_font_family | default: 'inherit' }} !important;
+      font-size: {{ menu_font_size | default: 'inherit' }} !important;
+      font-weight: {{ menu_font_weight | default: 'inherit' }} !important;
+      letter-spacing: {{ menu_letter_spacing | default: 'inherit' }} !important;
+      text-transform: {{ menu_text_transform | default: 'inherit' }} !important;
+      color: {{ menu_text_color | default: 'inherit' }} !important;
+      padding: 8px 0;
+      line-height: inherit;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      width: auto !important;
+      height: auto !important;
+    }
+  </style>
   {%- if request.page_type == 'index' -%}
     <h1 class="visually-hidden">{{ shop.name }}</h1>
   {%- endif -%}
@@ -385,8 +441,10 @@
     }
   }
 
-  #header-component[data-menu-style='drawer'] .header__column {
-    display: contents;
+  @media screen and (min-width: 750px) {
+    #header-component[data-menu-style='drawer'] .header__column {
+      display: contents;
+    }
   }
 
   @media screen and (min-width: 750px) {
@@ -482,6 +540,12 @@
     z-index: var(--layer-heightened);
   }
 
+  .header-section:has(.header[transparent]) {
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
   /* need default values for non-flash transitions on first overflow menu open */
   #header-component {
     --submenu-height: 0px;
@@ -558,9 +622,30 @@
     display: flex;
     align-items: center;
 
-    /* on mobile, header__column nodes are ignored to create a new grid-template-area based on all visible content */
     @media screen and (max-width: 749px) {
-      display: contents;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .header__column--left {
+      flex: 1 1 0%;
+      justify-content: flex-start;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .header__column--center {
+      flex: 0 0 auto;
+      justify-content: center;
+    }
+
+    .header__column--right {
+      flex: 1 1 0%;
+      justify-content: flex-end;
+      gap: 12px;
+      min-width: 0;
     }
   }
 
@@ -633,69 +718,27 @@
     }
 
     @media screen and (max-width: 749px) {
-      --header-template-columns: var(--header-mobile-bookend) var(--header-mobile-bookend) 1fr
-        var(--header-mobile-bookend) var(--header-mobile-bookend);
-
-      grid-template-areas: 'leftA leftB center rightA rightB';
-      grid-column: span 3;
-      column-gap: 0;
+      display: flex;
       align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      overflow: hidden;
+      gap: 12px;
       padding-block: 0;
-      padding-inline: 0 var(--padding-3xs);
-
-      .header-logo {
-        grid-area: center;
-      }
-
-      &:not(:has(header-actions)) .search-action {
-        grid-area: leftB;
-      }
-
-      &:not(:has(.account-actions)) .search-action {
-        grid-area: rightA;
-      }
-
-      .search-action {
-        grid-area: leftB;
-      }
-
-      header-actions {
-        grid-area: rightB;
-      }
+      padding-inline: var(--page-margin);
     }
   }
 
-  /* not ideal but we need to duplicate these styles for when touch comes into play
-  We could avoid the duplication using js to set the data-menu-style attribute on small screens instead of using @media queries */
   #header-component[data-menu-style='drawer'] .header__columns {
-    --header-template-columns: var(--header-mobile-bookend) var(--header-mobile-bookend) 1fr
-      var(--header-mobile-bookend) var(--header-mobile-bookend);
-
-    grid-template-areas: 'leftA leftB center rightA rightB';
-    grid-column: span 3;
-    column-gap: 0;
-    align-items: center;
-    padding-block: 0;
-    padding-inline: 0 var(--padding-3xs);
-
-    .header-logo {
-      grid-area: center;
-    }
-
-    &:not(:has(header-actions)) .search-action {
-      grid-area: leftB;
-    }
-
-    &:not(:has(.account-actions)) .search-action {
-      grid-area: rightA;
-    }
-
-    .search-action {
-      grid-area: leftB;
-    }
-
-    header-actions {
-      grid-area: rightB;
+    @media screen and (max-width: 749px) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      overflow: hidden;
+      gap: 12px;
+      padding-block: 0;
+      padding-inline: var(--page-margin);
     }
   }
 
@@ -793,10 +836,7 @@
     }
   }
 
-  /* When the header is transparent, add a margin to a potential header-section below it */
-  .header-section:has(.header[transparent]) + .shopify-section {
-    margin-top: var(--header-height);
-  }
+
 
   /* When the header is transparent, and when there is no header-section below it, offset the first main-section with
    * the height of the header
@@ -1071,6 +1111,95 @@
         }
       ],
       "default": "top"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Menu Text"
+    },
+    {
+      "type": "text",
+      "id": "menu_label",
+      "label": "Menu Label",
+      "default": "Menu"
+    },
+    {
+      "type": "select",
+      "id": "menu_font_preset",
+      "label": "Font Preset",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "select",
+      "id": "menu_font_family",
+      "label": "Font family",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "range",
+      "id": "menu_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 110,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "menu_font_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "bold", "label": "Bold" },
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "range",
+      "id": "menu_letter_spacing",
+      "label": "Letter spacing",
+      "min": -5,
+      "max": 20,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "menu_text_transform",
+      "label": "Text transform",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "color",
+      "id": "menu_color",
+      "label": "Text color",
+      "alpha": true,
+      "default": "#ffffff"
     },
     {
       "type": "header",
