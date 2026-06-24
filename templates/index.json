@@ -701,6 +701,7 @@
       "type": "collection-hover-carousel",
       "name": "Collection Carousel Hover",
       "settings": {
+        "quick_add_icon_color": "#ffffff",
         "collection_title": "",
         "show_collection_title": false,
         "title_animation": "slide-left",

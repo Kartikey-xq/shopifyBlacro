@@ -317,24 +317,6 @@
   endif
 -%}
 
-<style>
-  #header-component .mobile-menu-text-trigger {
-    font-family: {{ menu_font_family | default: 'inherit' }} !important;
-    font-size: {{ menu_font_size | default: 'inherit' }} !important;
-    font-weight: {{ menu_font_weight | default: 'inherit' }} !important;
-    letter-spacing: {{ menu_letter_spacing | default: 'inherit' }} !important;
-    text-transform: {{ menu_text_transform | default: 'inherit' }} !important;
-    color: {{ menu_text_color | default: 'inherit' }} !important;
-    padding: 8px 0;
-    line-height: inherit;
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    width: auto !important;
-    height: auto !important;
-  }
-</style>
-
 <header-component
   id="header-component"
   class="{{ class }}"
@@ -348,6 +330,23 @@
   data-skip-node-update
   data-scroll-direction="none"
 >
+  <style>
+    #header-component .mobile-menu-text-trigger {
+      font-family: {{ menu_font_family | default: 'inherit' }} !important;
+      font-size: {{ menu_font_size | default: 'inherit' }} !important;
+      font-weight: {{ menu_font_weight | default: 'inherit' }} !important;
+      letter-spacing: {{ menu_letter_spacing | default: 'inherit' }} !important;
+      text-transform: {{ menu_text_transform | default: 'inherit' }} !important;
+      color: {{ menu_text_color | default: 'inherit' }} !important;
+      padding: 8px 0;
+      line-height: inherit;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      width: auto !important;
+      height: auto !important;
+    }
+  </style>
   {%- if request.page_type == 'index' -%}
     <h1 class="visually-hidden">{{ shop.name }}</h1>
   {%- endif -%}
