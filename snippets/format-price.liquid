@@ -19,7 +19,7 @@
   if show_currency
     assign formatted_price = price_value | money_with_currency
   else
-    assign formatted_price = price_value | money
+    assign formatted_price = price_value | money_without_trailing_zeros
   endif
 
   if price_type == 'per_item'

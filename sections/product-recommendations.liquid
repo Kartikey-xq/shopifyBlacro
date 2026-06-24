@@ -849,7 +849,7 @@
               {% for product in products limit: section.settings.max_products %}
                 {% liquid
                   assign title = product.title | default: 'Sample Product'
-                  assign price_text = product.price | money_with_currency
+                  assign price_text = product.price | money_without_trailing_zeros
                   assign primary_image = product.featured_image
                   assign hover_image = nil
                   if section.settings.show_secondary_image and product.images.size > 1
@@ -985,7 +985,7 @@
                     </div>
                     <div class="collection-hover-carousel__info{% if section.settings.justify_title_price %} collection-hover-carousel__info--justify{% endif %}">
                       <h4 class="collection-hover-carousel__product-title">Sample Product {{ i }}</h4>
-                      <p class="collection-hover-carousel__product-price">Rs. 1,200.00 INR</p>
+                      <p class="collection-hover-carousel__product-price">Rs. 1,200 INR</p>
                     </div>
                   </div>
                 </div>
