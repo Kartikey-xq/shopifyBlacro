@@ -34,7 +34,7 @@
             "zoom": true,
             "video_loop": false,
             "hide_variants": true,
-            "padding-block-start": 0,
+            "padding-block-start": 6,
             "padding-block-end": 0,
             "padding-inline-start": 0,
             "padding-inline-end": 0
@@ -468,7 +468,7 @@
         "video_fit": "cover",
         "desktop_layout": "text_left",
         "mobile_video_height": "60vh",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-3",
         "custom_bg_color": "",
         "custom_text_color": ""
       }
@@ -508,7 +508,6 @@
       ],
       "name": "t:names.product_recommendations",
       "settings": {
-        "quick_add_icon_color": "#ffffff",
         "product": "",
         "collection": "relic",
         "recommendation_type": "related",

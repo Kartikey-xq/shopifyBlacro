@@ -5330,3 +5330,13 @@ shopify-block:has(> .custom-position-block) {
   align-items: center !important;
 }
 
+.custom-button-block--centered {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.custom-button-block--centered .custom-button {
+  margin: 0 auto;
+}
+
