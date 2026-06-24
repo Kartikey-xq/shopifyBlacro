@@ -71,6 +71,7 @@
     --product-info-left-offset: 0px;
     --collection-carousel-aspect-ratio: {{ aspect_ratio }};
     --desktop-image-height: {{ desktop_image_height }};
+    --quick-add-icon-color: {{ section.settings.quick_add_icon_color | default: '#ffffff' }};
     width: 100% !important;
     max-width: 100% !important;
     padding-left: 0 !important;
@@ -78,6 +79,45 @@
     margin-left: 0 !important;
     margin-right: 0 !important;
     box-sizing: border-box !important;
+  }
+
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__quick-add-btn {
+    background-color: transparent !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: var(--quick-add-icon-color) !important;
+    transition: transform 0.2s ease, opacity 0.2s ease, color 0.2s ease !important;
+  }
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__quick-add-btn::after {
+    display: none !important;
+  }
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__quick-add-btn:hover {
+    transform: scale(1.05) !important;
+    background-color: transparent !important;
+    background: transparent !important;
+    color: var(--quick-add-icon-color) !important;
+  }
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__quick-add-btn.is-success {
+    background-color: transparent !important;
+    background: transparent !important;
+    color: #10b981 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  #product-recommendations-{{ section.id }} .btn-spinner {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    border-top-color: currentColor !important;
+  }
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__title-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__title-link:hover {
+    text-decoration: underline;
+  }
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__card-link-overlay {
+    z-index: 2 !important;
   }
 
   #product-recommendations-{{ section.id }} .page-width {
@@ -859,7 +899,6 @@
                 %}
                 <div class="collection-hover-carousel__item">
                   <div class="collection-hover-carousel__card">
-                    <a href="{{ card_url }}" class="collection-hover-carousel__card-link-overlay" aria-label="{{ title | escape }}"></a>
                     <div class="collection-hover-carousel__image-wrapper{% if hover_image != blank and hover_image != primary_image %} has-hover-image{% endif %}">
                       {% if primary_image != blank %}
                         {{ primary_image 
@@ -885,6 +924,8 @@
                       {% else %}
                         {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'collection-hover-carousel__placeholder-svg' }}
                       {% endif %}
+
+                      <a href="{{ card_url }}" class="collection-hover-carousel__card-link-overlay" aria-label="{{ title | escape }}"></a>
 
                       {% comment %} --- Custom Quick Add Sizes Overlay --- {% endcomment %}
                       {%- assign size_option = nil -%}
@@ -934,7 +975,7 @@
                       </div>
                     </div>
                     <div class="collection-hover-carousel__info{% if section.settings.justify_title_price %} collection-hover-carousel__info--justify{% endif %}">
-                      <h4 class="collection-hover-carousel__product-title">{{ title }}</h4>
+                      <h4 class="collection-hover-carousel__product-title"><a href="{{ card_url }}" class="collection-hover-carousel__title-link">{{ title }}</a></h4>
                       <p class="collection-hover-carousel__product-price">{{ price_text }}</p>
                     </div>
                     
@@ -979,12 +1020,12 @@
                 {% assign placeholder_index = i | modulo: 4 | plus: 1 %}
                 <div class="collection-hover-carousel__item">
                   <div class="collection-hover-carousel__card">
-                    <a href="#" class="collection-hover-carousel__card-link-overlay" aria-label="Sample Product {{ i }}"></a>
                     <div class="collection-hover-carousel__image-wrapper">
                       {{ 'product-' | append: placeholder_index | placeholder_svg_tag: 'collection-hover-carousel__placeholder-svg' }}
+                      <a href="#" class="collection-hover-carousel__card-link-overlay" aria-label="Sample Product {{ i }}"></a>
                     </div>
                     <div class="collection-hover-carousel__info{% if section.settings.justify_title_price %} collection-hover-carousel__info--justify{% endif %}">
-                      <h4 class="collection-hover-carousel__product-title">Sample Product {{ i }}</h4>
+                      <h4 class="collection-hover-carousel__product-title"><a href="#" class="collection-hover-carousel__title-link">Sample Product {{ i }}</a></h4>
                       <p class="collection-hover-carousel__product-price">Rs. 1,200 INR</p>
                     </div>
                   </div>
@@ -1054,6 +1095,16 @@
     }
   ],
   "settings": [
+    {
+      "type": "header",
+      "content": "Quick Add Icon"
+    },
+    {
+      "type": "color",
+      "id": "quick_add_icon_color",
+      "label": "Icon Color",
+      "default": "#ffffff"
+    },
     {
       "type": "product",
       "id": "product",
