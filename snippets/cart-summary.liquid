@@ -12,7 +12,7 @@
       <span class="cart__summary-item cart__original-total">
         <span class="cart__original-total-label">{{ 'content.cart_subtotal' | t }}</span>
         <span class="cart__original-total-value cart-secondary-typography">
-          {{- cart.original_total_price | money -}}
+          {{- cart.original_total_price | money_without_trailing_zeros -}}
         </span>
       </span>
       <div class="cart__summary-discounts">
@@ -28,7 +28,7 @@
                 {{ discount.title | escape }}
               </span>
               <span class="cart__discount-value cart-secondary-typography"
-                >-{{ discount.total_allocated_amount | money -}}
+                >-{{ discount.total_allocated_amount | money_without_trailing_zeros -}}
               </span>
             </li>
           {%- endfor -%}
@@ -218,7 +218,7 @@
     if settings.currency_code_enabled_cart_total
       assign total_price = cart.total_price | money_with_currency
     else
-      assign total_price = cart.total_price | money
+      assign total_price = cart.total_price | money_without_trailing_zeros
     endif
   -%}
 

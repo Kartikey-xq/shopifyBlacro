@@ -416,7 +416,7 @@
               <div class="ai-product-slideshow__content-wrapper-{{ ai_gen_id }}">
                 <div class="ai-product-slideshow__content-box-{{ ai_gen_id }}">
                   <h2 class="ai-product-slideshow__title-{{ ai_gen_id }}">{{ product.title }}</h2>
-                  <div class="ai-product-slideshow__price-{{ ai_gen_id }}">{{ product.price | money }}</div>
+                  <div class="ai-product-slideshow__price-{{ ai_gen_id }}">{{ product.price | money_without_trailing_zeros }}</div>
                   <a href="{{ product.url }}" class="ai-product-slideshow__button-{{ ai_gen_id }}">
                     {{ block.settings.button_text }}
                   </a>

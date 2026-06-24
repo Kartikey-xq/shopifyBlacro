@@ -140,7 +140,9 @@ function formatCents(moneyValue, thousandsSeparator, decimalSeparator, precision
   // Split by groups of 3 digits
   a = a.replace(/\d(?=(\d\d\d)+(?!\d))/g, (digit) => digit + thousandsSeparator);
 
-  return precision <= 0 ? a : a + decimalSeparator + b.padEnd(precision, '0');
+  if (precision <= 0) return a;
+  const decimals = b.padEnd(precision, '0');
+  return /^0+$/.test(decimals) ? a : a + decimalSeparator + decimals;
 }
 
 /**

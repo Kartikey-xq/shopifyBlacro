@@ -248,13 +248,13 @@
                   <div>
                     {% if item.original_price != item.final_price %}
                       <span class="visually-hidden">{{ 'content.price_sale' | t }}</span>
-                      <span>{{ item.final_price | money }}</span>
+                      <span>{{ item.final_price | money_without_trailing_zeros }}</span>
                       <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
                       <s class="compare-at-price">
                         {% if item.variant.compare_at_price > item.original_price %}
-                          {{ item.variant.compare_at_price | money }}
+                          {{ item.variant.compare_at_price | money_without_trailing_zeros }}
                         {% else %}
-                          {{ item.original_price | money }}
+                          {{ item.original_price | money_without_trailing_zeros }}
                         {% endif %}
                       </s>
                     {% else %}
@@ -264,11 +264,11 @@
                         <span class="visually-hidden">{{ 'content.price' | t }}</span>
                       {% endif %}
 
-                      <span>{{ item.original_price | money }}</span>
+                      <span>{{ item.original_price | money_without_trailing_zeros }}</span>
 
                       {% if item.variant.compare_at_price > item.original_price %}
                         <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
-                        <s class="compare-at-price">{{ item.variant.compare_at_price | money }}</s>
+                        <s class="compare-at-price">{{ item.variant.compare_at_price | money_without_trailing_zeros }}</s>
                       {% endif %}
                     {% endif %}
                   </div>
@@ -342,8 +342,8 @@
                       assign price = item.final_line_price | money_with_currency
                       assign unit_price = item.unit_price | money_with_currency
                     else
-                      assign price = item.final_line_price | money
-                      assign unit_price = item.unit_price | money
+                      assign price = item.final_line_price | money_without_trailing_zeros
+                      assign unit_price = item.unit_price | money_without_trailing_zeros
                     endif
                   -%}
                   <text-component value="{{ price | strip_html }}">{{ price }}</text-component>

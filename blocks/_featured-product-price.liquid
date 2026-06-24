@@ -7,7 +7,7 @@
   if settings.currency_code_enabled_product_cards
     assign price_min = product.price_min | money_with_currency
   else
-    assign price_min = product.price_min | money
+    assign price_min = product.price_min | money_without_trailing_zeros
   endif
 
   if product.price_varies
