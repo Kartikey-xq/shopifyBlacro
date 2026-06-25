@@ -61,7 +61,7 @@
         "menu_font_weight": "normal",
         "menu_letter_spacing": 0,
         "menu_text_transform": "none",
-        "menu_color": "#ffffff",
+        "menu_color": "#EEEEEEEE",
         "show_search": true,
         "search_position": "right",
         "search_row": "top",
