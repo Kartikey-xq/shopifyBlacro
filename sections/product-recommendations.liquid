@@ -542,7 +542,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 3rem;
+    margin-bottom: 0;
   }
 
   .collection-hover-carousel__heading {
@@ -550,10 +550,14 @@
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
+    width: 100%;
   }
 
   .collection-hover-carousel__title {
-    margin: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
     font-size: 2.4rem;
     font-weight: 500;
     letter-spacing: -0.02em;
@@ -562,6 +566,7 @@
     opacity: 0;
     transition: opacity 700ms ease, transform 700ms ease;
     will-change: opacity, transform;
+    width: 100%;
   }
 
   .collection-hover-carousel__header.title-visible .collection-hover-carousel__title {
@@ -761,7 +766,7 @@
       text-align: center;
       padding-left: 2rem;
       padding-right: 2rem;
-      margin-bottom: 2rem;
+      margin-bottom: 0;
     }
 
     .collection-hover-carousel__heading {
@@ -856,7 +861,7 @@
         <!-- Header with Title and Navigation Controls -->
         <div class="collection-hover-carousel__header collection-hover-carousel__header--fade-up" style="--title-animation-duration: 700ms;">
           <div class="collection-hover-carousel__heading">
-            <h2 class="collection-hover-carousel__title">{{ section_title }}</h2>
+            <h2 class="collection-hover-carousel__title" style="margin-top: {{ section.settings.title_margin_top }}px; margin-bottom: {{ section.settings.title_margin_bottom }}px; text-align: {{ section.settings.heading_alignment }};">{{ section_title }}</h2>
           </div>
           {% if false %}
             <div class="collection-hover-carousel__nav">
@@ -1648,6 +1653,54 @@
       "label": "Product price custom font size",
       "default": 14,
       "visible_if": "{{ section.settings.price_font == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Title Spacing"
+    },
+    {
+      "type": "range",
+      "id": "title_margin_top",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Title margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "title_margin_bottom",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Title margin bottom",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Title Alignment"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
     },
     {
       "type": "header",
