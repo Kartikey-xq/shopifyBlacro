@@ -34,7 +34,7 @@
             "zoom": true,
             "video_loop": false,
             "hide_variants": true,
-            "padding-block-start": 6,
+            "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
             "padding-inline-end": 0
@@ -194,6 +194,7 @@
                 "variant_style": "buttons",
                 "show_swatches": true,
                 "alignment": "left",
+                "size_option_spacing": 22,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -508,6 +509,7 @@
       ],
       "name": "t:names.product_recommendations",
       "settings": {
+        "quick_add_icon_color": "#ffffff",
         "product": "",
         "collection": "relic",
         "recommendation_type": "related",

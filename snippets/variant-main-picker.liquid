@@ -66,6 +66,24 @@
 
         {%- if variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
           {%- assign fieldset_index = forloop.index0 -%}
+          {%- if is_size_option -%}
+            {% style %}
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper {
+                gap: {{ block_settings.size_option_spacing | default: 0 }}px;
+                {% if block_settings.size_option_spacing > 0 %}
+                  border: none !important;
+                  background: none !important;
+                  overflow: visible !important;
+                {% endif %}
+              }
+              {% if block_settings.size_option_spacing > 0 %}
+                .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label {
+                  border: 1px solid var(--color-variant-border) !important;
+                  border-radius: var(--variant-picker-button-radius, 4px) !important;
+                }
+              {% endif %}
+            {% endstyle %}
+          {%- endif -%}
           <fieldset
             class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}{% if is_size_option %} variant-option--size-segmented{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
