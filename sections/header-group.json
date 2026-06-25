@@ -23,7 +23,7 @@
             "padding-block-end": 1,
             "padding-inline-start": 0,
             "padding-inline-end": 0,
-            "logo_inverse_height": 70,
+            "logo_inverse_height": 80,
             "logo_inverse_height_mobile": 68
           },
           "blocks": {}
@@ -33,7 +33,7 @@
           "static": true,
           "settings": {
             "menu": "main-menu",
-            "type_font_primary_size": "1.125rem",
+            "type_font_primary_size": "0.75rem",
             "menu_font_weight": "300",
             "menu_font_style": "regular",
             "type_font_primary_link": "subheading",
@@ -43,7 +43,7 @@
             "featured_collections_aspect_ratio": "16 / 9",
             "image_border_radius": 0,
             "navigation_bar": false,
-            "drawer_accordion": false,
+            "drawer_accordion": true,
             "drawer_accordion_expand_first": false,
             "drawer_dividers": false
           },
@@ -61,7 +61,7 @@
         "menu_font_weight": "normal",
         "menu_letter_spacing": 0,
         "menu_text_transform": "none",
-        "menu_color": "#000000",
+        "menu_color": "#FAFAFA",
         "show_search": true,
         "search_position": "right",
         "search_row": "top",
@@ -78,7 +78,7 @@
         "divider_width": 0,
         "divider_size": "page-width",
         "border_width": 0,
-        "color_scheme_top": "scheme-2",
+        "color_scheme_top": "scheme-3",
         "color_scheme_bottom": "",
         "color_scheme_transparent": "scheme-1",
         "enable_transparent_header_home": true,

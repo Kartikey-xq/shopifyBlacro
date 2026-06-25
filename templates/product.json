@@ -194,7 +194,7 @@
                 "variant_style": "buttons",
                 "show_swatches": true,
                 "alignment": "left",
-                "size_option_spacing": 22,
+                "size_option_spacing": 3,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
