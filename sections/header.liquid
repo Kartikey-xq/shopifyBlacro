@@ -311,6 +311,8 @@
   {% if sticky %}
     sticky="{{ sticky }}"
   {% endif %}
+  transparent-desktop="{% if section.settings.enable_transparent_header_desktop and transparent %}{{ transparent }}{% else %}none{% endif %}"
+  sticky-desktop="{{ section.settings.sticky_behavior_desktop }}"
   data-skip-node-update
   data-scroll-direction="none"
 >
@@ -1417,6 +1419,32 @@
         {
           "value": "never",
           "label": "t:options.never"
+        }
+      ],
+      "default": "always"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_transparent_header_desktop",
+      "label": "Enable transparent header on desktop",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "sticky_behavior_desktop",
+      "label": "Header sticky behavior on desktop",
+      "options": [
+        {
+          "value": "always",
+          "label": "Always sticky"
+        },
+        {
+          "value": "scroll-up",
+          "label": "Sticky on scroll up"
+        },
+        {
+          "value": "never",
+          "label": "Not sticky"
         }
       ],
       "default": "always"

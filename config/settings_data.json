@@ -17,7 +17,7 @@
     "skip_color": "#f5f5f5",
     "logo": "shopify://shop_images/ChatGPT_Image_Jun_5_2026_01_21_31_PM_430x-removebg-preview.png",
     "logo_inverse": "shopify://shop_images/Gemini_Generated_Image_5ihdvm5ihdvm5ihd__1_-removebg-preview.png",
-    "logo_height": 67,
+    "logo_height": 46,
     "logo_height_mobile": 38,
     "favicon": "shopify://shop_images/ChatGPT_Image_Jun_5_2026_01_19_20_PM.png",
     "type_body_font": "garamond_n4",
@@ -141,13 +141,13 @@
       },
       "scheme-2": {
         "settings": {
-          "background": "#f5f5f5",
+          "background": "#C2A570",
           "foreground_heading": "#171616",
-          "foreground": "#000000cf",
+          "foreground": "#FAFAFA",
           "primary": "#000000cf",
           "primary_hover": "#ffffff",
           "border": "#dfdfdf",
-          "shadow": "#FAFAFA",
+          "shadow": "#fafafa",
           "primary_button_background": "#000000",
           "primary_button_text": "#ffffff",
           "primary_button_border": "#000000",
@@ -180,9 +180,9 @@
       },
       "scheme-3": {
         "settings": {
-          "background": "#8ff508",
+          "background": "#FAFAFA",
           "foreground_heading": "#000000",
-          "foreground": "#fafafa",
+          "foreground": "#000000",
           "primary": "#eeeeeeed",
           "primary_hover": "#dab87a",
           "border": "#000000cf",

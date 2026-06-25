@@ -1,5 +1,10 @@
 import { Component } from '@theme/component';
-import { onDocumentLoaded, changeMetaThemeColor, setHeaderMenuStyle } from '@theme/utilities';
+import {
+  onDocumentLoaded,
+  changeMetaThemeColor,
+  setHeaderMenuStyle,
+  updateAllHeaderCustomProperties,
+} from '@theme/utilities';
 
 /**
  * @typedef {Object} HeaderComponentRefs
@@ -182,7 +187,138 @@ class HeaderComponent extends Component {
     this.#lastScrollTop = scrollTop;
   };
 
+  /**
+   * Original transparent attribute value
+   * @type {string | null}
+   */
+  #originalTransparent = null;
+
+  /**
+   * Original sticky attribute value
+   * @type {string | null}
+   */
+  #originalSticky = null;
+
+  /**
+   * Whether the original attributes have been stored
+   * @type {boolean}
+   */
+  #hasOriginals = false;
+
+  /**
+   * Whether standard initialization is complete
+   * @type {boolean}
+   */
+  #isInitialized = false;
+
+  #handleResize = () => {
+    this.#applyTransparentHeaderOverrides();
+  };
+
+  #applyTransparentHeaderOverrides = () => {
+    // Add template-product class to body if it's a product page
+    if (window.location.pathname.includes('/products/') || document.querySelector('[data-template-product-match]')) {
+      document.body.classList.add('template-product');
+    }
+
+    const isProductPage = document.body.classList.contains('template-product');
+    const isDesktop = window.innerWidth >= 750;
+
+    let targetTransparent = this.#originalTransparent;
+    let targetSticky = this.#originalSticky;
+
+    if (isDesktop) {
+      if (isProductPage) {
+        // Desktop product page bypass
+        targetTransparent = null;
+        targetSticky = 'always';
+      } else {
+        // Desktop generic settings
+        const transparentDesktop = this.getAttribute('transparent-desktop');
+        const stickyDesktop = this.getAttribute('sticky-desktop');
+
+        if (transparentDesktop === 'none' || !transparentDesktop) {
+          targetTransparent = null;
+        } else {
+          targetTransparent = transparentDesktop;
+        }
+
+        if (stickyDesktop === 'never' || !stickyDesktop) {
+          targetSticky = null;
+        } else {
+          targetSticky = stickyDesktop;
+        }
+      }
+    } else {
+      // Mobile uses original attributes
+      targetTransparent = this.#originalTransparent;
+      targetSticky = this.#originalSticky;
+    }
+
+    const currentTransparent = this.getAttribute('transparent');
+    const currentSticky = this.getAttribute('sticky');
+
+    let changed = false;
+
+    if (targetTransparent !== currentTransparent) {
+      if (targetTransparent === null) {
+        this.removeAttribute('transparent');
+      } else {
+        this.setAttribute('transparent', targetTransparent);
+      }
+      changed = true;
+    }
+
+    if (targetSticky !== currentSticky) {
+      if (targetSticky === null) {
+        this.removeAttribute('sticky');
+      } else {
+        this.setAttribute('sticky', targetSticky);
+      }
+      changed = true;
+    }
+
+    if (changed && this.#isInitialized) {
+      this.#reinitializeStickyBehavior();
+      updateAllHeaderCustomProperties();
+    }
+  };
+
+  #reinitializeStickyBehavior() {
+    if (this.#intersectionObserver) {
+      this.#intersectionObserver.disconnect();
+      this.#intersectionObserver = null;
+    }
+    document.removeEventListener('scroll', this.#handleWindowScroll);
+    if (this.#scrollRafId !== null) {
+      cancelAnimationFrame(this.#scrollRafId);
+      this.#scrollRafId = null;
+    }
+    delete this.dataset.stickyState;
+    delete this.dataset.scrollDirection;
+    this.#offscreen = false;
+    this.#lastScrollTop = 0;
+
+    const stickyMode = this.getAttribute('sticky');
+    if (stickyMode) {
+      this.#observeStickyPosition(stickyMode === 'always');
+
+      if (stickyMode === 'scroll-up' || stickyMode === 'always') {
+        document.addEventListener('scroll', this.#handleWindowScroll);
+      }
+    }
+  }
+
   connectedCallback() {
+    if (!this.#hasOriginals) {
+      this.#originalTransparent = this.getAttribute('transparent');
+      this.#originalSticky = this.getAttribute('sticky');
+      this.#hasOriginals = true;
+    }
+
+    // Apply target attributes before normal setup
+    this.#applyTransparentHeaderOverrides();
+
     super.connectedCallback();
     this.#resizeObserver.observe(this);
     this.addEventListener('overflowMinimum', this.#handleOverflowMinimum);
@@ -195,6 +331,15 @@ class HeaderComponent extends Component {
         document.addEventListener('scroll', this.#handleWindowScroll);
       }
     }
+
+    window.addEventListener('resize', this.#handleResize);
+
+    this.#isInitialized = true;
+
+    // If attributes were changed from original, update custom properties
+    if (this.getAttribute('transparent') !== this.#originalTransparent || this.getAttribute('sticky') !== this.#originalSticky) {
+      updateAllHeaderCustomProperties();
+    }
   }
 
   disconnectedCallback() {
@@ -203,11 +348,13 @@ class HeaderComponent extends Component {
     this.#intersectionObserver?.disconnect();
     this.removeEventListener('overflowMinimum', this.#handleOverflowMinimum);
     document.removeEventListener('scroll', this.#handleWindowScroll);
+    window.removeEventListener('resize', this.#handleResize);
     if (this.#scrollRafId !== null) {
       cancelAnimationFrame(this.#scrollRafId);
       this.#scrollRafId = null;
     }
     document.body.style.setProperty('--header-height', '0px');
+    this.#isInitialized = false;
   }
 }
 
