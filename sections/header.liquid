@@ -332,7 +332,8 @@
       font-weight: {{ menu_font_weight | default: 'inherit' }} !important;
       letter-spacing: {{ menu_letter_spacing | default: 'inherit' }} !important;
       text-transform: {{ menu_text_transform | default: 'inherit' }} !important;
-      color: {{ menu_text_color | default: 'inherit' }} !important;
+      color: rgb(var(--color-foreground)) !important;
+      transition: color var(--animation-speed) var(--animation-easing);
       padding: 8px 0;
       line-height: inherit;
       display: flex;
