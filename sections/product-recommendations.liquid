@@ -130,7 +130,11 @@
   }
 
   #product-recommendations-{{ section.id }} .collection-hover-carousel__header {
-    padding-left: calc(var(--carousel-padding-horizontal, 0px) + var(--page-margin, 2rem)) !important;
+    {% if section.settings.heading_alignment == 'left' %}
+      padding-left: 1px !important;
+    {% else %}
+      padding-left: calc(var(--carousel-padding-horizontal, 0px) + var(--page-margin, 2rem)) !important;
+    {% endif %}
     padding-right: calc(var(--carousel-padding-horizontal, 0px) + var(--page-margin, 2rem)) !important;
   }
 
@@ -148,9 +152,20 @@
       padding-right: var(--carousel-padding-horizontal, 0px) !important;
     }
     #product-recommendations-{{ section.id }} .collection-hover-carousel__header {
-      padding-left: calc(var(--carousel-padding-horizontal, 0px) + 2rem) !important;
+      {% if section.settings.heading_alignment == 'left' %}
+        padding-left: 1px !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+      {% else %}
+        padding-left: calc(var(--carousel-padding-horizontal, 0px) + 2rem) !important;
+      {% endif %}
       padding-right: calc(var(--carousel-padding-horizontal, 0px) + 2rem) !important;
     }
+    {% if section.settings.heading_alignment == 'left' %}
+      #product-recommendations-{{ section.id }} .collection-hover-carousel__heading {
+        justify-content: flex-start !important;
+      }
+    {% endif %}
   }
 
   @media screen and (max-width: 480px) {
