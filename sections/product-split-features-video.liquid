@@ -274,49 +274,53 @@
 
   <div class="product-split-features__video-column">
     <div class="product-split-features__video-wrapper">
-      {%- if sec_settings.video_source == 'uploaded' and sec_settings.video != blank -%}
-        {{
-          sec_settings.video
-          | video_tag:
-            autoplay: true,
-            loop: true,
-            muted: true,
-            controls: false,
-            playsinline: true,
-            class: 'product-split-features__video'
-        }}
-      {%- elsif sec_settings.video_source == 'url' and sec_settings.video_url != blank -%}
-        {%- if sec_settings.video_url.type == 'youtube' -%}
-          <iframe
-            src="https://www.youtube.com/embed/{{ sec_settings.video_url.id }}?autoplay=1&mute=1&loop=1&playlist={{ sec_settings.video_url.id }}&controls=0&modestbranding=1&playsinline=1&showinfo=0&rel=0"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            allowfullscreen
-            class="product-split-features__video"
-            title="Video Player"
-          ></iframe>
-        {%- elsif sec_settings.video_url.type == 'vimeo' -%}
-          <iframe
-            src="https://player.vimeo.com/video/{{ sec_settings.video_url.id }}?autoplay=1&muted=1&loop=1&background=1&playsinline=1"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            allowfullscreen
-            class="product-split-features__video"
-            title="Video Player"
-          ></iframe>
+      {%- liquid
+        assign found_video = blank
+        for media in product.media
+          if media.media_type == 'video' or media.media_type == 'external_video'
+            assign found_video = media
+            break
+          endif
+        endfor
+      -%}
+      {%- if found_video != blank -%}
+        {%- if found_video.media_type == 'video' -%}
+          {{
+            found_video
+            | video_tag:
+              autoplay: true,
+              loop: true,
+              muted: true,
+              controls: false,
+              playsinline: true,
+              class: 'product-split-features__video'
+          }}
+        {%- elsif found_video.media_type == 'external_video' -%}
+          {{
+            found_video
+            | external_video_tag:
+              autoplay: true,
+              loop: true,
+              muted: true,
+              controls: false,
+              playsinline: true,
+              class: 'product-split-features__video'
+          }}
         {%- endif -%}
-      {%- elsif sec_settings.video_source == 'custom_mp4' and sec_settings.custom_mp4_url != blank -%}
-        <video
-          autoplay
-          loop
-          muted
-          playsinline
-          class="product-split-features__video"
-        >
-          <source src="{{ sec_settings.custom_mp4_url }}" type="video/mp4">
-        </video>
       {%- else -%}
-        {{ 'hero-apparel-3' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- assign fallback_image = product.featured_image | default: product.media[0] -%}
+        {%- if fallback_image != blank -%}
+          {{
+            fallback_image
+            | image_url: width: 1400
+            | image_tag:
+              class: 'product-split-features__video',
+              widths: '375, 550, 750, 1100, 1500, 1780, 2000',
+              alt: fallback_image.alt | escape
+          }}
+        {%- else -%}
+          {{ 'hero-apparel-3' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
       {%- endif -%}
     </div>
   </div>
