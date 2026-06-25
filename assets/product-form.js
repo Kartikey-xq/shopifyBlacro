@@ -203,11 +203,6 @@ class ProductFormComponent extends Component {
   #triggerSizeWarning(element) {
     if (!element) return;
     
-    element.classList.add('size-picker-shake');
-    element.addEventListener('animationend', () => {
-      element.classList.remove('size-picker-shake');
-    }, { once: true });
-    
     element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     
     const errorText = this.refs.addToCartTextError || this.querySelector('.product-form-text__error');
