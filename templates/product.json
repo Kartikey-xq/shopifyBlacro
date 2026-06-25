@@ -529,7 +529,7 @@
         "show_swatches": true,
         "swatches_alignment": "flex-start",
         "swatches_alignment_mobile": "flex-start",
-        "swatches_padding_top": 4,
+        "swatches_padding_top": 0,
         "swatches_padding_bottom": 0,
         "swatches_padding_left": 0,
         "swatches_padding_right": 0,
@@ -545,7 +545,10 @@
         "title_custom_size": 14,
         "price_font": "custom",
         "price_custom_font": "body",
-        "price_custom_size": 12,
+        "price_custom_size": 16,
+        "title_margin_top": 0,
+        "title_margin_bottom": 4,
+        "heading_alignment": "center",
         "padding-block-start": 0,
         "padding-block-end": 0
       }
