@@ -13,6 +13,10 @@
 
 {% liquid
   assign block_settings = block.settings
+  assign drawer_color_scheme = section.settings.color_scheme_top
+  if transparent_color_scheme != blank
+    assign drawer_color_scheme = transparent_color_scheme | remove: 'color-'
+  endif
   assign max_featured_items = 4
   assign image_border_radius = block_settings.image_border_radius
 
@@ -67,10 +71,11 @@
       </span>
     </summary>
     <div
+      id="menu-drawer"
       ref="menuDrawer"
       class="
         menu-drawer
-        color-{{ block_settings.color_scheme }}
+        color-{{ drawer_color_scheme | default: block_settings.color_scheme }}
       "
     >
       <button
@@ -752,6 +757,28 @@
 </header-drawer>
 
 {% stylesheet %}
+  #menu-drawer {
+    background-color: #eeeeee !important;
+    color: #000000 !important;
+  }
+
+  #menu-drawer a,
+  #menu-drawer .header__menu-item,
+  #menu-drawer button {
+    color: #000000 !important;
+  }
+
+  #menu-drawer .cart-item__details,
+  #menu-drawer .cart-item__name,
+  #menu-drawer .cart-item__title,
+  #menu-drawer .title,
+  #menu-drawer .resource-card__title,
+  #menu-drawer .cart-item__price,
+  #menu-drawer .price,
+  #menu-drawer a {
+    color: #000000 !important;
+  }
+
   .header__icon--menu {
     position: initial;
   }
