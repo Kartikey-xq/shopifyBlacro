@@ -112,6 +112,10 @@
     -webkit-backdrop-filter: none !important;
     mask-image: none !important;
     -webkit-mask-image: none !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     {% if block_settings.read_more_font == 'body' %}
       font-family: var(--font-paragraph--family);
       font-size: var(--font-paragraph--size, 1.6rem);
@@ -143,6 +147,13 @@
     {% else %}
       color: var(--color-primary, currentColor);
     {% endif %}
+  }
+
+  .block-{{ block.id }} .expandable-description__button-text {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
 
   .block-{{ block.id }} .expandable-description {
