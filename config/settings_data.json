@@ -141,9 +141,9 @@
       },
       "scheme-2": {
         "settings": {
-          "background": "#C2A570",
+          "background": "#c2a570",
           "foreground_heading": "#171616",
-          "foreground": "#FAFAFA",
+          "foreground": "#fafafa",
           "primary": "#000000cf",
           "primary_hover": "#ffffff",
           "border": "#dfdfdf",
@@ -180,7 +180,7 @@
       },
       "scheme-3": {
         "settings": {
-          "background": "#FAFAFA",
+          "background": "#fafafa",
           "foreground_heading": "#000000",
           "foreground": "#000000",
           "primary": "#eeeeeeed",
@@ -414,9 +414,9 @@
       },
       "scheme-a7bd06a8-8563-4ae5-ace6-44eb32b1b4d9": {
         "settings": {
-          "background": "#1c1c1c",
-          "foreground_heading": "#eeeeee",
-          "foreground": "#ffa60070",
+          "background": "#FAFAFA",
+          "foreground_heading": "#000000",
+          "foreground": "#000000",
           "primary": "#ffffff",
           "primary_hover": "#fafafa",
           "border": "#0000000f",
