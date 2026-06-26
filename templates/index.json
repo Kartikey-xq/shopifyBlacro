@@ -712,7 +712,7 @@
         "products_to_show": 4,
         "enable_full_width": true,
         "text_alignment": "left",
-        "product_info_left_offset": 2.5,
+        "product_info_left_offset": 4.5,
         "justify_title_price": false,
         "color_scheme": "scheme-3",
         "custom_bg_color": "",

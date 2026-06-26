@@ -549,6 +549,7 @@
         "title_margin_top": 8,
         "title_margin_bottom": 8,
         "heading_alignment": "left",
+        "product_info_left_offset": 0.5,
         "padding-block-start": 0,
         "padding-block-end": 0
       }

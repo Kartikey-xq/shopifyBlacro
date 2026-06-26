@@ -68,7 +68,7 @@
     --cols-desktop: {{ cols_desktop }};
     --cols-tablet: {{ cols_tablet }};
     --cols-mobile: {{ cols_mobile }};
-    --product-info-left-offset: 0px;
+    --product-info-left-offset: {{ section.settings.product_info_left_offset | default: 0 }}rem;
     --collection-carousel-aspect-ratio: {{ aspect_ratio }};
     --desktop-image-height: {{ desktop_image_height }};
     --quick-add-icon-color: {{ section.settings.quick_add_icon_color | default: '#ffffff' }};
@@ -131,11 +131,19 @@
 
   #product-recommendations-{{ section.id }} .collection-hover-carousel__header {
     {% if section.settings.heading_alignment == 'left' %}
-      padding-left: 1px !important;
+      padding-left: calc(1px + var(--product-info-left-offset, 0rem)) !important;
     {% else %}
-      padding-left: calc(var(--carousel-padding-horizontal, 0px) + var(--page-margin, 2rem)) !important;
+      padding-left: calc(var(--carousel-padding-horizontal, 0px) + var(--page-margin, 2rem) + var(--product-info-left-offset, 0rem)) !important;
     {% endif %}
     padding-right: calc(var(--carousel-padding-horizontal, 0px) + var(--page-margin, 2rem)) !important;
+  }
+
+  #product-recommendations-{{ section.id }} .collection-hover-carousel__info {
+    padding-left: var(--product-info-left-offset, 0rem) !important;
+  }
+
+  #product-recommendations-{{ section.id }} product-swatches {
+    padding-left: var(--product-info-left-offset, 0rem) !important;
   }
 
   #product-recommendations-{{ section.id }} .collection-hover-carousel__track {
@@ -153,11 +161,11 @@
     }
     #product-recommendations-{{ section.id }} .collection-hover-carousel__header {
       {% if section.settings.heading_alignment == 'left' %}
-        padding-left: 1px !important;
+        padding-left: calc(1px + var(--product-info-left-offset, 0rem)) !important;
         align-items: flex-start !important;
         text-align: left !important;
       {% else %}
-        padding-left: calc(var(--carousel-padding-horizontal, 0px) + 2rem) !important;
+        padding-left: calc(var(--carousel-padding-horizontal, 0px) + 2rem + var(--product-info-left-offset, 0rem)) !important;
       {% endif %}
       padding-right: calc(var(--carousel-padding-horizontal, 0px) + 2rem) !important;
     }
@@ -1716,6 +1724,16 @@
         }
       ],
       "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "product_info_left_offset",
+      "min": 0,
+      "max": 10,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Product Info Left Offset",
+      "default": 0
     },
     {
       "type": "header",
