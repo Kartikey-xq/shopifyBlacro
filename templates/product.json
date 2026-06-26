@@ -116,9 +116,9 @@
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
-                    "type_preset": "h3",
-                    "font": "var(--font-primary--family)",
-                    "font_size": "",
+                    "type_preset": "custom",
+                    "font": "var(--font-accent--family)",
+                    "font_size": "0.625rem",
                     "line_height": "normal",
                     "letter_spacing": "normal",
                     "case": "none",
@@ -373,8 +373,8 @@
         "text_1": {
           "type": "text_point",
           "settings": {
-            "title": "title 2",
-            "text": "<p>Custom product features go here.</p>",
+            "title": "Top length type",
+            "text": "<p></p>{{ product.metafields.shopify[\"top-length-type\"] | metafield_tag: field: 'label' }}",
             "title_font_preset": "custom",
             "title_font_family": "var(--font-accent--family)",
             "title_custom_size": 14,
@@ -394,8 +394,8 @@
         "text_2": {
           "type": "text_point",
           "settings": {
-            "title": "title1",
-            "text": "<p> Custom product details map to metafields.</p>",
+            "title": "Neckline type",
+            "text": "<p></p>{{ product.metafields.shopify.neckline | metafield_tag: field: 'label' }}",
             "title_font_preset": "custom",
             "title_font_family": "var(--font-accent--family)",
             "title_custom_size": 14,
@@ -415,8 +415,8 @@
         "text_point_My9Mtd": {
           "type": "text_point",
           "settings": {
-            "title": "title1",
-            "text": "<p> Custom product details map to metafields.</p>",
+            "title": "Sleeve length type",
+            "text": "<p></p>{{ product.metafields.shopify[\"sleeve-length-type\"] | metafield_tag: field: 'label' }}",
             "title_font_preset": "custom",
             "title_font_family": "var(--font-accent--family)",
             "title_custom_size": 14,
@@ -436,8 +436,8 @@
         "text_point_bamwrr": {
           "type": "text_point",
           "settings": {
-            "title": "title1",
-            "text": "<p> Custom product details map to metafields.</p>",
+            "title": "Color",
+            "text": "<p></p>{{ product.metafields.shopify[\"color-pattern\"] | metafield_tag: field: 'label' }}",
             "title_font_preset": "custom",
             "title_font_family": "var(--font-accent--family)",
             "title_custom_size": 14,
@@ -524,7 +524,7 @@
         "image_ratio": "portrait",
         "desktop_card_height": "adapt",
         "desktop_card_custom_height": 380,
-        "padding_horizontal": 12,
+        "padding_horizontal": 0,
         "carousel_gap": 2,
         "show_swatches": true,
         "swatches_alignment": "flex-start",
