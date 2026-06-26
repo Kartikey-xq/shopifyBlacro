@@ -103,6 +103,15 @@
     text-decoration: underline;
     display: inline-flex;
     align-items: center;
+    position: relative;
+    z-index: 2;
+    isolation: isolate;
+    filter: none !important;
+    -webkit-filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
     {% if block_settings.read_more_font == 'body' %}
       font-family: var(--font-paragraph--family);
       font-size: var(--font-paragraph--size, 1.6rem);
@@ -155,6 +164,7 @@
     background: linear-gradient(to bottom, {{ bg_color_transparent }} 0%, {{ bg_color }} 85%);
     pointer-events: none;
     transition: opacity 0.3s ease;
+    z-index: 1;
   }
   .block-{{ block.id }} .expandable-description.is-expanded .expandable-description__container::after {
     opacity: 0;
