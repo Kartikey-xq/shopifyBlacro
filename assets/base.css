@@ -5059,7 +5059,7 @@ product-recommendations:has([data-has-recommendations='false']) {
 
 /* Color count label styling */
 .variant-option__color-count {
-  display: inline-flex;
+  display: none !important;
   align-items: center;
   margin-left: 12px;
   font-family: var(--font-paragraph--family);
@@ -5338,5 +5338,10 @@ shopify-block:has(> .custom-position-block) {
 
 .custom-button-block--centered .custom-button {
   margin: 0 auto;
+}
+
+/* Hide sticky ATC bar when mobile menu drawer is open */
+body:has(.menu-drawer-container[open]) .mobile-sticky-atc-wrapper {
+  display: none !important;
 }
 
