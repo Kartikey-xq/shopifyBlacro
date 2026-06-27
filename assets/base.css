@@ -5340,3 +5340,8 @@ shopify-block:has(> .custom-position-block) {
   margin: 0 auto;
 }
 
+/* Hide sticky ATC bar when mobile menu drawer is open */
+body:has(.menu-drawer-container[open]) .mobile-sticky-atc-wrapper {
+  display: none !important;
+}
+
