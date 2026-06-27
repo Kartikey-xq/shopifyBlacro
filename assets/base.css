@@ -5059,7 +5059,7 @@ product-recommendations:has([data-has-recommendations='false']) {
 
 /* Color count label styling */
 .variant-option__color-count {
-  display: inline-flex;
+  display: none !important;
   align-items: center;
   margin-left: 12px;
   font-family: var(--font-paragraph--family);

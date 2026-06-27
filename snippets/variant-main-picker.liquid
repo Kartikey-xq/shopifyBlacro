@@ -18,6 +18,7 @@
     endif
   %}
   <variant-picker
+    id="{{ block.id }}"
     class="variant-picker spacing-style variant-picker--{{ block_settings.alignment }}"
     style="--color-strikethrough-mix: {{ strikethrough_color_mix }}; {% render 'spacing-style', settings: block_settings %}"
     data-section-id="{{ section.id }}"
@@ -33,6 +34,36 @@
       data-shopify-visual-preview
     {% endif %}
   >
+    {%- if block_settings.show_swatches and block_settings.variant_style == 'buttons' -%}
+      {% style %}
+        [id="{{ block.id }}"] .swatch {
+          border-radius: {{ block_settings.swatch_border_radius }}px !important;
+          width: {{ block_settings.swatch_size }}px !important;
+          height: {{ block_settings.swatch_size }}px !important;
+          --swatch-width: {{ block_settings.swatch_size }}px !important;
+          --swatch-height: {{ block_settings.swatch_size }}px !important;
+        }
+        [id="{{ block.id }}"] .variant-option__button-label--has-swatch {
+          border-radius: {{ block_settings.swatch_border_radius }}px !important;
+          --focus-outline-radius: {{ block_settings.swatch_border_radius }}px !important;
+        }
+
+        [id="{{ block.id }}"] .swatch,
+        [id="{{ block.id }}"] .variant-option__button-label--has-swatch {
+          outline: none !important;
+          box-shadow: none !important;
+        }
+
+        [id="{{ block.id }}"] .swatch:focus,
+        [id="{{ block.id }}"] .swatch:focus-visible,
+        [id="{{ block.id }}"] .variant-option__button-label--has-swatch:focus,
+        [id="{{ block.id }}"] .variant-option__button-label--has-swatch:focus-visible {
+          outline: 2px solid currentColor !important;
+          outline-offset: 2px !important;
+          border-radius: {{ block_settings.swatch_border_radius }}px !important;
+        }
+      {% endstyle %}
+    {%- endif -%}
     <form class="variant-picker__form">
       {%- for product_option in product_resource.options_with_values -%}
         {%- liquid

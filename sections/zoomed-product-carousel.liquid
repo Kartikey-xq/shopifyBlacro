@@ -1,0 +1,411 @@
+{%- liquid
+  assign product_images = product.images
+  if product_images == blank and request.visual_preview_mode
+    # Fallback for visual editor when no product context is available
+    assign product_images = collections.all.products.first.images
+  endif
+-%}
+
+<style>
+  #zoomed-product-carousel-{{ section.id }} {
+    display: block;
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  .zoomed-carousel-inner-{{ section.id }} {
+    position: relative;
+    width: 100%;
+  }
+
+  .zoomed-carousel-track-wrapper-{{ section.id }} {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .zoomed-carousel-track-{{ section.id }} {
+    display: flex;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    margin: 0;
+    padding: 0;
+  }
+
+  .zoomed-carousel-slide-{{ section.id }} {
+    flex: 0 0 100vw;
+    width: 100vw;
+    height: 60vh;
+    box-sizing: border-box;
+  }
+
+  @media screen and (min-width: 750px) {
+    .zoomed-carousel-slide-{{ section.id }} {
+      flex: 0 0 50vw;
+      width: 50vw;
+      height: 80vh;
+    }
+  }
+
+  .zoomed-carousel-image-{{ section.id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Arrows */
+  .zoomed-carousel-arrow-{{ section.id }} {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s, transform 0.2s;
+    opacity: 0.8;
+    background: transparent;
+    border: none;
+  }
+
+  .zoomed-carousel-arrow-{{ section.id }}:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  .zoomed-carousel-arrow-prev-{{ section.id }} {
+    left: 24px;
+  }
+
+  .zoomed-carousel-arrow-next-{{ section.id }} {
+    right: 24px;
+  }
+
+  .zoomed-carousel-arrow-minimal-{{ section.id }} {
+    color: var(--color-foreground, #000);
+    width: 44px;
+    height: 44px;
+  }
+
+  .zoomed-carousel-arrow-minimal-{{ section.id }} svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .zoomed-carousel-arrow-bold-{{ section.id }} {
+    color: var(--color-foreground, #000);
+    width: 48px;
+    height: 48px;
+  }
+
+  .zoomed-carousel-arrow-bold-{{ section.id }} svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .zoomed-carousel-arrow-bold-{{ section.id }} svg circle {
+    fill: var(--color-foreground, #000);
+  }
+
+  .zoomed-carousel-arrow-bold-{{ section.id }} svg path {
+    stroke: var(--color-background, #fff);
+  }
+
+  .placeholder-svg-{{ section.id }} {
+    background-color: #f3f3f3;
+    fill: #888;
+  }
+</style>
+
+<zoomed-product-carousel
+  id="zoomed-product-carousel-{{ section.id }}"
+  class="color-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section.id }}"
+>
+  {%- if product_images.size > 0 -%}
+    <div class="zoomed-carousel-inner-{{ section.id }}">
+      <div class="zoomed-carousel-track-wrapper-{{ section.id }}">
+        <div class="zoomed-carousel-track-{{ section.id }}">
+          {%- for image in product_images -%}
+            <div class="zoomed-carousel-slide-{{ section.id }}">
+              <img
+                src="{{ image | image_url: width: 1600 }}"
+                alt="{{ image.alt | escape }}"
+                loading="lazy"
+                width="{{ image.width }}"
+                height="{{ image.height }}"
+                class="zoomed-carousel-image-{{ section.id }}"
+              >
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- if section.settings.arrow_style != 'none' -%}
+        <button
+          type="button"
+          class="zoomed-carousel-arrow-{{ section.id }} zoomed-carousel-arrow-prev-{{ section.id }} zoomed-carousel-arrow-{{ section.settings.arrow_style }}-{{ section.id }}"
+          aria-label="Previous slide"
+          ref="prev"
+        >
+          {%- if section.settings.arrow_style == 'minimal' -%}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {%- else -%}
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M14 16l-4-4 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {%- endif -%}
+        </button>
+        <button
+          type="button"
+          class="zoomed-carousel-arrow-{{ section.id }} zoomed-carousel-arrow-next-{{ section.id }} zoomed-carousel-arrow-{{ section.settings.arrow_style }}-{{ section.id }}"
+          aria-label="Next slide"
+          ref="next"
+        >
+          {%- if section.settings.arrow_style == 'minimal' -%}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {%- else -%}
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M10 8l4 4-4 4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {%- endif -%}
+        </button>
+      {%- endif -%}
+    </div>
+  {%- else -%}
+    <!-- Onboarding placeholder content -->
+    <div class="zoomed-carousel-inner-{{ section.id }}">
+      <div class="zoomed-carousel-track-wrapper-{{ section.id }}">
+        <div class="zoomed-carousel-track-{{ section.id }}">
+          {%- for i in (1..4) -%}
+            <div class="zoomed-carousel-slide-{{ section.id }}">
+              {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg zoomed-carousel-image-' | append: section.id | append: ' placeholder-svg-' | append: section.id }}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- if section.settings.arrow_style != 'none' -%}
+        <button
+          type="button"
+          class="zoomed-carousel-arrow-{{ section.id }} zoomed-carousel-arrow-prev-{{ section.id }} zoomed-carousel-arrow-{{ section.settings.arrow_style }}-{{ section.id }}"
+          aria-label="Previous slide"
+          ref="prev"
+        >
+          {%- if section.settings.arrow_style == 'minimal' -%}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {%- else -%}
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M14 16l-4-4 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {%- endif -%}
+        </button>
+        <button
+          type="button"
+          class="zoomed-carousel-arrow-{{ section.id }} zoomed-carousel-arrow-next-{{ section.id }} zoomed-carousel-arrow-{{ section.settings.arrow_style }}-{{ section.id }}"
+          aria-label="Next slide"
+          ref="next"
+        >
+          {%- if section.settings.arrow_style == 'minimal' -%}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {%- else -%}
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M10 8l4 4-4 4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {%- endif -%}
+        </button>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</zoomed-product-carousel>
+
+<script>
+  if (!customElements.get('zoomed-product-carousel')) {
+    customElements.define('zoomed-product-carousel', class ZoomedProductCarousel extends HTMLElement {
+      constructor() {
+        super();
+        this.sectionId = this.dataset.sectionId;
+        this.track = this.querySelector(`.zoomed-carousel-track-${this.sectionId}`);
+        this.slides = Array.from(this.querySelectorAll(`.zoomed-carousel-slide-${this.sectionId}`));
+        this.prevButton = this.querySelector('[ref="prev"]');
+        this.nextButton = this.querySelector('[ref="next"]');
+        this.currentIndex = 0;
+
+        if (this.slides.length === 0) return;
+
+        this.init();
+      }
+
+      init() {
+        if (this.prevButton) this.prevButton.addEventListener('click', () => this.slide('prev'));
+        if (this.nextButton) this.nextButton.addEventListener('click', () => this.slide('next'));
+
+        // Mobile touch swipe gestures
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        this.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        this.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          this.handleSwipe(touchStartX, touchEndX);
+        }, { passive: true });
+
+        // Scoped resize handler
+        this.resizeObserver = new ResizeObserver(() => this.updateSlidePosition());
+        this.resizeObserver.observe(this);
+
+        this.updateSlidePosition();
+      }
+
+      getSlidesPerView() {
+        return window.innerWidth >= 750 ? 2 : 1;
+      }
+
+      getMaxIndex() {
+        const perView = this.getSlidesPerView();
+        return Math.max(0, this.slides.length - perView);
+      }
+
+      slide(direction) {
+        const maxIndex = this.getMaxIndex();
+        if (direction === 'prev') {
+          this.currentIndex = this.currentIndex > 0 ? this.currentIndex - 1 : maxIndex;
+        } else {
+          this.currentIndex = this.currentIndex < maxIndex ? this.currentIndex + 1 : 0;
+        }
+        this.updateSlidePosition();
+      }
+
+      handleSwipe(startX, endX) {
+        const threshold = 50;
+        const maxIndex = this.getMaxIndex();
+        if (startX - endX > threshold) {
+          if (this.currentIndex < maxIndex) {
+            this.currentIndex++;
+            this.updateSlidePosition();
+          }
+        } else if (endX - startX > threshold) {
+          if (this.currentIndex > 0) {
+            this.currentIndex--;
+            this.updateSlidePosition();
+          }
+        }
+      }
+
+      updateSlidePosition() {
+        const maxIndex = this.getMaxIndex();
+        if (this.currentIndex > maxIndex) {
+          this.currentIndex = maxIndex;
+        }
+
+        const slideWidth = this.slides[0].getBoundingClientRect().width;
+        const offset = this.currentIndex * slideWidth;
+        this.track.style.transform = `translateX(-${offset}px)`;
+
+        // Control arrow visibility based on count
+        if (this.slides.length <= this.getSlidesPerView()) {
+          if (this.prevButton) this.prevButton.style.display = 'none';
+          if (this.nextButton) this.nextButton.style.display = 'none';
+        } else {
+          if (this.prevButton) this.prevButton.style.display = '';
+          if (this.nextButton) this.nextButton.style.display = '';
+        }
+      }
+
+      disconnectedCallback() {
+        if (this.resizeObserver) {
+          this.resizeObserver.disconnect();
+        }
+      }
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Zoomin Product Carousel",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    },
+    {
+      "type": "select",
+      "id": "arrow_style",
+      "label": "Navigation arrow style",
+      "options": [
+        {
+          "value": "minimal",
+          "label": "Minimal"
+        },
+        {
+          "value": "bold",
+          "label": "Bold"
+        },
+        {
+          "value": "none",
+          "label": "None"
+        }
+      ],
+      "default": "minimal"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Zoomin Product Carousel"
+    }
+  ]
+}
+{% endschema %}
