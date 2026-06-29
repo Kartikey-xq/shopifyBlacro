@@ -388,6 +388,13 @@
       }
     {% endif %}
   }
+
+  #CollectionCarousel-{{ section.id }} .swatch {
+    width: {{ section.settings.swatch_size }}px !important;
+    height: {{ section.settings.swatch_size }}px !important;
+    --swatch-width: {{ section.settings.swatch_size }}px !important;
+    --swatch-height: {{ section.settings.swatch_size }}px !important;
+  }
 {% endstyle %}
 
 <div 
@@ -396,7 +403,6 @@
   style="
     padding-top: {{ section.settings.padding_top }}px; 
     padding-bottom: {{ section.settings.padding_bottom }}px;
-    margin-top: {{ section.settings.margin_top | default: 0 }}px;
     {% if section.settings.custom_bg_color != blank %}--collection-carousel-bg: {{ section.settings.custom_bg_color }};{% endif %}
     {% if section.settings.custom_text_color != blank %}--collection-carousel-text: {{ section.settings.custom_text_color }};{% endif %}
   "
@@ -548,6 +554,7 @@
                     data-product-id="{{ product.id }}"
                     data-product-url="{{ product.url }}"
                     style="
+                      --swatch-size: {{ section.settings.swatch_size }}px;
                       --overflow-list-alignment: {{ section.settings.swatches_alignment }};
                       --overflow-list-alignment-mobile: {{ section.settings.swatches_alignment_mobile }};
                       --product-swatches-alignment: {% if section.settings.swatches_alignment == 'flex-start' %}start{% elsif section.settings.swatches_alignment == 'flex-end' %}end{% else %}center{% endif %};
@@ -2144,6 +2151,17 @@
     },
     {
       "type": "range",
+      "id": "swatch_size",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Swatch size",
+      "default": 28,
+      "visible_if": "{{ section.settings.show_swatches }}"
+    },
+    {
+      "type": "range",
       "id": "swatches_border_radius",
       "label": "Border radius",
       "min": 0,
@@ -2275,33 +2293,23 @@
     },
     {
       "type": "range",
-      "id": "margin_top",
-      "label": "Top Margin",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
       "id": "padding_top",
-      "label": "Top Padding",
+      "label": "Padding top",
       "min": 0,
       "max": 100,
       "step": 4,
       "unit": "px",
-      "default": 48
+      "default": 36
     },
     {
       "type": "range",
       "id": "padding_bottom",
-      "label": "Bottom Padding",
+      "label": "Padding bottom",
       "min": 0,
       "max": 100,
       "step": 4,
       "unit": "px",
-      "default": 48
+      "default": 36
     },
     {
       "type": "range",

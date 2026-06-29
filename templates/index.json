@@ -277,9 +277,10 @@
         "custom_button_MUizKi": {
           "type": "custom_button",
           "name": "Custom Button",
+          "disabled": true,
           "settings": {
             "label": "EXPLORE COLLECTION",
-            "link": "",
+            "link": "shopify://collections/all",
             "open_in_new_tab": false,
             "button_style": "link",
             "width": "fit-content",
@@ -746,7 +747,7 @@
         "image_ratio": "portrait",
         "desktop_card_height": "large",
         "desktop_card_custom_height": 380,
-        "margin_top": 0,
+        "margin_top": 40,
         "padding_top": 0,
         "padding_bottom": 0,
         "padding_horizontal": 0,

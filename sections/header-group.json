@@ -24,7 +24,7 @@
             "padding-inline-start": 0,
             "padding-inline-end": 0,
             "logo_inverse_height": 80,
-            "logo_inverse_height_mobile": 68
+            "logo_inverse_height_mobile": 98
           },
           "blocks": {}
         },
@@ -61,7 +61,7 @@
         "menu_font_weight": "normal",
         "menu_letter_spacing": 0,
         "menu_text_transform": "none",
-        "menu_color": "#FAFAFA",
+        "menu_color": "#fafafa",
         "show_search": true,
         "search_position": "right",
         "search_row": "top",
@@ -75,6 +75,8 @@
         "section_width": "full-width",
         "section_height": "compact",
         "enable_sticky_header": "scroll-up",
+        "enable_transparent_header_desktop": true,
+        "sticky_behavior_desktop": "always",
         "divider_width": 0,
         "divider_size": "page-width",
         "border_width": 0,
