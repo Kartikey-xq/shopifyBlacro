@@ -624,25 +624,6 @@
             "z_index": 10
           },
           "blocks": {}
-        },
-        "custom_underline_MQPVBU": {
-          "type": "custom_underline",
-          "name": "Custom Underline",
-          "settings": {
-            "pos_top": "580px",
-            "pos_bottom": "auto",
-            "pos_left": "0px",
-            "pos_right": "auto",
-            "pos_top_mobile": "580px",
-            "pos_bottom_mobile": "auto",
-            "pos_left_mobile": "0px",
-            "pos_right_mobile": "auto",
-            "z_index": 10,
-            "underline_width": 190,
-            "underline_thickness": 2,
-            "underline_color": "#c2a570"
-          },
-          "blocks": {}
         }
       },
       "block_order": [
@@ -659,8 +640,7 @@
         "custom_text_gKderx",
         "custom_heading_zc6n7x",
         "custom_heading_ARjFLN",
-        "custom_text_BfWdbm",
-        "custom_underline_MQPVBU"
+        "custom_text_BfWdbm"
       ],
       "name": "t:names.hero",
       "settings": {
@@ -715,8 +695,8 @@
         "text_alignment": "left",
         "product_info_left_offset": 4.5,
         "justify_title_price": false,
-        "color_scheme": "scheme-3",
-        "custom_bg_color": "",
+        "color_scheme": "scheme-a7bd06a8-8563-4ae5-ace6-44eb32b1b4d9",
+        "custom_bg_color": "#fafafa",
         "custom_text_color": "",
         "collection_title_font": "custom",
         "collection_title_custom_font": "heading",
@@ -739,16 +719,16 @@
         "swatches_padding_bottom": 0,
         "swatches_padding_left": 0,
         "swatches_padding_right": 0,
+        "swatch_size": 16,
         "swatches_border_radius": 32,
-        "swatches_border_width": 1,
+        "swatches_border_width": 2,
         "swatches_border_style": "solid",
         "swatches_border_color": "#fafafa",
         "show_secondary_image": true,
         "image_ratio": "portrait",
         "desktop_card_height": "large",
         "desktop_card_custom_height": 380,
-        "margin_top": 40,
-        "padding_top": 0,
+        "padding_top": 48,
         "padding_bottom": 0,
         "padding_horizontal": 0,
         "carousel_gap": 2

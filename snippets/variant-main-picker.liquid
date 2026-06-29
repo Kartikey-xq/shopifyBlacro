@@ -20,7 +20,7 @@
   <variant-picker
     id="{{ block.id }}"
     class="variant-picker spacing-style variant-picker--{{ block_settings.alignment }}"
-    style="--color-strikethrough-mix: {{ strikethrough_color_mix }}; {% render 'spacing-style', settings: block_settings %}"
+    style="--color-strikethrough-mix: {{ strikethrough_color_mix }}; --size-box-bg-color: {{ block_settings.size_box_bg_color | default: '#E8E8E8' }}; --size-selected-dot-color: {{ block_settings.size_selected_dot_color | default: '#16A34A' }}; {% render 'spacing-style', settings: block_settings %}"
     data-section-id="{{ section.id }}"
     data-product-id="{{ product_resource.id }}"
     data-block-id="{{ block.id }}"
@@ -101,18 +101,68 @@
             {% style %}
               .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper {
                 gap: {{ block_settings.size_option_spacing | default: 0 }}px;
-                {% if block_settings.size_option_spacing > 0 %}
-                  border: none !important;
-                  background: none !important;
-                  overflow: visible !important;
-                {% endif %}
+                border: none !important;
+                background: none !important;
+                overflow: visible !important;
               }
-              {% if block_settings.size_option_spacing > 0 %}
-                .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label {
-                  border: 1px solid var(--color-variant-border) !important;
-                  border-radius: var(--variant-picker-button-radius, 4px) !important;
-                }
-              {% endif %}
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label {
+                background-color: var(--size-box-bg-color, #E8E8E8) !important;
+                border: none !important;
+                border-radius: var(--variant-picker-button-radius, 4px) !important;
+                margin: 0 !important;
+                position: relative !important;
+                overflow: visible !important;
+                color: var(--color-variant-text) !important;
+              }
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label:not(:last-child) {
+                border-right: none !important;
+              }
+              /* Selected State Styles */
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label:has(:checked),
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label:has(:checked):hover {
+                background-color: var(--size-box-bg-color, #E8E8E8) !important;
+                color: var(--color-variant-text) !important;
+                border-bottom: none !important;
+                box-shadow: none !important;
+              }
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label:has(:checked)[data-option-available="true"]::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                right: 6px;
+                transform: translateY(-50%);
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background-color: var(--size-selected-dot-color, #16A34A);
+                pointer-events: none;
+                z-index: 2;
+              }
+              /* Underline on selected available size */
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label:has(:checked)[data-option-available="true"] .variant-option__button-label__text {
+                text-decoration: underline;
+                text-underline-offset: 3px;
+                text-decoration-thickness: 1px;
+                text-decoration-color: currentColor;
+              }
+              /* No underline when unavailable (even if briefly checked) */
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label:has(:checked)[data-option-available="false"] .variant-option__button-label__text {
+                text-decoration: none;
+              }
+              /* Unavailable Strikethrough Styles (Composite Background) */
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label svg {
+                display: none !important;
+              }
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label:has([aria-disabled="true"]) {
+                background: 
+                  linear-gradient(var(--size-box-bg-color, #E8E8E8), var(--size-box-bg-color, #E8E8E8)) no-repeat center / 24px 20px,
+                  linear-gradient(to bottom left, transparent calc(50% - 1px), rgb(var(--color-variant-text-rgb, 0 0 0) / var(--opacity-60, 0.6)) calc(50% - 0.5px), rgb(var(--color-variant-text-rgb, 0 0 0) / var(--opacity-60, 0.6)) calc(50% + 0.5px), transparent calc(50% + 1px)) no-repeat center / 100% 100%,
+                  var(--size-box-bg-color, #E8E8E8) !important;
+              }
+              .variant-picker .variant-option--size-segmented .variant-option__segmented-wrapper .variant-option__button-label .variant-option__button-label__text {
+                position: relative !important;
+                z-index: 1 !important;
+              }
             {% endstyle %}
           {%- endif -%}
           <fieldset
@@ -136,6 +186,7 @@
               {% endif %}
               <label
                 class="variant-option__button-label{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}"
+                data-option-available="{{ product_option_value.available }}"
               >
                 {%- liquid
                   assign is_checked = false
