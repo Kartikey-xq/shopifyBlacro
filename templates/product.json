@@ -151,7 +151,7 @@
                     "color": "var(--color-foreground)",
                     "padding-block-start": 0,
                     "padding-block-end": 0,
-                    "padding-inline-start": 35,
+                    "padding-inline-start": 100,
                     "padding-inline-end": 0
                   },
                   "blocks": {}
@@ -196,7 +196,7 @@
                 "alignment": "left",
                 "size_option_spacing": 7,
                 "swatch_border_radius": 50,
-                "swatch_size": 18,
+                "swatch_size": 16,
                 "size_box_bg_color": "#e8e8e8",
                 "size_selected_dot_color": "#058133",
                 "padding-block-start": 0,
@@ -466,16 +466,13 @@
         "text_point_bamwrr"
       ],
       "settings": {
-        "video_source": "uploaded",
-        "video": "shopify://files/videos/0520.mov",
-        "video_url": "",
-        "custom_mp4_url": "",
         "video_fit": "cover",
-        "desktop_layout": "text_right",
+        "desktop_layout": "text_left",
         "mobile_video_height": "60vh",
         "color_scheme": "scheme-3",
         "custom_bg_color": "",
-        "custom_text_color": ""
+        "custom_text_color": "",
+        "mobile_stack_order": "video_first"
       }
     },
     "zoomed_product_carousel_pNYttr": {
@@ -547,8 +544,9 @@
         "swatches_padding_bottom": 0,
         "swatches_padding_left": 0,
         "swatches_padding_right": 0,
+        "swatch_size": 16,
         "swatches_border_radius": 32,
-        "swatches_border_width": 1,
+        "swatches_border_width": 2,
         "swatches_border_style": "solid",
         "swatches_border_color": "#dddddd",
         "collection_title_font": "custom",

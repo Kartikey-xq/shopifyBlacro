@@ -117,6 +117,12 @@
       }
     {%- endif -%}
   {%- endfor -%}
+
+  @media screen and (max-width: 749px) {
+    .mobile-video-first {
+      flex-direction: column-reverse;
+    }
+  }
 {%- endstyle -%}
 
 {% stylesheet %}
@@ -231,7 +237,7 @@
 
 <div
   id="Section-{{ section.id }}"
-  class="product-split-features color-{{ sec_settings.color_scheme }} product-split-features--{{ sec_settings.desktop_layout }}"
+  class="product-split-features color-{{ sec_settings.color_scheme }} product-split-features--{{ sec_settings.desktop_layout }}{% if section.settings.mobile_stack_order == 'video_first' %} mobile-video-first{% endif %}"
 >
   <div class="product-split-features__text-column">
     <div class="product-split-features__text-container">
@@ -339,34 +345,6 @@
     },
     {
       "type": "select",
-      "id": "video_source",
-      "label": "Video Source",
-      "options": [
-        { "value": "uploaded", "label": "Shopify Hosted Video" },
-        { "value": "url", "label": "External Video (YouTube/Vimeo)" },
-        { "value": "custom_mp4", "label": "Custom MP4 URL" }
-      ],
-      "default": "uploaded"
-    },
-    {
-      "type": "video",
-      "id": "video",
-      "label": "Shopify Hosted Video"
-    },
-    {
-      "type": "video_url",
-      "id": "video_url",
-      "label": "External Video URL",
-      "accept": ["youtube", "vimeo"]
-    },
-    {
-      "type": "text",
-      "id": "custom_mp4_url",
-      "label": "Custom MP4 Video URL",
-      "info": "Paste a direct MP4 file URL from your files section."
-    },
-    {
-      "type": "select",
       "id": "video_fit",
       "label": "Video Aspect Ratio / Fit",
       "options": [
@@ -419,6 +397,20 @@
       "id": "custom_text_color",
       "label": "Custom Text Color Override",
       "alpha": true
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "mobile_stack_order",
+      "label": "Mobile stack order",
+      "default": "text_first",
+      "options": [
+        { "value": "text_first", "label": "Text on top, video on bottom" },
+        { "value": "video_first", "label": "Video on top, text on bottom" }
+      ]
     }
   ],
   "blocks": [

@@ -826,6 +826,13 @@
     50% { opacity: 0.6; }
     100% { opacity: 0.3; }
   }
+
+  #product-recommendations-{{ section.id }} .swatch {
+    width: {{ section.settings.swatch_size }}px !important;
+    height: {{ section.settings.swatch_size }}px !important;
+    --swatch-width: {{ section.settings.swatch_size }}px !important;
+    --swatch-height: {{ section.settings.swatch_size }}px !important;
+  }
 {% endstyle %}
 
 <product-recommendations
@@ -1022,6 +1029,7 @@
                         data-product-id="{{ product.id }}"
                         data-product-url="{{ product.url }}"
                         style="
+                          --swatch-size: {{ section.settings.swatch_size }}px;
                           --overflow-list-alignment: {{ section.settings.swatches_alignment }};
                           --overflow-list-alignment-mobile: {{ section.settings.swatches_alignment_mobile }};
                           --product-swatches-alignment: {% if section.settings.swatches_alignment == 'flex-start' %}start{% elsif section.settings.swatches_alignment == 'flex-end' %}end{% else %}center{% endif %};
@@ -1403,6 +1411,17 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "range",
+      "id": "swatch_size",
+      "label": "Swatch size",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 28,
+      "visible_if": "{{ section.settings.show_swatches }}"
     },
     {
       "type": "range",
