@@ -14,11 +14,10 @@
 
 {%- if block_settings.background -%}
   {%- assign bg_color = block_settings.background_color -%}
-  {%- assign bg_color_transparent = bg_color | color_modify: 'alpha', 0 -%}
 {%- else -%}
-  {%- assign bg_color = 'var(--color-background)' -%}
-  {%- assign bg_color_transparent = 'rgb(var(--color-background-rgb) / 0)' -%}
+  {%- assign bg_color = section.settings.color_scheme.settings.background | default: settings.color_schemes[0].settings.background | default: '#ffffff' -%}
 {%- endif -%}
+{%- assign bg_color_transparent = bg_color | color_modify: 'alpha', 0 -%}
 
 {% style %}
   .block-{{ block.id }} {
@@ -104,10 +103,11 @@
     display: inline-flex;
     align-items: center;
     position: relative;
-    z-index: 2;
+    z-index: 10 !important;
     transform: none;
-    filter: none;
-    opacity: 1;
+    filter: none !important;
+    backdrop-filter: none !important;
+    opacity: 1 !important;
     will-change: auto;
     {% if block_settings.read_more_font == 'body' %}
       font-family: var(--font-paragraph--family);
@@ -136,9 +136,9 @@
       text-transform: {{ block_settings.read_more_text_transform }};
     {% endif %}
     {% if block_settings.read_more_color != blank %}
-      color: {{ block_settings.read_more_color }};
+      color: {{ block_settings.read_more_color }} !important;
     {% else %}
-      color: var(--color-primary, currentColor);
+      color: var(--color-foreground, #000000) !important;
     {% endif %}
   }
 
