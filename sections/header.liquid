@@ -594,6 +594,16 @@
     background-color: var(--header-bg-color, var(--color-background));
   }
 
+  /* Keep header background transparent when active/sticky (scrolling up) */
+  #header-component[data-sticky-state='active'] .header__row {
+    background-color: transparent !important;
+    /* Optional Frosted Glass Alternative (uncomment to activate):
+    background-color: rgba(28, 28, 28, 0.85) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    */
+  }
+
   .header__row--top:not(.divider--page-width),
   .header__row--top.divider--page-width .header__columns,
   .header__row--bottom {
