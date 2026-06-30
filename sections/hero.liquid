@@ -537,6 +537,48 @@
       {% content_for 'blocks' %}
     </div>
   </div>
+  {%- comment -%} ARTWORK START {%- endcomment -%}
+  {%- if section.settings.artwork_image != blank -%}
+    <style>
+      #Hero-{{ section.id }} {
+        position: relative !important;
+        overflow: visible !important;
+      }
+      .hero-wrapper {
+        position: relative !important;
+        overflow: visible !important;
+      }
+    </style>
+    <div
+      class="hero-artwork"
+      style="
+        position: absolute;
+        {%- if section.settings.artwork_bottom != 0 -%}
+          bottom: {{ section.settings.artwork_bottom }}px;
+        {%- else -%}
+          top: {{ section.settings.artwork_top }}px;
+        {%- endif -%}
+        {%- if section.settings.artwork_right != 0 -%}
+          right: {{ section.settings.artwork_right }}px;
+        {%- else -%}
+          left: {{ section.settings.artwork_left }}px;
+        {%- endif -%}
+        width: {{ section.settings.artwork_width }}px;
+        z-index: {{ section.settings.artwork_z_index }};
+        pointer-events: none;
+      "
+    >
+      {{
+        section.settings.artwork_image
+        | image_url: width: 1600
+        | image_tag:
+            loading: 'lazy',
+            alt: section.settings.artwork_image.alt,
+            style: 'width: 100%; height: auto; display: block; pointer-events: none;'
+      }}
+    </div>
+  {%- endif -%}
+  {%- comment -%} ARTWORK END {%- endcomment -%}
 </div>
 
 {% stylesheet %}
@@ -1281,6 +1323,74 @@
       "max": 100,
       "step": 1,
       "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Artwork Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "artwork_image",
+      "label": "Artwork Image"
+    },
+    {
+      "type": "range",
+      "id": "artwork_top",
+      "label": "Artwork Top",
+      "min": -200,
+      "max": 200,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "artwork_left",
+      "label": "Artwork Left",
+      "min": -200,
+      "max": 200,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "artwork_right",
+      "label": "Artwork Right",
+      "min": -200,
+      "max": 200,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "artwork_bottom",
+      "label": "Artwork Bottom",
+      "min": -200,
+      "max": 200,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "artwork_width",
+      "label": "Artwork Width",
+      "min": 50,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "artwork_z_index",
+      "label": "Artwork Z-index",
+      "min": 0,
+      "max": 10,
+      "step": 1,
       "default": 0
     }
   ],
