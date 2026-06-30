@@ -31,6 +31,49 @@
     assign variant_images = selected_product.images | where: 'attached_to_variant?', true | map: 'src'
   endif
 
+  assign sorted_media = '' | split: ','
+  if selected_variant_media
+    if selected_variant_media.media_type != 'video' and selected_variant_media.media_type != 'external_video'
+      assign sorted_media = sorted_media | concat: selected_product.media | where: 'id', selected_variant_media.id
+    endif
+
+    for media in selected_product.media
+      if media.media_type == 'video' or media.media_type == 'external_video'
+        continue
+      endif
+
+      if block_settings.hide_variants and variant_images contains media.src and sorted_media.size > 0
+        continue
+      endif
+
+      if media.id != selected_variant_media.id
+        assign found_media = selected_product.media | where: 'id', media.id
+        assign sorted_media = sorted_media | concat: found_media
+      endif
+    endfor
+  else
+    for media in selected_product.media
+      if media.media_type == 'video' or media.media_type == 'external_video'
+        continue
+      endif
+      assign found_media = selected_product.media | where: 'id', media.id
+      assign sorted_media = sorted_media | concat: found_media
+    endfor
+  endif
+
+  # Filter out first 2 images on product templates
+  assign filtered_media = '' | split: ','
+  assign image_skip_counter = 0
+  for media in sorted_media
+    if media.media_type == 'image' and image_skip_counter < 2
+      assign image_skip_counter = image_skip_counter | plus: 1
+    else
+      assign media_item_array = sorted_media | where: 'id', media.id
+      assign filtered_media = filtered_media | concat: media_item_array
+    endif
+  endfor
+  assign sorted_media = filtered_media
+
   if block_settings.slideshow_controls_style == 'thumbnails'
     assign controls_on_media = false
   else
@@ -61,13 +104,13 @@
 
   assign slideshow_controls_style = block_settings.slideshow_controls_style
   # Use a counter instead of dots when there are many images to avoid cropping/overflow.
-  if slideshow_controls_style == 'dots' and selected_product.media.size > 15
+  if slideshow_controls_style == 'dots' and sorted_media.size > 15
     assign slideshow_controls_style = 'counter'
   endif
 
   assign render_slideshow_arrows = false
 
-  if selected_product.media.size <= 1
+  if sorted_media.size <= 1
     assign slideshow_class = 'product-media-gallery__slideshow--single-media slideshow--single-media'
   else
     assign slideshow_class = ''
@@ -99,36 +142,7 @@
     endif
   endif
 
-  assign sorted_media = '' | split: ','
-  if selected_variant_media
-    assign sorted_media = sorted_media | concat: selected_product.media | where: 'id', selected_variant_media.id
-
-    for media in selected_product.media
-      if block_settings.hide_variants and variant_images contains media.src and sorted_media.size > 0
-        continue
-      endif
-
-      if media.id != selected_variant_media.id
-        assign found_media = selected_product.media | where: 'id', media.id
-        assign sorted_media = sorted_media | concat: found_media
-      endif
-    endfor
-  else
-    assign sorted_media = selected_product.media
-  endif
-
-  # Filter out first 2 images on product templates
-  assign filtered_media = '' | split: ','
-  assign image_skip_counter = 0
-  for media in sorted_media
-    if media.media_type == 'image' and image_skip_counter < 2
-      assign image_skip_counter = image_skip_counter | plus: 1
-    else
-      assign media_item_array = sorted_media | where: 'id', media.id
-      assign filtered_media = filtered_media | concat: media_item_array
-    endif
-  endfor
-  assign sorted_media = filtered_media
+  # sorted_media has been constructed and filtered early to exclude video types and support proper pagination sizing.
 
   assign has_image_drop = sorted_media | has: 'media_type', 'image'
 

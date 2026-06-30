@@ -76,7 +76,7 @@
         "section_height": "compact",
         "enable_sticky_header": "scroll-up",
         "enable_transparent_header_desktop": true,
-        "sticky_behavior_desktop": "always",
+        "sticky_behavior_desktop": "scroll-up",
         "divider_width": 0,
         "divider_size": "page-width",
         "border_width": 0,
