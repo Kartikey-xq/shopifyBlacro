@@ -269,7 +269,7 @@
         "swatches_alignment_mobile": "flex-start",
         "swatches_padding_top": 4,
         "swatches_padding_bottom": 0,
-        "swatches_padding_left": 0,
+        "swatches_padding_left": 4,
         "swatches_padding_right": 0,
         "swatch_size": 16,
         "swatches_border_radius": 32,
