@@ -1,991 +1,737 @@
 {% comment %}
-  Blacro footer section inspired by the requested layout.
-  Includes CTA, company menus, social links, policy menu, and current theme color scheme support.
+  Premium Footer section for BLACRO
+  Fully customizer-controllable spacings, fonts, and split settings.
+  Monospaced, uppercase premium styling.
 {% endcomment %}
 
-{% liquid
-  assign brand_name = 'BLACRO'
-  assign company_menu = linklists[section.settings.company_menu]
-  assign policy_menu = linklists[section.settings.policy_menu]
-
-  assign instagram_url = section.settings.social_instagram_link | strip
-  if instagram_url != blank
-    unless instagram_url contains '://'
-      assign instagram_url = instagram_url | prepend: 'https://'
-    endunless
-  endif
-
-  assign facebook_url = section.settings.social_facebook_link | strip
-  if facebook_url != blank
-    unless facebook_url contains '://'
-      assign facebook_url = facebook_url | prepend: 'https://'
-    endunless
-  endif
-
-  assign linkedin_url = section.settings.social_linkedin_link | strip
-  if linkedin_url != blank
-    unless linkedin_url contains '://'
-      assign linkedin_url = linkedin_url | prepend: 'https://'
-    endunless
-  endif
-
-  assign whatsapp_input = section.settings.social_whatsapp_number | strip
-  assign whatsapp_url = ""
-  if whatsapp_input != blank
-    if whatsapp_input contains "wa.me" or whatsapp_input contains "whatsapp.com"
-      assign whatsapp_url = whatsapp_input
-      unless whatsapp_url contains "://"
-        assign whatsapp_url = whatsapp_url | prepend: "https://"
-      endunless
-    else
-      assign clean_phone = whatsapp_input | replace: " ", "" | replace: "+", "" | replace: "-", ""
-      assign whatsapp_url = "https://wa.me/" | append: clean_phone
-    endif
-  endif
-%}
-
 <style>
-  #FooterBlacro-{{ section.id }} .footer-blacro__block-title--preset-body {
-    font-family: var(--font-paragraph--family) !important;
-    font-size: var(--font-paragraph--size, 1.6rem) !important;
-    font-weight: var(--font-paragraph--weight, 400) !important;
-    text-transform: var(--font-paragraph--case, none) !important;
-  }
-  #FooterBlacro-{{ section.id }} .footer-blacro__block-title--preset-subheading {
-    font-family: var(--font-subheading--family) !important;
-    font-size: var(--font-subheading--size, 1.8rem) !important;
-    font-weight: var(--font-subheading--weight, 600) !important;
-    text-transform: var(--font-subheading--case, none) !important;
-  }
-  #FooterBlacro-{{ section.id }} .footer-blacro__block-title--preset-heading {
-    font-family: var(--font-heading--family) !important;
-    font-size: var(--font-heading--size, 2rem) !important;
-    font-weight: var(--font-heading--weight, 700) !important;
-    text-transform: var(--font-heading--case, none) !important;
-  }
-  #FooterBlacro-{{ section.id }} .footer-blacro__block-title--preset-accent {
-    font-family: var(--font-accent--family) !important;
-    font-size: var(--font-accent--size, 1.4rem) !important;
-    font-weight: var(--font-accent--weight, 400) !important;
-    text-transform: var(--font-accent--case, none) !important;
-  }
-  #FooterBlacro-{{ section.id }} .footer-blacro__block-title--preset-custom {
-    font-size: {{ section.settings.footer_title_custom_size }}px !important;
-    {% if section.settings.footer_title_custom_font == 'body' %}
-      font-family: var(--font-paragraph--family) !important;
-      font-weight: var(--font-paragraph--weight, 400) !important;
-      text-transform: var(--font-paragraph--case, none) !important;
-    {% elsif section.settings.footer_title_custom_font == 'subheading' %}
-      font-family: var(--font-subheading--family) !important;
-      font-weight: var(--font-subheading--weight, 600) !important;
-      text-transform: var(--font-subheading--case, none) !important;
-    {% elsif section.settings.footer_title_custom_font == 'heading' %}
-      font-family: var(--font-heading--family) !important;
-      font-weight: var(--font-heading--weight, 700) !important;
-      text-transform: var(--font-heading--case, none) !important;
-    {% elsif section.settings.footer_title_custom_font == 'accent' %}
-      font-family: var(--font-accent--family) !important;
-      font-weight: var(--font-accent--weight, 400) !important;
-      text-transform: var(--font-accent--case, none) !important;
-    {% endif %}
-  }
-
-  #FooterBlacro-{{ section.id }} .footer-blacro__link--preset-body {
-    font-family: var(--font-paragraph--family) !important;
-    font-size: var(--font-paragraph--size, 1.6rem) !important;
-    font-weight: var(--font-paragraph--weight, 400) !important;
-    text-transform: var(--font-paragraph--case, none) !important;
-  }
-  #FooterBlacro-{{ section.id }} .footer-blacro__link--preset-subheading {
-    font-family: var(--font-subheading--family) !important;
-    font-size: var(--font-subheading--size, 1.8rem) !important;
-    font-weight: var(--font-subheading--weight, 600) !important;
-    text-transform: var(--font-subheading--case, none) !important;
-  }
-  #FooterBlacro-{{ section.id }} .footer-blacro__link--preset-heading {
-    font-family: var(--font-heading--family) !important;
-    font-size: var(--font-heading--size, 2rem) !important;
-    font-weight: var(--font-heading--weight, 700) !important;
-    text-transform: var(--font-heading--case, none) !important;
-  }
-  #FooterBlacro-{{ section.id }} .footer-blacro__link--preset-accent {
-    font-family: var(--font-accent--family) !important;
-    font-size: var(--font-accent--size, 1.4rem) !important;
-    font-weight: var(--font-accent--weight, 400) !important;
-    text-transform: var(--font-accent--case, none) !important;
-  }
-  #FooterBlacro-{{ section.id }} .footer-blacro__link--preset-custom {
-    font-size: {{ section.settings.footer_links_custom_size }}px !important;
-    {% if section.settings.footer_links_custom_font == 'body' %}
-      font-family: var(--font-paragraph--family) !important;
-      font-weight: var(--font-paragraph--weight, 400) !important;
-      text-transform: var(--font-paragraph--case, none) !important;
-    {% elsif section.settings.footer_links_custom_font == 'subheading' %}
-      font-family: var(--font-subheading--family) !important;
-      font-weight: var(--font-subheading--weight, 600) !important;
-      text-transform: var(--font-subheading--case, none) !important;
-    {% elsif section.settings.footer_links_custom_font == 'heading' %}
-      font-family: var(--font-heading--family) !important;
-      font-weight: var(--font-heading--weight, 700) !important;
-      text-transform: var(--font-heading--case, none) !important;
-    {% elsif section.settings.footer_links_custom_font == 'accent' %}
-      font-family: var(--font-accent--family) !important;
-      font-weight: var(--font-accent--weight, 400) !important;
-      text-transform: var(--font-accent--case, none) !important;
-    {% endif %}
-  }
-
-  /* Centering SVG icons and making sure they size correctly */
-  #FooterBlacro-{{ section.id }} .footer-blacro__social-link svg {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
-    display: block;
-  }
-</style>
-
-<div class="section-background color-{{ section.settings.color_scheme }}"></div>
-<div class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} footer-blacro" id="FooterBlacro-{{ section.id }}" style="padding-block-start: {{ section.settings.padding_block_start }}px; padding-block-end: {{ section.settings.padding_block_end }}px;">
-  {%- unless request.design_mode -%}
-    <script>
-      (function() {
-        const footer = document.getElementById('FooterBlacro-{{ section.id }}');
-        if (footer) {
-          footer.classList.add('footer-blacro--animated');
-          if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-              entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                  footer.classList.add('is-visible');
-                  observer.unobserve(entry.target);
-                }
-              });
-            }, { threshold: 0.05 });
-            observer.observe(footer);
-          } else {
-            footer.classList.add('is-visible');
-          }
-        }
-      })();
-    </script>
-  {%- endunless -%}
-  
-  <div class="footer-blacro__container">
-    <div class="footer-blacro__hero">
-      <div class="footer-blacro__hero-copy">
-        {% if section.settings.brand_logo_top != blank %}
-          <div class="footer-blacro__brand-logo-wrapper" style="display: flex; justify-content: {%- if section.settings.brand_logo_top_alignment == 'center' -%}center{%- elsif section.settings.brand_logo_top_alignment == 'right' -%}flex-end{%- else -%}flex-start{%- endif -%};">
-            <img 
-              src="{{ section.settings.brand_logo_top | image_url: width: 300 }}" 
-              alt="{{ shop.name }}"
-              class="footer-blacro__brand-logo"
-              style="max-width: {{ section.settings.brand_logo_top_width }}px;"
-              width="{{ section.settings.brand_logo_top.width }}"
-              height="{{ section.settings.brand_logo_top.height }}"
-              loading="lazy"
-            >
-          </div>
-        {% else %}
-          <p class="footer-blacro__eyebrow">{{ brand_name }}</p>
-        {% endif %}
-        <h2 class="footer-blacro__headline">{{ section.settings.hero_heading | default: 'Join Blacro Loyalty' }}</h2>
-        <p class="footer-blacro__text">{{ section.settings.hero_text | default: 'Unlock 10% Off Your First Purchase Plus More Rewards And Benefits' }}</p>
-        {% if section.settings.hero_button_url != blank %}
-          <a href="{{ section.settings.hero_button_url }}" class="footer-blacro__hero-button">
-            <span>{{ section.settings.hero_button_label | default: 'SIGN UP' }}</span>
-            <svg class="footer-blacro__button-arrow" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </a>
-        {% endif %}
-      </div>
-      
-      <div class="footer-blacro__hero-links">
-        <div class="footer-blacro__block">
-          <p class="footer-blacro__block-title footer-blacro__block-title--preset-{{ section.settings.footer_title_font }}">Company</p>
-          {% if company_menu != blank and company_menu.links.size > 0 %}
-            <ul class="footer-blacro__link-list">
-              {% for link in company_menu.links %}
-                <li><a href="{{ link.url }}" class="footer-blacro__link--preset-{{ section.settings.footer_links_font }}">{{ link.title }}</a></li>
-              {% endfor %}
-            </ul>
-          {% else %}
-            <p class="footer-blacro__hint">Add a Company menu in section settings.</p>
-          {% endif %}
-        </div>
-
-        <div class="footer-blacro__block footer-blacro__social-block">
-          <p class="footer-blacro__block-title footer-blacro__block-title--preset-{{ section.settings.footer_title_font }}">Social</p>
-          <div class="footer-blacro__social-list">
-            {%- if instagram_url != blank -%}
-              <a href="{{ instagram_url }}" target="_blank" rel="noopener noreferrer" class="footer-blacro__social-link" aria-label="Instagram">
-                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                  {%- render 'icon', icon: 'instagram' -%}
-                </svg>
-              </a>
-            {%- endif -%}
-            {%- if facebook_url != blank -%}
-              <a href="{{ facebook_url }}" target="_blank" rel="noopener noreferrer" class="footer-blacro__social-link" aria-label="Facebook">
-                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                  {%- render 'icon', icon: 'facebook' -%}
-                </svg>
-              </a>
-            {%- endif -%}
-            {%- if linkedin_url != blank -%}
-              <a href="{{ linkedin_url }}" target="_blank" rel="noopener noreferrer" class="footer-blacro__social-link" aria-label="LinkedIn">
-                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                  {%- render 'icon', icon: 'linkedin' -%}
-                </svg>
-              </a>
-            {%- endif -%}
-            {%- if whatsapp_url != blank -%}
-              <a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="footer-blacro__social-link" aria-label="WhatsApp">
-                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                  {%- render 'icon', icon: 'whatsapp' -%}
-                </svg>
-              </a>
-            {%- endif -%}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Giant brand watermark / Big logo -->
-    <div class="footer-blacro__large-brand-wrapper">
-      {% if section.settings.brand_logo_bottom != blank %}
-        <div class="footer-blacro__large-brand-logo-container" style="max-width: {{ section.settings.brand_logo_bottom_width }}px; margin: 0 auto; position: relative;">
-          <!-- Front Logo -->
-          <img 
-            src="{{ section.settings.brand_logo_bottom | image_url: width: 1400 }}" 
-            alt="{{ shop.name }} Large Logo"
-            class="footer-blacro__large-brand-logo footer-blacro__large-brand-logo--front"
-            style="display: block; width: 100%; height: auto;"
-            loading="lazy"
-            width="{{ section.settings.brand_logo_bottom.width }}"
-            height="{{ section.settings.brand_logo_bottom.height }}"
-          >
-          <!-- Back Logo (Pre-flipped on Y-axis) -->
-          <img 
-            src="{{ section.settings.brand_logo_bottom | image_url: width: 1400 }}" 
-            alt="{{ shop.name }} Large Logo"
-            class="footer-blacro__large-brand-logo footer-blacro__large-brand-logo--back"
-            style="display: block; width: 100%; height: auto;"
-            loading="lazy"
-            width="{{ section.settings.brand_logo_bottom.width }}"
-            height="{{ section.settings.brand_logo_bottom.height }}"
-          >
-        </div>
-      {% else %}
-        <span class="footer-blacro__large-brand">{{ brand_name }}</span>
-      {% endif %}
-    </div>
-
-    <div class="footer-blacro__bottom">
-      <div class="footer-blacro__policies">
-        {% if policy_menu != blank and policy_menu.links.size > 0 %}
-          {% for link in policy_menu.links %}
-            <a href="{{ link.url }}" class="footer-blacro__link--preset-{{ section.settings.footer_links_font }}">{{ link.title }}</a>
-          {% endfor %}
-        {% else %}
-          <span class="footer-blacro__hint">Add a Policies menu in section settings.</span>
-        {% endif %}
-      </div>
-      <div class="footer-blacro__copyright">
-        <span>© {{ 'now' | date: '%Y' }} {{ brand_name }}. All rights reserved.</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-{% stylesheet %}
-  .footer-blacro {
-    position: relative;
-    color: var(--color-foreground);
+  #BlacroFooter-{{ section.id }} {
+    background-color: #0a0a0a;
+    color: #ffffff;
+    font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     overflow: hidden;
-    /* Premium subtle radial glow */
-    background: radial-gradient(circle at 80% 20%, rgba(var(--color-foreground-rgb), 0.02), transparent 60%), var(--gradient-background);
   }
 
-  /* Fade-in/out on viewport intersection */
-  .footer-blacro--animated {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .footer-blacro--animated.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .footer-blacro__container {
+  #BlacroFooter-{{ section.id }} .blacro-footer__top-container {
+    width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding-inline: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 3.5rem;
-  }
-
-  .footer-blacro__hero {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 4rem;
-    align-items: start;
-  }
-
-  .footer-blacro__hero-copy {
-    max-width: 540px;
-  }
-
-  .footer-blacro__eyebrow {
-    margin: 0 0 0.5rem;
-    color: var(--color-foreground);
-    opacity: 0.5;
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-
-  .footer-blacro__headline {
-    margin: 0 0 1rem;
-    font-size: clamp(2.2rem, 4vw, 3.6rem);
-    line-height: 1.1;
-    letter-spacing: -0.04em;
-    font-weight: 700;
-    text-transform: none;
-  }
-
-  .footer-blacro__text {
-    margin: 0 0 2rem;
-    color: var(--color-foreground);
-    opacity: 0.65;
-    font-size: 1.05rem;
-    line-height: 1.5;
-    max-width: 480px;
-  }
-
-  /* Premium sleek pill CTA button with arrow transition */
-  .footer-blacro__hero-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 1rem 2rem;
-    border-radius: 999px;
-    border: 1px solid rgba(var(--color-foreground-rgb), 0.2);
-    color: var(--color-foreground);
-    background: transparent;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.85rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .footer-blacro__hero-button .footer-blacro__button-arrow {
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .footer-blacro__hero-button:hover {
-    border-color: var(--color-foreground);
-    background: var(--color-foreground);
-    color: var(--color-background);
-  }
-
-  .footer-blacro__hero-button:hover .footer-blacro__button-arrow {
-    transform: translateX(4px);
-  }
-
-  /* 2-column link layout (Company & Social) */
-  .footer-blacro__hero-links {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 3rem;
-  }
-
-  .footer-blacro__block-title {
-    margin: 0 0 1.5rem;
-    font-size: 1.15rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-foreground);
-    opacity: 1;
-  }
-
-  .footer-blacro__link-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 1rem;
-  }
-
-  .footer-blacro__link-list a {
-    display: inline-block;
-    color: var(--color-foreground);
-    opacity: 0.7;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    transform-origin: left;
-  }
-
-  /* Sibling Fade Effect for Link List */
-  .footer-blacro__link-list:hover a {
-    opacity: 0.35;
-  }
-
-  .footer-blacro__link-list a:hover {
-    opacity: 1;
-    transform: translateX(4px);
-  }
-
-  .footer-blacro__social-block {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .footer-blacro__social-note {
-    margin: 0 0 0.5rem;
-    color: var(--color-foreground);
-    opacity: 0.65;
-    font-size: 0.95rem;
-    line-height: 1.4;
-  }
-
-  .footer-blacro__social-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .footer-blacro__social-link {
-    display: inline-flex;
-    width: 2.75rem;
-    height: 2.75rem;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    border: 1px solid rgba(var(--color-foreground-rgb), 0.12);
-    background: transparent;
-    color: var(--color-foreground);
-    transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  /* Sibling Fade Effect for Socials */
-  .footer-blacro__social-list:hover .footer-blacro__social-link {
-    opacity: 0.4;
-  }
-
-  .footer-blacro__social-link:hover {
-    opacity: 1 !important;
-    border-color: var(--color-foreground);
-    background: rgba(var(--color-foreground-rgb), 0.04);
-    transform: translateY(-2px);
-  }
-
-  /* Giant brand watermark footer element */
-  .footer-blacro__large-brand-wrapper {
-    margin-block-start: 2rem;
-    margin-block-end: 1rem;
-    overflow: hidden;
-    user-select: none;
-    pointer-events: none;
-    border-top: 1px solid rgba(var(--color-foreground-rgb), 0.08);
-    padding-block-start: 1rem;
-    perspective: 1200px;
-  }
-
-  .footer-blacro__large-brand {
-    display: block;
-    text-align: center;
-    font-size: clamp(3rem, 12.5vw, 11rem);
-    font-weight: 800;
-    line-height: 0.8;
-    letter-spacing: -0.05em;
-    text-transform: uppercase;
-    color: var(--color-foreground);
-    opacity: 0.05;
-  }
-
-  .footer-blacro__brand-logo-wrapper {
-    margin-bottom: 1.5rem;
-  }
-
-  .footer-blacro__brand-logo {
-    display: block;
-    height: auto;
-  }
-
-  @keyframes footerLogoSpin {
-    from {
-      transform: rotateY(0deg);
-    }
-    to {
-      transform: rotateY(360deg);
-    }
-  }
-
-  .footer-blacro__large-brand-logo-container {
-    display: block;
-    position: relative;
-    transform-style: preserve-3d;
-    animation: footerLogoSpin 12s linear infinite;
-    transform-origin: center;
+    box-sizing: border-box;
+    padding-top: var(--pt);
+    padding-bottom: var(--pb);
+    padding-left: var(--ph);
+    padding-right: var(--ph);
   }
 
   @media screen and (min-width: 769px) {
-    .footer-blacro__large-brand-logo-container {
-      max-width: 350px !important;
+    #BlacroFooter-{{ section.id }} .blacro-footer__top-container {
+      padding-left: var(--ph-desktop);
+      padding-right: var(--ph-desktop);
     }
   }
 
-  .footer-blacro__large-brand-logo {
-    display: block;
+  #BlacroFooter-{{ section.id }} .blacro-footer__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--header-mb);
     width: 100%;
-    height: auto;
-    object-fit: contain;
-    opacity: 1 !important;
-    filter: none !important;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
-  .footer-blacro__large-brand-logo--front {
+  #BlacroFooter-{{ section.id }} .blacro-footer__logo-wrap img {
+    max-height: 50px;
+    width: auto;
+    display: block;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__logo-text {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: var(--ls);
+    text-transform: uppercase;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__bird-wrap img {
+    max-height: 50px;
+    width: auto;
+    display: block;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__bird-placeholder {
+    display: block;
+    color: #ffffff;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--group-gap);
+    width: 100%;
+  }
+
+  @media screen and (max-width: 980px) {
+    #BlacroFooter-{{ section.id }} .blacro-footer__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    #BlacroFooter-{{ section.id }} .blacro-footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__group-label {
+    font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: var(--fs-labels);
+    letter-spacing: var(--ls);
+    text-transform: uppercase;
+    color: #888888;
+    margin: 0 0 16px 0;
+    font-weight: 600;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__group-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--link-gap);
+    align-items: flex-start;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__link {
+    font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: var(--fs-links);
+    letter-spacing: var(--ls);
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ffffff;
+    opacity: 1;
+    display: inline-flex;
+    align-items: center;
+    transition: opacity 0.3s ease;
+    text-align: left;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__link:hover {
+    opacity: 0.6;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__link .bracket {
+    color: #555555;
+    margin-right: 4px;
+    margin-left: 4px;
+    font-weight: normal;
+    transition: color 0.3s ease;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__link:hover .bracket {
+    color: #ffffff;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__divider {
+    border: 0;
+    border-top: 1px solid #222222;
+    margin-top: 48px;
+    margin-bottom: 24px;
+    width: 100%;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__copyright {
+    font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: var(--fs-copyright);
+    letter-spacing: var(--ls);
+    text-transform: uppercase;
+    color: #888888;
+    text-align: center;
+    line-height: 1.5;
+    width: 100%;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__split {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    background-color: #000000;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__split-half {
     position: relative;
-    z-index: 5;
-    transform: rotateY(0deg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    width: 100%;
   }
 
-  .footer-blacro__large-brand-logo--back {
+  @media screen and (min-width: 769px) {
+    #BlacroFooter-{{ section.id }} .blacro-footer__split {
+      grid-template-columns: 1fr 1fr;
+      height: var(--split-height);
+    }
+    #BlacroFooter-{{ section.id }} .blacro-footer__split-half {
+      height: 100%;
+      aspect-ratio: auto;
+    }
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__split-video-wrap {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 4;
-    transform: rotateY(180deg);
   }
 
-  .footer-blacro__bottom {
+  #BlacroFooter-{{ section.id }} .blacro-footer__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #BlacroFooter-{{ section.id }} iframe.blacro-footer__video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    border: none;
+  }
+
+  /* Make sure video iframe covers the container on larger screen width */
+  @media screen and (min-aspect-ratio: 16/9) {
+    #BlacroFooter-{{ section.id }} iframe.blacro-footer__video {
+      height: 56.25vw;
+    }
+  }
+  @media screen and (max-aspect-ratio: 16/9) {
+    #BlacroFooter-{{ section.id }} iframe.blacro-footer__video {
+      width: 177.77vh;
+    }
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__split-img-wrap {
+    width: 100%;
+    height: 100%;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    border-top: 1px solid rgba(var(--color-foreground-rgb), 0.08);
-    padding-top: 2rem;
+    justify-content: center;
+    background-color: #0d0d0d;
   }
 
-  .footer-blacro__policies {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    align-items: center;
+  #BlacroFooter-{{ section.id }} .blacro-footer__split-img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+    display: block;
   }
 
-  .footer-blacro__policies a {
-    color: var(--color-foreground);
-    opacity: 0.6;
-    font-size: 0.85rem;
-    text-decoration: none;
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  #BlacroFooter-{{ section.id }} .blacro-footer__split-logo-text {
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 900;
+    letter-spacing: var(--ls);
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.08);
+    user-select: none;
   }
+</style>
 
-  /* Sibling Fade Effect for Policies */
-  .footer-blacro__policies:hover a {
-    opacity: 0.35;
-  }
+<div 
+  class="blacro-footer" 
+  id="BlacroFooter-{{ section.id }}"
+  style="
+    --pt: {{ section.settings.section_padding_top }}px;
+    --pb: {{ section.settings.section_padding_bottom }}px;
+    --ph: {{ section.settings.section_padding_horizontal }}px;
+    --ph-desktop: {{ section.settings.section_padding_horizontal_desktop }}px;
+    --group-gap: {{ section.settings.group_gap }}px;
+    --link-gap: {{ section.settings.link_gap }}px;
+    --header-mb: {{ section.settings.header_margin_bottom }}px;
+    --split-height: {{ section.settings.split_section_height }}px;
+    --fs-links: {{ section.settings.font_size_links }}px;
+    --fs-labels: {{ section.settings.font_size_labels }}px;
+    --fs-copyright: {{ section.settings.font_size_copyright }}px;
+    --ls: {{ section.settings.letter_spacing }}px;
+  "
+>
+  <div class="blacro-footer__top-container">
+    
+    <!-- HEADER ROW -->
+    <div class="blacro-footer__header">
+      <div class="blacro-footer__logo-wrap">
+        {%- if section.settings.logo != blank -%}
+          <img 
+            src="{{ section.settings.logo | image_url: width: 300 }}" 
+            alt="{{ shop.name }}" 
+            loading="lazy" 
+            width="{{ section.settings.logo.width }}"
+            height="{{ section.settings.logo.height }}"
+          >
+        {%- else -%}
+          <span class="blacro-footer__logo-text">BLACRO</span>
+        {%- endif -%}
+      </div>
+      <div class="blacro-footer__bird-wrap">
+        {%- if section.settings.brand_icon != blank -%}
+          <img 
+            src="{{ section.settings.brand_icon | image_url: width: 100 }}" 
+            alt="Brand Icon" 
+            loading="lazy"
+            width="{{ section.settings.brand_icon.width }}"
+            height="{{ section.settings.brand_icon.height }}"
+          >
+        {%- else -%}
+          <svg class="blacro-footer__bird-placeholder" viewBox="0 0 100 100" width="40" height="40" fill="none" stroke="#ffffff" stroke-width="1.5">
+            <path d="M10 50 C 30 35, 45 45, 50 60 C 55 45, 70 35, 90 50 C 70 55, 55 55, 50 65 C 45 55, 30 55, 10 50 Z" />
+          </svg>
+        {%- endif -%}
+      </div>
+    </div>
 
-  .footer-blacro__policies a:hover {
-    opacity: 1;
-  }
+    <!-- LINK GROUPS -->
+    <div class="blacro-footer__grid">
+      
+      <!-- NAVIGATION group -->
+      <div class="blacro-footer__group">
+        <h3 class="blacro-footer__group-label">NAVIGATION</h3>
+        <div class="blacro-footer__group-content">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'nav_link' -%}
+              {%- if block.settings.label != blank and block.settings.url != blank -%}
+                <a class="blacro-footer__link" href="{{ block.settings.url }}" {{ block.shopify_attributes }}>
+                  <span class="bracket">[</span> <span class="link-text">{{ block.settings.label | upcase }}</span> <span class="bracket">]</span>
+                </a>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
 
-  .footer-blacro__copyright {
-    color: var(--color-foreground);
-    opacity: 0.4;
-    font-size: 0.85rem;
-  }
+      <!-- EMAIL group -->
+      <div class="blacro-footer__group">
+        <h3 class="blacro-footer__group-label">EMAIL</h3>
+        <div class="blacro-footer__group-content">
+          {%- if section.settings.email != blank -%}
+            <a class="blacro-footer__link" href="mailto:{{ section.settings.email }}">
+              <span class="bracket">[</span> <span class="link-text">{{ section.settings.email | upcase }}</span> <span class="bracket">]</span>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
 
-  .footer-blacro__hint {
-    color: rgba(var(--color-foreground-rgb), 0.6);
-    font-size: 0.95rem;
-  }
+      <!-- SOCIAL group -->
+      <div class="blacro-footer__group">
+        <h3 class="blacro-footer__group-label">SOCIAL</h3>
+        <div class="blacro-footer__group-content">
+          {%- if section.settings.use_shop_social_links -%}
+            {%- assign platforms = "instagram,facebook,linkedin,twitter,youtube,tiktok,pinterest,snapchat,tumblr,vimeo" | split: "," -%}
+            {%- for platform in platforms -%}
+              {%- assign prop = "social_" | append: platform | append: "_link" -%}
+              {%- if settings[prop] != blank -%}
+                <a class="blacro-footer__link" href="{{ settings[prop] }}">
+                  <span class="bracket">[</span> <span class="link-text">{{ platform | replace: "_", " " | upcase }}</span> <span class="bracket">]</span>
+                </a>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'social_link' -%}
+                {%- if block.settings.label != blank and block.settings.url != blank -%}
+                  <a class="blacro-footer__link" href="{{ block.settings.url }}" {{ block.shopify_attributes }}>
+                    <span class="bracket">[</span> <span class="link-text">{{ block.settings.label | upcase }}</span> <span class="bracket">]</span>
+                  </a>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+      </div>
 
-  @media screen and (max-width: 980px) {
-    .footer-blacro__hero {
-      gap: 3rem;
-    }
-  }
+      <!-- LEGAL group -->
+      <div class="blacro-footer__group">
+        <h3 class="blacro-footer__group-label">LEGAL</h3>
+        <div class="blacro-footer__group-content">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'legal_link' -%}
+              {%- if block.settings.label != blank and block.settings.url != blank -%}
+                <a class="blacro-footer__link" href="{{ block.settings.url }}" {{ block.shopify_attributes }}>
+                  <span class="bracket">[</span> <span class="link-text">{{ block.settings.label | upcase }}</span> <span class="bracket">]</span>
+                </a>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
 
-  @media screen and (max-width: 768px) {
-    .footer-blacro__hero {
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
+    </div>
 
-    .footer-blacro__hero-links {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 2rem;
-    }
+    <!-- COPYRIGHT BAR -->
+    <hr class="blacro-footer__divider">
+    <div class="blacro-footer__copyright">
+      {{ section.settings.copyright_text | upcase }}
+    </div>
 
-    .footer-blacro__bottom {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 1.5rem;
-    }
+  </div>
 
-    .footer-blacro__policies {
-      justify-content: center;
-      gap: 1.5rem;
-    }
-  }
+  <!-- 50/50 SPLIT SECTION -->
+  <div class="blacro-footer__split">
+    
+    <!-- Left Half: Video -->
+    <div class="blacro-footer__split-half">
+      {%- if section.settings.split_video != blank -%}
+        <div class="blacro-footer__split-video-wrap">
+          {{ section.settings.split_video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, class: "blacro-footer__video" }}
+        </div>
+      {%- elsif section.settings.split_video_url != blank -%}
+        <div class="blacro-footer__split-video-wrap">
+          {%- if section.settings.split_video_url.type == 'youtube' -%}
+            <iframe 
+              class="blacro-footer__video" 
+              src="https://www.youtube.com/embed/{{ section.settings.split_video_url.id }}?autoplay=1&mute=1&loop=1&playlist={{ section.settings.split_video_url.id }}&controls=0&showinfo=0&rel=0&playsinline=1" 
+              allow="autoplay; encrypted-media" 
+              allowfullscreen
+            ></iframe>
+          {%- elsif section.settings.split_video_url.type == 'vimeo' -%}
+            <iframe 
+              class="blacro-footer__video" 
+              src="https://player.vimeo.com/video/{{ section.settings.split_video_url.id }}?autoplay=1&muted=1&loop=1&autopause=0&background=1" 
+              allow="autoplay; fullscreen" 
+              allowfullscreen
+            ></iframe>
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        <div class="blacro-footer__split-img-wrap" style="background-color: #0a0a0a;">
+          <span class="blacro-footer__split-logo-text">BREED APART</span>
+        </div>
+      {%- endif -%}
+    </div>
 
-  @media screen and (max-width: 480px) {
-    .footer-blacro__hero-links {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-  }
-{% endstylesheet %}
+    <!-- Right Half: Image -->
+    <div class="blacro-footer__split-half">
+      <div class="blacro-footer__split-img-wrap">
+        {%- if section.settings.split_image != blank -%}
+          <img 
+            class="blacro-footer__split-img" 
+            src="{{ section.settings.split_image | image_url: width: 1200 }}" 
+            alt="BLACRO Campaign" 
+            loading="lazy"
+            width="{{ section.settings.split_image.width }}"
+            height="{{ section.settings.split_image.height }}"
+          >
+        {%- elsif section.settings.logo != blank -%}
+          <img 
+            class="blacro-footer__split-img" 
+            src="{{ section.settings.logo | image_url: width: 600 }}" 
+            alt="{{ shop.name }} Logo" 
+            loading="lazy"
+            width="{{ section.settings.logo.width }}"
+            height="{{ section.settings.logo.height }}"
+          >
+        {%- else -%}
+          <span class="blacro-footer__split-logo-text">BLACRO</span>
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+</div>
 
 {% schema %}
 {
-  "name": "Blacro Footer",
+  "name": "BLACRO Premium Footer",
   "tag": "footer",
   "class": "section-footer-blacro",
   "settings": [
     {
-      "type": "select",
-      "id": "section_width",
-      "label": "Width",
-      "options": [
-        { "value": "page-width", "label": "Page width" },
-        { "value": "full-width", "label": "Full width" }
-      ],
-      "default": "page-width"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "scheme-1"
-    },
-    {
       "type": "header",
-      "content": "Brand Identity (Top Logo)"
+      "content": "Brand Identity (Header Row)"
     },
     {
       "type": "image_picker",
-      "id": "brand_logo_top",
-      "label": "Brand Logo (Top)"
+      "id": "logo",
+      "label": "Brand Logo (Left)"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_icon",
+      "label": "Brand Icon / Bird (Right)"
+    },
+    {
+      "type": "header",
+      "content": "Footer Link Group Settings"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email Address",
+      "default": "info@blacro.in"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_shop_social_links",
+      "label": "Use theme global social links",
+      "default": true,
+      "info": "If checked, social links are auto-pulled from Theme Settings. If unchecked, manually add social_link blocks."
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "2026 BLACRO® BREED APART. ALL RIGHTS RESERVED."
+    },
+    {
+      "type": "header",
+      "content": "50/50 Split Bottom Section"
+    },
+    {
+      "type": "video",
+      "id": "split_video",
+      "label": "Split native video",
+      "info": "Upload a native video to Shopify. Takes priority over URL settings below."
+    },
+    {
+      "type": "video_url",
+      "id": "split_video_url",
+      "label": "Split video URL (YouTube/Vimeo)",
+      "accept": ["youtube", "vimeo"],
+      "info": "Alternative video source URL."
+    },
+    {
+      "type": "image_picker",
+      "id": "split_image",
+      "label": "Split image (Right half)",
+      "info": "Defaults to brand logo if left blank."
+    },
+    {
+      "type": "header",
+      "content": "Typography Settings"
     },
     {
       "type": "range",
-      "id": "brand_logo_top_width",
-      "label": "Brand Logo Top Width",
-      "min": 50,
-      "max": 300,
-      "step": 5,
+      "id": "font_size_links",
+      "min": 10,
+      "max": 20,
+      "step": 1,
       "unit": "px",
-      "default": 120
-    },
-    {
-      "type": "select",
-      "id": "brand_logo_top_alignment",
-      "label": "Brand Logo Top Alignment",
-      "options": [
-        {
-          "value": "left",
-          "label": "Left"
-        },
-        {
-          "value": "center",
-          "label": "Center"
-        },
-        {
-          "value": "right",
-          "label": "Right"
-        }
-      ],
-      "default": "left"
-    },
-    {
-      "type": "header",
-      "content": "Brand Identity (Bottom Logo)"
-    },
-    {
-      "type": "image_picker",
-      "id": "brand_logo_bottom",
-      "label": "Large Watermark Logo (Bottom)"
+      "default": 13,
+      "label": "Link font size"
     },
     {
       "type": "range",
-      "id": "brand_logo_bottom_width",
-      "label": "Large Watermark Logo Width",
+      "id": "font_size_labels",
+      "min": 8,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 10,
+      "label": "Category label font size"
+    },
+    {
+      "type": "range",
+      "id": "font_size_copyright",
+      "min": 8,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "default": 10,
+      "label": "Copyright font size"
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Letter spacing (all caps text)"
+    },
+    {
+      "type": "header",
+      "content": "Layout Padding & Spacing Settings"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80,
+      "label": "Section padding top"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80,
+      "label": "Section padding bottom"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24,
+      "label": "Horizontal padding (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal_desktop",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48,
+      "label": "Horizontal padding (desktop)"
+    },
+    {
+      "type": "range",
+      "id": "group_gap",
+      "min": 8,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40,
+      "label": "Gap between link groups"
+    },
+    {
+      "type": "range",
+      "id": "link_gap",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 12,
+      "label": "Gap between links within a group"
+    },
+    {
+      "type": "range",
+      "id": "header_margin_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40,
+      "label": "Logo row bottom spacing"
+    },
+    {
+      "type": "range",
+      "id": "split_section_height",
       "min": 200,
-      "max": 1400,
-      "step": 50,
+      "max": 800,
+      "step": 20,
       "unit": "px",
-      "default": 1200
-    },
+      "default": 600,
+      "label": "50/50 split height (desktop)"
+    }
+  ],
+  "blocks": [
     {
-      "type": "text",
-      "id": "hero_heading",
-      "label": "Hero heading",
-      "default": "Join Blacro Loyalty"
-    },
-    {
-      "type": "textarea",
-      "id": "hero_text",
-      "label": "Hero text",
-      "default": "Unlock 10% Off Your First Purchase Plus More Rewards And Benefits"
-    },
-    {
-      "type": "text",
-      "id": "hero_button_label",
-      "label": "CTA button label",
-      "default": "SIGN UP"
-    },
-    {
-      "type": "url",
-      "id": "hero_button_url",
-      "label": "CTA button URL"
-    },
-    {
-      "type": "link_list",
-      "id": "company_menu",
-      "label": "Company menu"
-    },
-    {
-      "type": "link_list",
-      "id": "policy_menu",
-      "label": "Policies menu"
-    },
-    {
-      "type": "header",
-      "content": "Social Media Links"
-    },
-    {
-      "type": "text",
-      "id": "social_instagram_link",
-      "label": "Instagram URL",
-      "default": "https://www.instagram.com/blacro.in?igsh=dnM4OWFsdzVxMTAz"
-    },
-    {
-      "type": "text",
-      "id": "social_facebook_link",
-      "label": "Facebook URL",
-      "default": "https://www.facebook.com/share/1JE6hGXvWz/"
-    },
-    {
-      "type": "text",
-      "id": "social_linkedin_link",
-      "label": "LinkedIn URL",
-      "default": "https://www.linkedin.com/company/blacro/"
-    },
-    {
-      "type": "text",
-      "id": "social_whatsapp_number",
-      "label": "WhatsApp Number or Link",
-      "default": "919876543210",
-      "info": "Enter your phone number with country code (e.g. 919876543210 for India) or a full link."
-    },
-    {
-      "type": "header",
-      "content": "Footer Typography Presets"
-    },
-    {
-      "type": "select",
-      "id": "footer_title_font",
-      "label": "Footer Title Typography Preset",
-      "options": [
+      "type": "nav_link",
+      "name": "Navigation Link",
+      "settings": [
         {
-          "value": "default",
-          "label": "Default"
+          "type": "text",
+          "id": "label",
+          "label": "Link label"
         },
         {
-          "value": "body",
-          "label": "Body"
-        },
-        {
-          "value": "subheading",
-          "label": "Subheading"
-        },
-        {
-          "value": "heading",
-          "label": "Heading"
-        },
-        {
-          "value": "accent",
-          "label": "Accent"
-        },
-        {
-          "value": "custom",
-          "label": "Custom"
+          "type": "url",
+          "id": "url",
+          "label": "Link URL"
         }
-      ],
-      "default": "default"
+      ]
     },
     {
-      "type": "paragraph",
-      "content": "Edit presets in theme settings",
-      "visible_if": "{{ section.settings.footer_title_font == 'custom' }}"
-    },
-    {
-      "type": "select",
-      "id": "footer_title_custom_font",
-      "label": "Footer Title Custom Font",
-      "options": [
+      "type": "social_link",
+      "name": "Social Link",
+      "settings": [
         {
-          "value": "heading",
-          "label": "Heading"
+          "type": "text",
+          "id": "label",
+          "label": "Social platform label"
         },
         {
-          "value": "subheading",
-          "label": "Subheading"
-        },
-        {
-          "value": "accent",
-          "label": "Accent"
-        },
-        {
-          "value": "body",
-          "label": "Body"
+          "type": "url",
+          "id": "url",
+          "label": "Profile URL"
         }
-      ],
-      "default": "heading",
-      "visible_if": "{{ section.settings.footer_title_font == 'custom' }}"
+      ]
     },
     {
-      "type": "range",
-      "id": "footer_title_custom_size",
-      "min": 10,
-      "max": 80,
-      "step": 1,
-      "unit": "px",
-      "label": "Footer Title Custom Font Size",
-      "default": 14,
-      "visible_if": "{{ section.settings.footer_title_font == 'custom' }}"
-    },
-    {
-      "type": "select",
-      "id": "footer_links_font",
-      "label": "Footer Links Typography Preset",
-      "options": [
+      "type": "legal_link",
+      "name": "Legal Link",
+      "settings": [
         {
-          "value": "default",
-          "label": "Default"
+          "type": "text",
+          "id": "label",
+          "label": "Legal link label"
         },
         {
-          "value": "body",
-          "label": "Body"
-        },
-        {
-          "value": "subheading",
-          "label": "Subheading"
-        },
-        {
-          "value": "heading",
-          "label": "Heading"
-        },
-        {
-          "value": "accent",
-          "label": "Accent"
-        },
-        {
-          "value": "custom",
-          "label": "Custom"
+          "type": "url",
+          "id": "url",
+          "label": "Legal link URL"
         }
-      ],
-      "default": "default"
-    },
-    {
-      "type": "paragraph",
-      "content": "Edit presets in theme settings",
-      "visible_if": "{{ section.settings.footer_links_font == 'custom' }}"
-    },
-    {
-      "type": "select",
-      "id": "footer_links_custom_font",
-      "label": "Footer Links Custom Font",
-      "options": [
-        {
-          "value": "heading",
-          "label": "Heading"
-        },
-        {
-          "value": "subheading",
-          "label": "Subheading"
-        },
-        {
-          "value": "accent",
-          "label": "Accent"
-        },
-        {
-          "value": "body",
-          "label": "Body"
-        }
-      ],
-      "default": "body",
-      "visible_if": "{{ section.settings.footer_links_font == 'custom' }}"
-    },
-    {
-      "type": "range",
-      "id": "footer_links_custom_size",
-      "min": 10,
-      "max": 80,
-      "step": 1,
-      "unit": "px",
-      "label": "Footer Links Custom Font Size",
-      "default": 14,
-      "visible_if": "{{ section.settings.footer_links_font == 'custom' }}"
-    },
-    {
-      "type": "header",
-      "content": "Padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_block_start",
-      "label": "Top padding",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "padding_block_end",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "unit": "px",
-      "default": 40
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Blacro Footer",
-      "category": "Footer",
-      "settings": {
-        "section_width": "page-width",
-        "color_scheme": "scheme-1",
-        "hero_heading": "Join Blacro Loyalty",
-        "hero_text": "Unlock 10% Off Your First Purchase Plus More Rewards And Benefits",
-        "hero_button_label": "SIGN UP"
-      }
+      "name": "Blacro Premium Footer",
+      "blocks": [
+        {
+          "type": "nav_link",
+          "settings": {
+            "label": "SHOP ALL",
+            "url": "/collections/all"
+          }
+        },
+        {
+          "type": "nav_link",
+          "settings": {
+            "label": "CAMPAIGNS",
+            "url": "/blogs/news"
+          }
+        },
+        {
+          "type": "nav_link",
+          "settings": {
+            "label": "ABOUT US",
+            "url": "/pages/about"
+          }
+        },
+        {
+          "type": "legal_link",
+          "settings": {
+            "label": "PRIVACY POLICY",
+            "url": "/policies/privacy-policy"
+          }
+        },
+        {
+          "type": "legal_link",
+          "settings": {
+            "label": "TERMS OF SERVICE",
+            "url": "/policies/terms-of-service"
+          }
+        }
+      ]
     }
   ]
 }
