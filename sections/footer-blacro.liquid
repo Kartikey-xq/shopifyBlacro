@@ -6,7 +6,7 @@
 
 <style>
   #BlacroFooter-{{ section.id }} {
-    background-color: #0a0a0a;
+    background-color: var(--footer-bg);
     color: #ffffff;
     font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     display: flex;
@@ -157,9 +157,11 @@
 
   #BlacroFooter-{{ section.id }} .blacro-footer__split {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--split-gap);
     width: 100%;
-    background-color: #000000;
+    background-color: var(--footer-bg);
+    height: var(--split-height-mobile);
   }
 
   #BlacroFooter-{{ section.id }} .blacro-footer__split-half {
@@ -168,18 +170,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    aspect-ratio: 1 / 1;
+    height: 100%;
     width: 100%;
   }
 
   @media screen and (min-width: 769px) {
     #BlacroFooter-{{ section.id }} .blacro-footer__split {
-      grid-template-columns: 1fr 1fr;
       height: var(--split-height);
-    }
-    #BlacroFooter-{{ section.id }} .blacro-footer__split-half {
-      height: 100%;
-      aspect-ratio: auto;
     }
   }
 
@@ -226,13 +223,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #0d0d0d;
+    background-color: var(--footer-bg);
   }
 
   #BlacroFooter-{{ section.id }} .blacro-footer__split-img {
-    max-width: 80%;
-    max-height: 80%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #BlacroFooter-{{ section.id }} .blacro-footer__split-logo-img {
+    width: var(--logo-width);
+    height: auto;
     object-fit: contain;
+    max-width: 100%;
     display: block;
   }
 
@@ -258,6 +263,10 @@
     --link-gap: {{ section.settings.link_gap }}px;
     --header-mb: {{ section.settings.header_margin_bottom }}px;
     --split-height: {{ section.settings.split_section_height }}px;
+    --split-height-mobile: {{ section.settings.split_height_mobile }}px;
+    --split-gap: {{ section.settings.split_gap }}px;
+    --logo-width: {{ section.settings.split_logo_width }}%;
+    --footer-bg: {{ section.settings.footer_bg_color }};
     --fs-links: {{ section.settings.font_size_links }}px;
     --fs-labels: {{ section.settings.font_size_labels }}px;
     --fs-copyright: {{ section.settings.font_size_copyright }}px;
@@ -305,14 +314,10 @@
       <div class="blacro-footer__group">
         <h3 class="blacro-footer__group-label">NAVIGATION</h3>
         <div class="blacro-footer__group-content">
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'nav_link' -%}
-              {%- if block.settings.label != blank and block.settings.url != blank -%}
-                <a class="blacro-footer__link" href="{{ block.settings.url }}" {{ block.shopify_attributes }}>
-                  <span class="bracket">[</span> <span class="link-text">{{ block.settings.label | upcase }}</span> <span class="bracket">]</span>
-                </a>
-              {%- endif -%}
-            {%- endif -%}
+          {%- for link in linklists[section.settings.nav_menu].links -%}
+            <a class="blacro-footer__link" href="{{ link.url }}">
+              <span class="bracket">[</span> <span class="link-text">{{ link.title | upcase }}</span> <span class="bracket">]</span>
+            </a>
           {%- endfor -%}
         </div>
       </div>
@@ -361,14 +366,10 @@
       <div class="blacro-footer__group">
         <h3 class="blacro-footer__group-label">LEGAL</h3>
         <div class="blacro-footer__group-content">
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'legal_link' -%}
-              {%- if block.settings.label != blank and block.settings.url != blank -%}
-                <a class="blacro-footer__link" href="{{ block.settings.url }}" {{ block.shopify_attributes }}>
-                  <span class="bracket">[</span> <span class="link-text">{{ block.settings.label | upcase }}</span> <span class="bracket">]</span>
-                </a>
-              {%- endif -%}
-            {%- endif -%}
+          {%- for link in linklists[section.settings.legal_menu].links -%}
+            <a class="blacro-footer__link" href="{{ link.url }}">
+              <span class="bracket">[</span> <span class="link-text">{{ link.title | upcase }}</span> <span class="bracket">]</span>
+            </a>
           {%- endfor -%}
         </div>
       </div>
@@ -411,7 +412,7 @@
           {%- endif -%}
         </div>
       {%- else -%}
-        <div class="blacro-footer__split-img-wrap" style="background-color: #0a0a0a;">
+        <div class="blacro-footer__split-img-wrap" style="background-color: var(--footer-bg);">
           <span class="blacro-footer__split-logo-text">BREED APART</span>
         </div>
       {%- endif -%}
@@ -431,7 +432,7 @@
           >
         {%- elsif section.settings.logo != blank -%}
           <img 
-            class="blacro-footer__split-img" 
+            class="blacro-footer__split-logo-img" 
             src="{{ section.settings.logo | image_url: width: 600 }}" 
             alt="{{ shop.name }} Logo" 
             loading="lazy"
@@ -470,6 +471,18 @@
     {
       "type": "header",
       "content": "Footer Link Group Settings"
+    },
+    {
+      "type": "link_list",
+      "id": "nav_menu",
+      "label": "Navigation menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "legal_menu",
+      "label": "Legal menu",
+      "default": "footer"
     },
     {
       "type": "text",
@@ -512,6 +525,46 @@
       "id": "split_image",
       "label": "Split image (Right half)",
       "info": "Defaults to brand logo if left blank."
+    },
+    {
+      "type": "range",
+      "id": "split_logo_width",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 60,
+      "label": "Logo size (% of panel width)"
+    },
+    {
+      "type": "range",
+      "id": "split_gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 0,
+      "label": "Gap between video and logo panels"
+    },
+    {
+      "type": "range",
+      "id": "split_height_mobile",
+      "min": 100,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "default": 240,
+      "label": "50/50 split height (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "split_section_height",
+      "min": 200,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 600,
+      "label": "50/50 split height (desktop)"
     },
     {
       "type": "header",
@@ -632,33 +685,17 @@
       "label": "Logo row bottom spacing"
     },
     {
-      "type": "range",
-      "id": "split_section_height",
-      "min": 200,
-      "max": 800,
-      "step": 20,
-      "unit": "px",
-      "default": 600,
-      "label": "50/50 split height (desktop)"
+      "type": "header",
+      "content": "Color Settings"
+    },
+    {
+      "type": "color",
+      "id": "footer_bg_color",
+      "label": "Footer background color",
+      "default": "#0a0a0a"
     }
   ],
   "blocks": [
-    {
-      "type": "nav_link",
-      "name": "Navigation Link",
-      "settings": [
-        {
-          "type": "text",
-          "id": "label",
-          "label": "Link label"
-        },
-        {
-          "type": "url",
-          "id": "url",
-          "label": "Link URL"
-        }
-      ]
-    },
     {
       "type": "social_link",
       "name": "Social Link",
@@ -674,64 +711,11 @@
           "label": "Profile URL"
         }
       ]
-    },
-    {
-      "type": "legal_link",
-      "name": "Legal Link",
-      "settings": [
-        {
-          "type": "text",
-          "id": "label",
-          "label": "Legal link label"
-        },
-        {
-          "type": "url",
-          "id": "url",
-          "label": "Legal link URL"
-        }
-      ]
     }
   ],
   "presets": [
     {
-      "name": "Blacro Premium Footer",
-      "blocks": [
-        {
-          "type": "nav_link",
-          "settings": {
-            "label": "SHOP ALL",
-            "url": "/collections/all"
-          }
-        },
-        {
-          "type": "nav_link",
-          "settings": {
-            "label": "CAMPAIGNS",
-            "url": "/blogs/news"
-          }
-        },
-        {
-          "type": "nav_link",
-          "settings": {
-            "label": "ABOUT US",
-            "url": "/pages/about"
-          }
-        },
-        {
-          "type": "legal_link",
-          "settings": {
-            "label": "PRIVACY POLICY",
-            "url": "/policies/privacy-policy"
-          }
-        },
-        {
-          "type": "legal_link",
-          "settings": {
-            "label": "TERMS OF SERVICE",
-            "url": "/policies/terms-of-service"
-          }
-        }
-      ]
+      "name": "Blacro Premium Footer"
     }
   ]
 }
