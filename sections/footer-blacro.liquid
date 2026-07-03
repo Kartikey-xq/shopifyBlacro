@@ -41,6 +41,10 @@
     width: 100%;
   }
 
+  #BlacroFooter-{{ section.id }} .blacro-footer__logo-wrap {
+    transform: translateX(var(--logo-x-offset));
+  }
+
   #BlacroFooter-{{ section.id }} .blacro-footer__logo-wrap img {
     height: auto;
     object-fit: contain;
@@ -276,6 +280,7 @@
     --split-logo-ph: {{ section.settings.split_logo_padding_horizontal }}%;
     --split-logo-pv: {{ section.settings.split_logo_padding_vertical }}%;
     --footer-bg: {{ section.settings.footer_bg_color }};
+    --logo-x-offset: {{ section.settings.brand_logo_x_offset | default: 0 }}px;
     --fs-links: {{ section.settings.font_size_links }}px;
     --fs-labels: {{ section.settings.font_size_labels }}px;
     --fs-copyright: {{ section.settings.font_size_copyright }}px;
@@ -495,6 +500,16 @@
     },
     {
       "type": "range",
+      "id": "brand_logo_x_offset",
+      "min": -80,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 0,
+      "label": "Brand logo horizontal offset"
+    },
+    {
+      "type": "range",
       "id": "brand_icon_width",
       "min": 20,
       "max": 200,
@@ -588,7 +603,7 @@
       "max": 48,
       "step": 2,
       "unit": "%",
-      "default": 15,
+      "default": 16,
       "label": "Logo horizontal padding (% of panel)"
     },
     {
@@ -598,7 +613,7 @@
       "max": 48,
       "step": 2,
       "unit": "%",
-      "default": 15,
+      "default": 16,
       "label": "Logo vertical padding (% of panel)"
     },
     {
