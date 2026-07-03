@@ -41,9 +41,13 @@
     width: 100%;
   }
 
+  #BlacroFooter-{{ section.id }} .blacro-footer__logo-wrap {
+    transform: translateX(var(--logo-x-offset));
+  }
+
   #BlacroFooter-{{ section.id }} .blacro-footer__logo-wrap img {
-    max-height: 50px;
-    width: auto;
+    height: auto;
+    object-fit: contain;
     display: block;
   }
 
@@ -55,8 +59,8 @@
   }
 
   #BlacroFooter-{{ section.id }} .blacro-footer__bird-wrap img {
-    max-height: 50px;
-    width: auto;
+    height: auto;
+    object-fit: contain;
     display: block;
   }
 
@@ -140,7 +144,7 @@
     border: 0;
     border-top: 1px solid #222222;
     margin-top: 48px;
-    margin-bottom: 24px;
+    margin-bottom: 0;
     width: 100%;
   }
 
@@ -153,6 +157,8 @@
     text-align: center;
     line-height: 1.5;
     width: 100%;
+    padding-top: var(--copyright-pt);
+    padding-bottom: var(--copyright-pb);
   }
 
   #BlacroFooter-{{ section.id }} .blacro-footer__split {
@@ -233,11 +239,15 @@
     display: block;
   }
 
+  #BlacroFooter-{{ section.id }} .blacro-footer__split-img-wrap--logo {
+    padding: var(--split-logo-pv) var(--split-logo-ph);
+    box-sizing: border-box;
+  }
+
   #BlacroFooter-{{ section.id }} .blacro-footer__split-logo-img {
-    width: var(--logo-width);
-    height: auto;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    max-width: 100%;
     display: block;
   }
 
@@ -262,11 +272,15 @@
     --group-gap: {{ section.settings.group_gap }}px;
     --link-gap: {{ section.settings.link_gap }}px;
     --header-mb: {{ section.settings.header_margin_bottom }}px;
+    --copyright-pt: {{ section.settings.copyright_padding_top }}px;
+    --copyright-pb: {{ section.settings.copyright_padding_bottom }}px;
     --split-height: {{ section.settings.split_section_height }}px;
     --split-height-mobile: {{ section.settings.split_height_mobile }}px;
     --split-gap: {{ section.settings.split_gap }}px;
-    --logo-width: {{ section.settings.split_logo_width }}%;
+    --split-logo-ph: {{ section.settings.split_logo_padding_horizontal }}%;
+    --split-logo-pv: {{ section.settings.split_logo_padding_vertical }}%;
     --footer-bg: {{ section.settings.footer_bg_color }};
+    --logo-x-offset: {{ section.settings.brand_logo_x_offset | default: 0 }}px;
     --fs-links: {{ section.settings.font_size_links }}px;
     --fs-labels: {{ section.settings.font_size_labels }}px;
     --fs-copyright: {{ section.settings.font_size_copyright }}px;
@@ -285,6 +299,7 @@
             loading="lazy" 
             width="{{ section.settings.logo.width }}"
             height="{{ section.settings.logo.height }}"
+            style="width: {{ section.settings.brand_logo_width | default: 160 }}px; height: auto;"
           >
         {%- else -%}
           <span class="blacro-footer__logo-text">BLACRO</span>
@@ -298,6 +313,7 @@
             loading="lazy"
             width="{{ section.settings.brand_icon.width }}"
             height="{{ section.settings.brand_icon.height }}"
+            style="width: {{ section.settings.brand_icon_width | default: 80 }}px; height: auto;"
           >
         {%- else -%}
           <svg class="blacro-footer__bird-placeholder" viewBox="0 0 100 100" width="40" height="40" fill="none" stroke="#ffffff" stroke-width="1.5">
@@ -420,7 +436,7 @@
 
     <!-- Right Half: Image -->
     <div class="blacro-footer__split-half">
-      <div class="blacro-footer__split-img-wrap">
+      <div class="blacro-footer__split-img-wrap{% if section.settings.split_image == blank and section.settings.logo != blank %} blacro-footer__split-img-wrap--logo{% endif %}">
         {%- if section.settings.split_image != blank -%}
           <img 
             class="blacro-footer__split-img" 
@@ -470,6 +486,40 @@
     },
     {
       "type": "header",
+      "content": "Footer Top Row — Logo Sizes"
+    },
+    {
+      "type": "range",
+      "id": "brand_logo_width",
+      "min": 80,
+      "max": 400,
+      "step": 5,
+      "unit": "px",
+      "default": 160,
+      "label": "Brand logo width"
+    },
+    {
+      "type": "range",
+      "id": "brand_logo_x_offset",
+      "min": -80,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 0,
+      "label": "Brand logo horizontal offset"
+    },
+    {
+      "type": "range",
+      "id": "brand_icon_width",
+      "min": 20,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 80,
+      "label": "Brand icon width"
+    },
+    {
+      "type": "header",
       "content": "Footer Link Group Settings"
     },
     {
@@ -504,6 +554,26 @@
       "default": "2026 BLACRO® BREED APART. ALL RIGHTS RESERVED."
     },
     {
+      "type": "range",
+      "id": "copyright_padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24,
+      "label": "Copyright row padding top"
+    },
+    {
+      "type": "range",
+      "id": "copyright_padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24,
+      "label": "Copyright row padding bottom"
+    },
+    {
       "type": "header",
       "content": "50/50 Split Bottom Section"
     },
@@ -528,13 +598,23 @@
     },
     {
       "type": "range",
-      "id": "split_logo_width",
-      "min": 20,
-      "max": 100,
-      "step": 5,
+      "id": "split_logo_padding_horizontal",
+      "min": 0,
+      "max": 48,
+      "step": 2,
       "unit": "%",
-      "default": 60,
-      "label": "Logo size (% of panel width)"
+      "default": 16,
+      "label": "Logo horizontal padding (% of panel)"
+    },
+    {
+      "type": "range",
+      "id": "split_logo_padding_vertical",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "%",
+      "default": 16,
+      "label": "Logo vertical padding (% of panel)"
     },
     {
       "type": "range",
