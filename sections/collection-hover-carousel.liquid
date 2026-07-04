@@ -397,9 +397,63 @@
   }
 {% endstyle %}
 
+{%- if section.settings.mobile_layout == 'grid' -%}
+  {% style %}
+    @media (max-width: 749px) {
+      #shopify-section-{{ section.id }} .collection-hover-carousel__track {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: {{ section.settings.carousel_gap }}px !important;
+        overflow-x: visible !important;
+        scroll-snap-type: none !important;
+        -webkit-overflow-scrolling: auto !important;
+        padding-left: var(--carousel-padding-horizontal, 1.5rem) !important;
+        padding-right: var(--carousel-padding-horizontal, 1.5rem) !important;
+      }
+      #shopify-section-{{ section.id }} .collection-hover-carousel__item {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        scroll-snap-align: none !important;
+      }
+      #shopify-section-{{ section.id }} .collection-hover-carousel__nav,
+      #shopify-section-{{ section.id }} .collection-hover-carousel__btn {
+        display: none !important;
+      }
+    }
+  {% endstyle %}
+{%- endif -%}
+
+{%- if section.settings.desktop_layout == 'grid_2x2' -%}
+  {% style %}
+    @media (min-width: 990px) {
+      #shopify-section-{{ section.id }} .collection-hover-carousel__track--grid-2x2 {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        column-gap: {{ section.settings.carousel_gap }}px !important;
+        row-gap: {{ section.settings.grid_row_gap }}px !important;
+        overflow-x: visible !important;
+        scroll-behavior: auto !important;
+        scroll-snap-type: none !important;
+      }
+      #shopify-section-{{ section.id }} .collection-hover-carousel__track--grid-2x2 .collection-hover-carousel__item {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      #shopify-section-{{ section.id }}[data-desktop-layout="grid_2x2"] .collection-hover-carousel__nav,
+      #shopify-section-{{ section.id }}[data-desktop-layout="grid_2x2"] .collection-hover-carousel__btn {
+        display: none !important;
+      }
+    }
+  {% endstyle %}
+{%- endif -%}
+
 <div 
   id="CollectionCarousel-{{ section.id }}" 
   class="collection-hover-carousel {% if section.settings.color_scheme != blank %}color-{{ section.settings.color_scheme }}{% endif %}"
+  data-mobile-layout="{{ section.settings.mobile_layout | default: 'carousel' }}"
+  data-desktop-layout="{{ section.settings.desktop_layout | default: 'carousel' }}"
   style="
     padding-top: {{ section.settings.padding_top }}px; 
     padding-bottom: {{ section.settings.padding_bottom }}px;
@@ -443,9 +497,12 @@
 
     <!-- Carousel Track Wrapper -->
     <div class="collection-hover-carousel__track-wrapper">
-      <div class="collection-hover-carousel__track {% unless section.settings.enable_carousel %}collection-hover-carousel__track--grid{% endunless %}">
+      <div class="collection-hover-carousel__track {% unless section.settings.enable_carousel %}collection-hover-carousel__track--grid{% endunless %}{% if section.settings.desktop_layout == 'grid_2x2' %} collection-hover-carousel__track--grid-2x2{% endif %}">
         {% if section_collection != blank and collection_products.size > 0 %}
-          {% assign products_limit = section.settings.products_to_show | default: 8 %}
+          {%- assign products_limit = section.settings.products_to_show | default: 8 -%}
+          {%- if section.settings.desktop_layout == 'grid_2x2' -%}
+            {%- assign products_limit = 4 -%}
+          {%- endif -%}
           {% for product in collection_products limit: products_limit %}
             {% liquid
               assign title = product.title | default: 'Sample Product'
@@ -577,7 +634,10 @@
           {% endfor %}
         {% else %}
           {% comment %} Fallback items if no blocks exist {% endcomment %}
-          {% assign products_limit = section.settings.products_to_show | default: 8 %}
+          {%- assign products_limit = section.settings.products_to_show | default: 8 -%}
+          {%- if section.settings.desktop_layout == 'grid_2x2' -%}
+            {%- assign products_limit = 4 -%}
+          {%- endif -%}
           {% for i in (1..products_limit) %}
             {% assign placeholder_index = i | modulo: 4 | plus: 1 %}
             <div class="collection-hover-carousel__item">
@@ -966,10 +1026,25 @@
   }
 
   .collection-hover-carousel__track--grid {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.grid_columns_desktop }}, 1fr);
+    gap: {{ section.settings.carousel_gap }}px;
     overflow-x: visible;
     scroll-behavior: auto;
     scroll-snap-type: none;
+  }
+
+  .collection-hover-carousel__track--grid .collection-hover-carousel__item {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .collection-hover-carousel__track--grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: {{ section.settings.carousel_gap }}px !important;
+    }
   }
 
   .collection-hover-carousel__track::-webkit-scrollbar {
@@ -1152,6 +1227,12 @@
     function initCarousel(sectionId) {
       const section = document.getElementById('CollectionCarousel-' + sectionId);
       if (!section) return;
+      
+      const mobileLayout = section.getAttribute('data-mobile-layout');
+      if (mobileLayout === 'grid' && window.innerWidth <= 749) return;
+
+      const desktopLayout = section.getAttribute('data-desktop-layout');
+      if (desktopLayout === 'grid_2x2' && window.innerWidth >= 990) return;
       
       const track = section.querySelector('.collection-hover-carousel__track');
       const prevBtn = section.querySelector('.collection-hover-carousel__btn--prev');
@@ -1633,25 +1714,76 @@
       "default": true
     },
     {
+      "type": "header",
+      "content": "Desktop Layout"
+    },
+    {
+      "type": "select",
+      "id": "desktop_layout",
+      "label": "Desktop layout",
+      "default": "carousel",
+      "options": [
+        {
+          "value": "carousel",
+          "label": "Carousel / Slider"
+        },
+        {
+          "value": "grid_2x2",
+          "label": "2x2 Grid"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "grid_row_gap",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24,
+      "label": "Row gap (top to bottom row)",
+      "visible_if": "{{ section.settings.desktop_layout == 'grid_2x2' }}"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Layout"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "default": "carousel",
+      "options": [
+        {
+          "value": "carousel",
+          "label": "Carousel"
+        },
+        {
+          "value": "grid",
+          "label": "Grid (2 columns)"
+        }
+      ]
+    },
+    {
       "type": "select",
       "id": "grid_columns_desktop",
       "label": "Columns on desktop (Grid mode)",
       "options": [
         {
           "value": "2",
-          "label": "2 Columns"
+          "label": "2 columns"
         },
         {
           "value": "3",
-          "label": "3 Columns"
+          "label": "3 columns"
         },
         {
           "value": "4",
-          "label": "4 Columns"
+          "label": "4 columns"
         },
         {
           "value": "5",
-          "label": "5 Columns"
+          "label": "5 columns"
         }
       ],
       "default": "4",

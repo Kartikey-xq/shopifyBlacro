@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 try {
-  const content = fs.readFileSync('/home/kartikey-xq/shopifyBlacro/sections/footer-blacro.liquid', 'utf8');
+  const content = fs.readFileSync('/home/kartikey-xq/shopifyBlacro/sections/collection-hover-carousel.liquid', 'utf8');
   const schemaMatch = content.match(/{%\s*schema\s*%}([\s\S]*?){%\s*endschema\s*%}/);
   if (!schemaMatch) {
     console.error('No schema block found!');
