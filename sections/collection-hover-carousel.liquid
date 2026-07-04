@@ -403,7 +403,8 @@
       #shopify-section-{{ section.id }} .collection-hover-carousel__track {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: {{ section.settings.carousel_gap }}px !important;
+        column-gap: {{ section.settings.carousel_gap }}px !important;
+        row-gap: {{ section.settings.mobile_grid_row_gap | default: 24 }}px !important;
         overflow-x: visible !important;
         scroll-snap-type: none !important;
         -webkit-overflow-scrolling: auto !important;
@@ -1043,7 +1044,8 @@
   @media screen and (max-width: 749px) {
     .collection-hover-carousel__track--grid {
       grid-template-columns: repeat(2, 1fr) !important;
-      gap: {{ section.settings.carousel_gap }}px !important;
+      column-gap: {{ section.settings.carousel_gap }}px !important;
+      row-gap: {{ section.settings.mobile_grid_row_gap | default: 24 }}px !important;
     }
   }
 
@@ -1763,6 +1765,17 @@
           "label": "Grid (2 columns)"
         }
       ]
+    },
+    {
+      "type": "range",
+      "id": "mobile_grid_row_gap",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24,
+      "label": "Row gap (top to bottom row)",
+      "visible_if": "{{ section.settings.mobile_layout == 'grid' }}"
     },
     {
       "type": "select",
