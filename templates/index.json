@@ -690,7 +690,10 @@
         "title_animation": "slide-left",
         "title_animation_duration": 1500,
         "collection": "relic",
-        "enable_carousel": false,
+        "enable_carousel": true,
+        "desktop_layout": "grid_2x2",
+        "grid_row_gap": 24,
+        "mobile_layout": "grid",
         "grid_columns_desktop": "2",
         "products_to_show": 4,
         "enable_full_width": true,
@@ -731,7 +734,7 @@
         "desktop_card_height": "large",
         "desktop_card_custom_height": 380,
         "padding_top": 48,
-        "padding_bottom": 0,
+        "padding_bottom": 12,
         "padding_horizontal": 0,
         "carousel_gap": 2
       }
