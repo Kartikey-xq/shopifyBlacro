@@ -483,8 +483,9 @@
         "start_index": 8,
         "image_ratio": "portrait",
         "show_dots": false,
-        "background_color": "#FAFAFA",
-        "image_gap": 0
+        "background_color": "#fafafa",
+        "image_gap": 0,
+        "enable_zoom": true
       }
     },
     "product_recommendations_qggXJq": {
