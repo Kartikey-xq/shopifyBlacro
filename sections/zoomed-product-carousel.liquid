@@ -1,405 +1,544 @@
 {%- liquid
-  assign product_images = product.images
-  if product_images == blank and request.visual_preview_mode
-    # Fallback for visual editor when no product context is available
-    assign product_images = collections.all.products.first.images
+  assign start_index = section.settings.start_index
+  if start_index == blank or start_index == nil
+    assign start_index = 9
+  else
+    assign start_index = start_index | plus: 0
   endif
 -%}
 
+
+{% comment %} Pre-calculate slide count {% endcomment %}
+{% assign slide_count = 0 %}
+{% for media in product.media %}
+  {% if forloop.index0 >= start_index and media.media_type == 'image' %}
+    {% assign slide_count = slide_count | plus: 1 %}
+  {% endif %}
+{% endfor %}
+
+{% if slide_count > 0 %}
 <style>
-  #zoomed-product-carousel-{{ section.id }} {
-    display: block;
+  #shopify-section-{{ section.id }} {
+    background-color: {{ section.settings.background_color | default: '#000000' }};
+  }
+
+  #shopify-section-{{ section.id }} .zoomin-carousel-track {
+    gap: {{ section.settings.image_gap | default: 0 }}px;
+  }
+
+  /* ── Container ── */
+  .zoomin-carousel {
     position: relative;
-    width: 100vw;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0;
     overflow: hidden;
-    box-sizing: border-box;
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
   }
 
-  .zoomed-carousel-inner-{{ section.id }} {
-    position: relative;
-    width: 100%;
-  }
-
-  .zoomed-carousel-track-wrapper-{{ section.id }} {
-    overflow: hidden;
-    width: 100%;
-  }
-
-  .zoomed-carousel-track-{{ section.id }} {
+  /* ── Track ── */
+  .zoomin-carousel-track {
     display: flex;
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 8px;
     margin: 0;
     padding: 0;
+    list-style: none;
+  }
+  .zoomin-carousel-track::-webkit-scrollbar {
+    display: none;
   }
 
-  .zoomed-carousel-slide-{{ section.id }} {
-    flex: 0 0 100vw;
-    width: 100vw;
-    height: 60vh;
-    box-sizing: border-box;
+  /* ── Slides — MOBILE: 80% width so next image peeks at 20% ── */
+  .zoomin-carousel-slide {
+    flex: 0 0 calc(var(--zoomin-slide-width, 80%) - 4px);
+    scroll-snap-align: start;
+    overflow: hidden;
   }
-
-  @media screen and (min-width: 750px) {
-    .zoomed-carousel-slide-{{ section.id }} {
-      flex: 0 0 50vw;
-      width: 50vw;
-      height: 80vh;
-    }
-  }
-
-  .zoomed-carousel-image-{{ section.id }} {
+  .zoomin-carousel-slide img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
 
-  /* Arrows */
-  .zoomed-carousel-arrow-{{ section.id }} {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    cursor: pointer;
+  {% if section.settings.enable_zoom %}
+    .zoomin-carousel-slide {
+      cursor: zoom-in;
+    }
+  {% endif %}
+
+  /* ── Aspect Ratios ── */
+  .zoomin-carousel.ratio-square .zoomin-carousel-slide img {
+    aspect-ratio: 1 / 1;
+    height: auto;
+  }
+  .zoomin-carousel.ratio-portrait .zoomin-carousel-slide img {
+    aspect-ratio: 3 / 4;
+    height: auto;
+  }
+  .zoomin-carousel.ratio-landscape .zoomin-carousel-slide img {
+    aspect-ratio: 4 / 3;
+    height: auto;
+  }
+
+  /* ── Desktop: full width, one image at a time ── */
+  @media (min-width: 750px) {
+    .zoomin-carousel-slide {
+      flex: 0 0 100%;
+    }
+  }
+
+  /* ── Arrows — desktop only ── */
+  .zoomin-arrow {
+    display: none;
+  }
+  @media (min-width: 750px) {
+    .zoomin-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.8);
+      border: none;
+      cursor: pointer;
+      z-index: 2;
+      padding: 12px;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: background-color 0.2s, transform 0.2s;
+    }
+    .zoomin-arrow:hover {
+      background: rgba(255,255,255,1);
+      transform: translateY(-50%) scale(1.05);
+    }
+    .zoomin-arrow--prev { left: 12px; }
+    .zoomin-arrow--next { right: 12px; }
+    
+    .zoomin-arrow--prev svg {
+      transform: rotate(90deg);
+    }
+    .zoomin-arrow--next svg {
+      transform: rotate(-90deg);
+    }
+  }
+
+  /* ── Dots — mobile only ── */
+  .zoomin-carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  @media (min-width: 750px) {
+    .zoomin-carousel-dots { display: none; }
+  }
+  .zoomin-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.2);
+    border: none;
     padding: 0;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .zoomin-dot.active {
+    background: rgba(0,0,0,0.8);
+  }
+
+  /* ── Reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    .zoomin-carousel-track {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* ── Lightbox ── */
+  .zoomin-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .zoomin-lightbox[aria-hidden="false"] {
+    display: flex;
+  }
+  .zoomin-lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    z-index: 10001;
+    padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.2s, transform 0.2s;
-    opacity: 0.8;
-    background: transparent;
-    border: none;
+    border-radius: 50%;
+    transition: background-color 0.2s, transform 0.2s;
   }
-
-  .zoomed-carousel-arrow-{{ section.id }}:hover {
-    opacity: 1;
-    transform: translateY(-50%) scale(1.08);
+  .zoomin-lightbox-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
   }
-
-  .zoomed-carousel-arrow-prev-{{ section.id }} {
-    left: 24px;
+  .zoomin-lightbox-close svg {
+    width: 24px;
+    height: 24px;
+    display: block;
   }
-
-  .zoomed-carousel-arrow-next-{{ section.id }} {
-    right: 24px;
+  .zoomin-lightbox-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
   }
-
-  .zoomed-carousel-arrow-minimal-{{ section.id }} {
-    color: var(--color-foreground, #000);
-    width: 44px;
-    height: 44px;
+  .zoomin-lightbox-content:active {
+    cursor: grabbing;
   }
-
-  .zoomed-carousel-arrow-minimal-{{ section.id }} svg {
-    width: 36px;
-    height: 36px;
-  }
-
-  .zoomed-carousel-arrow-bold-{{ section.id }} {
-    color: var(--color-foreground, #000);
-    width: 48px;
-    height: 48px;
-  }
-
-  .zoomed-carousel-arrow-bold-{{ section.id }} svg {
-    width: 48px;
-    height: 48px;
-  }
-
-  .zoomed-carousel-arrow-bold-{{ section.id }} svg circle {
-    fill: var(--color-foreground, #000);
-  }
-
-  .zoomed-carousel-arrow-bold-{{ section.id }} svg path {
-    stroke: var(--color-background, #fff);
-  }
-
-  .placeholder-svg-{{ section.id }} {
-    background-color: #f3f3f3;
-    fill: #888;
+  .zoomin-lightbox-image {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform 0.1s ease-out;
+    transform-origin: center center;
   }
 </style>
 
-<zoomed-product-carousel
-  id="zoomed-product-carousel-{{ section.id }}"
-  class="color-{{ section.settings.color_scheme }}"
-  data-section-id="{{ section.id }}"
->
-  {%- if product_images.size > 0 -%}
-    <div class="zoomed-carousel-inner-{{ section.id }}">
-      <div class="zoomed-carousel-track-wrapper-{{ section.id }}">
-        <div class="zoomed-carousel-track-{{ section.id }}">
-          {%- for image in product_images -%}
-            <div class="zoomed-carousel-slide-{{ section.id }}">
-              <img
-                src="{{ image | image_url: width: 1600 }}"
-                alt="{{ image.alt | escape }}"
-                loading="lazy"
-                width="{{ image.width }}"
-                height="{{ image.height }}"
-                class="zoomed-carousel-image-{{ section.id }}"
-              >
-            </div>
-          {%- endfor -%}
-        </div>
-      </div>
+<section class="zoomin-carousel ratio-{{ section.settings.image_ratio }}" role="region" aria-label="Product zoom gallery" style="--zoomin-slide-width: {{ section.settings.slide_width_mobile }}%;">
 
-      {%- if section.settings.arrow_style != 'none' -%}
-        <button
-          type="button"
-          class="zoomed-carousel-arrow-{{ section.id }} zoomed-carousel-arrow-prev-{{ section.id }} zoomed-carousel-arrow-{{ section.settings.arrow_style }}-{{ section.id }}"
-          aria-label="Previous slide"
-          ref="prev"
-        >
-          {%- if section.settings.arrow_style == 'minimal' -%}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          {%- else -%}
-            <svg viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M14 16l-4-4 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          {%- endif -%}
-        </button>
-        <button
-          type="button"
-          class="zoomed-carousel-arrow-{{ section.id }} zoomed-carousel-arrow-next-{{ section.id }} zoomed-carousel-arrow-{{ section.settings.arrow_style }}-{{ section.id }}"
-          aria-label="Next slide"
-          ref="next"
-        >
-          {%- if section.settings.arrow_style == 'minimal' -%}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          {%- else -%}
-            <svg viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M10 8l4 4-4 4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          {%- endif -%}
-        </button>
-      {%- endif -%}
-    </div>
-  {%- else -%}
-    <!-- Onboarding placeholder content -->
-    <div class="zoomed-carousel-inner-{{ section.id }}">
-      <div class="zoomed-carousel-track-wrapper-{{ section.id }}">
-        <div class="zoomed-carousel-track-{{ section.id }}">
-          {%- for i in (1..4) -%}
-            <div class="zoomed-carousel-slide-{{ section.id }}">
-              {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg zoomed-carousel-image-' | append: section.id | append: ' placeholder-svg-' | append: section.id }}
-            </div>
-          {%- endfor -%}
+  <div class="zoomin-carousel-track">
+    {% assign slide_index = 0 %}
+    {% for media in product.media %}
+      {% if forloop.index0 >= start_index and media.media_type == 'image' %}
+        <div class="zoomin-carousel-slide"
+             role="group"
+             aria-roledescription="slide"
+             aria-label="{{ slide_index | plus: 1 }} of {{ slide_count }}">
+          <img
+            src="{{ media | image_url: width: 800 }}"
+            srcset="{{ media | image_url: width: 400 }} 400w,
+                    {{ media | image_url: width: 800 }} 800w,
+                    {{ media | image_url: width: 1200 }} 1200w"
+            sizes="(min-width: 750px) 100vw, 80vw"
+            alt="{{ media.alt | escape | default: product.title }}"
+            {% if slide_index == 0 %}loading="eager"{% else %}loading="lazy"{% endif %}
+            width="{{ media.preview_image.width }}"
+            height="{{ media.preview_image.height }}">
         </div>
-      </div>
+        {% assign slide_index = slide_index | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+  </div>
 
-      {%- if section.settings.arrow_style != 'none' -%}
-        <button
-          type="button"
-          class="zoomed-carousel-arrow-{{ section.id }} zoomed-carousel-arrow-prev-{{ section.id }} zoomed-carousel-arrow-{{ section.settings.arrow_style }}-{{ section.id }}"
-          aria-label="Previous slide"
-          ref="prev"
-        >
-          {%- if section.settings.arrow_style == 'minimal' -%}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          {%- else -%}
-            <svg viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M14 16l-4-4 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          {%- endif -%}
-        </button>
-        <button
-          type="button"
-          class="zoomed-carousel-arrow-{{ section.id }} zoomed-carousel-arrow-next-{{ section.id }} zoomed-carousel-arrow-{{ section.settings.arrow_style }}-{{ section.id }}"
-          aria-label="Next slide"
-          ref="next"
-        >
-          {%- if section.settings.arrow_style == 'minimal' -%}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          {%- else -%}
-            <svg viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M10 8l4 4-4 4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          {%- endif -%}
-        </button>
-      {%- endif -%}
+  {% if section.settings.show_dots and slide_count > 1 %}
+    <div class="zoomin-carousel-dots" aria-hidden="true">
+      {% for i in (1..slide_count) %}
+        <button class="zoomin-dot{% if forloop.first %} active{% endif %}"></button>
+      {% endfor %}
     </div>
-  {%- endif -%}
-</zoomed-product-carousel>
+  {% endif %}
+
+  {% if slide_count > 1 %}
+    <button class="zoomin-arrow zoomin-arrow--prev" aria-label="Previous image">
+      {% render 'icon-caret' %}
+    </button>
+    <button class="zoomin-arrow zoomin-arrow--next" aria-label="Next image">
+      {% render 'icon-caret' %}
+    </button>
+  {% endif %}
+
+</section>
+
+{% if section.settings.enable_zoom %}
+  <div class="zoomin-lightbox" id="zoomin-lightbox-{{ section.id }}" aria-hidden="true" role="dialog" aria-label="Image lightbox">
+    <button class="zoomin-lightbox-close" aria-label="Close lightbox">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="zoomin-lightbox-content">
+      <img class="zoomin-lightbox-image" src="" alt="" draggability="false">
+    </div>
+  </div>
+{% endif %}
 
 <script>
-  if (!customElements.get('zoomed-product-carousel')) {
-    customElements.define('zoomed-product-carousel', class ZoomedProductCarousel extends HTMLElement {
-      constructor() {
-        super();
-        this.sectionId = this.dataset.sectionId;
-        this.track = this.querySelector(`.zoomed-carousel-track-${this.sectionId}`);
-        this.slides = Array.from(this.querySelectorAll(`.zoomed-carousel-slide-${this.sectionId}`));
-        this.prevButton = this.querySelector('[ref="prev"]');
-        this.nextButton = this.querySelector('[ref="next"]');
-        this.currentIndex = 0;
+(function() {
+  const carousel = document.querySelector('.zoomin-carousel');
+  if (!carousel) return;
 
-        if (this.slides.length === 0) return;
+  const track = carousel.querySelector('.zoomin-carousel-track');
+  const slides = Array.from(carousel.querySelectorAll('.zoomin-carousel-slide'));
+  const dots = Array.from(carousel.querySelectorAll('.zoomin-dot'));
+  const prevBtn = carousel.querySelector('.zoomin-arrow--prev');
+  const nextBtn = carousel.querySelector('.zoomin-arrow--next');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const behavior = reducedMotion ? 'auto' : 'smooth';
 
-        this.init();
-      }
+  let currentIndex = 0;
 
-      init() {
-        if (this.prevButton) this.prevButton.addEventListener('click', () => this.slide('prev'));
-        if (this.nextButton) this.nextButton.addEventListener('click', () => this.slide('next'));
-
-        // Mobile touch swipe gestures
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        this.addEventListener('touchstart', (e) => {
-          touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        this.addEventListener('touchend', (e) => {
-          touchEndX = e.changedTouches[0].screenX;
-          this.handleSwipe(touchStartX, touchEndX);
-        }, { passive: true });
-
-        // Scoped resize handler
-        this.resizeObserver = new ResizeObserver(() => this.updateSlidePosition());
-        this.resizeObserver.observe(this);
-
-        this.updateSlidePosition();
-      }
-
-      getSlidesPerView() {
-        return window.innerWidth >= 750 ? 2 : 1;
-      }
-
-      getMaxIndex() {
-        const perView = this.getSlidesPerView();
-        return Math.max(0, this.slides.length - perView);
-      }
-
-      slide(direction) {
-        const maxIndex = this.getMaxIndex();
-        if (direction === 'prev') {
-          this.currentIndex = this.currentIndex > 0 ? this.currentIndex - 1 : maxIndex;
-        } else {
-          this.currentIndex = this.currentIndex < maxIndex ? this.currentIndex + 1 : 0;
-        }
-        this.updateSlidePosition();
-      }
-
-      handleSwipe(startX, endX) {
-        const threshold = 50;
-        const maxIndex = this.getMaxIndex();
-        if (startX - endX > threshold) {
-          if (this.currentIndex < maxIndex) {
-            this.currentIndex++;
-            this.updateSlidePosition();
-          }
-        } else if (endX - startX > threshold) {
-          if (this.currentIndex > 0) {
-            this.currentIndex--;
-            this.updateSlidePosition();
-          }
-        }
-      }
-
-      updateSlidePosition() {
-        const maxIndex = this.getMaxIndex();
-        if (this.currentIndex > maxIndex) {
-          this.currentIndex = maxIndex;
-        }
-
-        const slideWidth = this.slides[0].getBoundingClientRect().width;
-        const offset = this.currentIndex * slideWidth;
-        this.track.style.transform = `translateX(-${offset}px)`;
-
-        // Control arrow visibility based on count
-        if (this.slides.length <= this.getSlidesPerView()) {
-          if (this.prevButton) this.prevButton.style.display = 'none';
-          if (this.nextButton) this.nextButton.style.display = 'none';
-        } else {
-          if (this.prevButton) this.prevButton.style.display = '';
-          if (this.nextButton) this.nextButton.style.display = '';
-        }
-      }
-
-      disconnectedCallback() {
-        if (this.resizeObserver) {
-          this.resizeObserver.disconnect();
-        }
-      }
+  function scrollToSlide(index) {
+    currentIndex = Math.max(0, Math.min(index, slides.length - 1));
+    track.scrollTo({
+      left: slides[currentIndex].offsetLeft,
+      behavior: behavior
     });
   }
+
+  // Arrow controls (desktop)
+  if (prevBtn) prevBtn.addEventListener('click', () => scrollToSlide(currentIndex - 1));
+  if (nextBtn) nextBtn.addEventListener('click', () => scrollToSlide(currentIndex + 1));
+
+  // Dot controls
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => scrollToSlide(i));
+  });
+
+  // IntersectionObserver — sync dots and track active index
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const index = slides.indexOf(entry.target);
+        currentIndex = index;
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+      }
+    });
+  }, {
+    root: track,
+    threshold: 0.6
+  });
+
+  slides.forEach(slide => observer.observe(slide));
+
+  // Lightbox feature (vanilla JS, no external libraries)
+  const enableZoom = {{ section.settings.enable_zoom | json }};
+  if (enableZoom) {
+    const lightbox = document.getElementById('zoomin-lightbox-{{ section.id }}');
+    if (lightbox) {
+      const lightboxImg = lightbox.querySelector('.zoomin-lightbox-image');
+      const lightboxContent = lightbox.querySelector('.zoomin-lightbox-content');
+      const closeBtn = lightbox.querySelector('.zoomin-lightbox-close');
+
+      let scale = 1;
+      let translateX = 0;
+      let translateY = 0;
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      
+      // Pinch to zoom state
+      let initialDistance = 0;
+      let initialScale = 1;
+
+      function resetLightbox() {
+        scale = 1;
+        translateX = 0;
+        translateY = 0;
+        updateTransform();
+      }
+
+      function updateTransform() {
+        lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      }
+
+      // Hook click events on slide images
+      slides.forEach(slide => {
+        const img = slide.querySelector('img');
+        if (img) {
+          img.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            // Get full resolution image URL from srcset if available
+            const srcset = img.getAttribute('srcset');
+            let largeSrc = img.getAttribute('src');
+            if (srcset) {
+              const urls = srcset.split(',').map(s => s.trim().split(' ')[0]);
+              largeSrc = urls[urls.length - 1] || largeSrc;
+            }
+            
+            lightboxImg.setAttribute('src', largeSrc);
+            lightboxImg.setAttribute('alt', img.getAttribute('alt') || '');
+            lightbox.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            resetLightbox();
+          });
+        }
+      });
+
+      // Close handlers
+      function closeLightbox() {
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        lightboxImg.setAttribute('src', '');
+      }
+
+      closeBtn.addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox || e.target === lightboxContent) {
+          closeLightbox();
+        }
+      });
+
+      // Desktop zoom (wheel)
+      lightboxContent.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const zoomIntensity = 0.1;
+        const delta = e.deltaY < 0 ? 1 : -1;
+        const newScale = scale + delta * zoomIntensity * scale;
+        
+        scale = Math.max(1, Math.min(newScale, 5));
+        if (scale === 1) {
+          translateX = 0;
+          translateY = 0;
+        }
+        updateTransform();
+      }, { passive: false });
+
+      // Drag / Pan logic
+      lightboxContent.addEventListener('mousedown', (e) => {
+        if (scale <= 1) return;
+        isDragging = true;
+        startX = e.clientX - translateX;
+        startY = e.clientY - translateY;
+        lightboxContent.style.cursor = 'grabbing';
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        translateX = e.clientX - startX;
+        translateY = e.clientY - startY;
+        updateTransform();
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+        lightboxContent.style.cursor = 'grab';
+      });
+
+      // Mobile Touch events (pinch & pan)
+      lightboxContent.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          if (scale <= 1) return;
+          isDragging = true;
+          startX = e.touches[0].clientX - translateX;
+          startY = e.touches[0].clientY - translateY;
+        } else if (e.touches.length === 2) {
+          isDragging = false;
+          initialDistance = getDistance(e.touches[0], e.touches[1]);
+          initialScale = scale;
+        }
+      }, { passive: true });
+
+      lightboxContent.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1 && isDragging) {
+          translateX = e.touches[0].clientX - startX;
+          translateY = e.touches[0].clientY - startY;
+          updateTransform();
+        } else if (e.touches.length === 2) {
+          const currentDistance = getDistance(e.touches[0], e.touches[1]);
+          const pinScale = currentDistance / initialDistance;
+          scale = Math.max(1, Math.min(initialScale * pinScale, 5));
+          if (scale === 1) {
+            translateX = 0;
+            translateY = 0;
+          }
+          updateTransform();
+        }
+      }, { passive: true });
+
+      lightboxContent.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+
+      function getDistance(touch1, touch2) {
+        const dx = touch1.clientX - touch2.clientX;
+        const dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+    }
+  }
+})();
 </script>
+{% endif %}
 
 {% schema %}
 {
   "name": "Zoomin Product Carousel",
-  "tag": "section",
-  "class": "section",
-  "disabled_on": {
-    "groups": ["header", "footer"]
-  },
   "settings": [
     {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "scheme-1"
+      "type": "range",
+      "id": "slide_width_mobile",
+      "label": "Mobile slide width (%)",
+      "min": 60,
+      "max": 95,
+      "step": 5,
+      "default": 80,
+      "info": "Controls how much of the next image peeks in on mobile"
     },
     {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Padding top",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Padding bottom",
-      "default": 36
+      "type": "number",
+      "id": "start_index",
+      "label": "Media start index",
+      "default": 9,
+      "info": "Media index from which zoomin images begin (0-based)"
     },
     {
       "type": "select",
-      "id": "arrow_style",
-      "label": "Navigation arrow style",
+      "id": "image_ratio",
+      "label": "Image ratio",
       "options": [
-        {
-          "value": "minimal",
-          "label": "Minimal"
-        },
-        {
-          "value": "bold",
-          "label": "Bold"
-        },
-        {
-          "value": "none",
-          "label": "None"
-        }
+        { "value": "portrait", "label": "Portrait" },
+        { "value": "square", "label": "Square" },
+        { "value": "landscape", "label": "Landscape" }
       ],
-      "default": "minimal"
+      "default": "portrait"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show dot indicators (mobile)",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "image_gap",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between images",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Enable zoom",
+      "default": true
     }
   ],
   "presets": [

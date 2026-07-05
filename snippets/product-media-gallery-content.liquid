@@ -31,48 +31,46 @@
     assign variant_images = selected_product.images | where: 'attached_to_variant?', true | map: 'src'
   endif
 
+  # Filter media to ONLY index 2 through 7 (inclusive) and media_type == 'image'
+  assign product_media_subset = '' | split: ','
+  for media in selected_product.media
+    if forloop.index0 >= 2 and forloop.index0 <= 7 and media.media_type == 'image'
+      assign media_item_array = selected_product.media | where: 'id', media.id
+      assign product_media_subset = product_media_subset | concat: media_item_array
+    endif
+  endfor
+
   assign sorted_media = '' | split: ','
   if selected_variant_media
-    if selected_variant_media.media_type != 'video' and selected_variant_media.media_type != 'external_video'
-      assign sorted_media = sorted_media | concat: selected_product.media | where: 'id', selected_variant_media.id
+    # Check if selected variant media is part of the subset
+    assign is_variant_in_subset = false
+    for media in product_media_subset
+      if media.id == selected_variant_media.id
+        assign is_variant_in_subset = true
+        break
+      endif
+    endfor
+
+    if is_variant_in_subset
+      assign sorted_media = sorted_media | concat: product_media_subset | where: 'id', selected_variant_media.id
     endif
 
-    for media in selected_product.media
-      if media.media_type == 'video' or media.media_type == 'external_video'
-        continue
-      endif
-
+    for media in product_media_subset
       if block_settings.hide_variants and variant_images contains media.src and sorted_media.size > 0
         continue
       endif
 
       if media.id != selected_variant_media.id
-        assign found_media = selected_product.media | where: 'id', media.id
+        assign found_media = product_media_subset | where: 'id', media.id
         assign sorted_media = sorted_media | concat: found_media
       endif
     endfor
   else
-    for media in selected_product.media
-      if media.media_type == 'video' or media.media_type == 'external_video'
-        continue
-      endif
-      assign found_media = selected_product.media | where: 'id', media.id
+    for media in product_media_subset
+      assign found_media = product_media_subset | where: 'id', media.id
       assign sorted_media = sorted_media | concat: found_media
     endfor
   endif
-
-  # Filter out first 2 images on product templates
-  assign filtered_media = '' | split: ','
-  assign image_skip_counter = 0
-  for media in sorted_media
-    if media.media_type == 'image' and image_skip_counter < 2
-      assign image_skip_counter = image_skip_counter | plus: 1
-    else
-      assign media_item_array = sorted_media | where: 'id', media.id
-      assign filtered_media = filtered_media | concat: media_item_array
-    endif
-  endfor
-  assign sorted_media = filtered_media
 
   if block_settings.slideshow_controls_style == 'thumbnails'
     assign controls_on_media = false
