@@ -26,6 +26,27 @@
     gap: {{ section.settings.image_gap | default: 0 }}px;
   }
 
+  /* ── Carousel Heights ── */
+  #shopify-section-{{ section.id }} .zoomin-carousel {
+    height: 100vh;
+  }
+  #shopify-section-{{ section.id }} .zoomin-carousel-track,
+  #shopify-section-{{ section.id }} .zoomin-carousel-slide {
+    height: 100%;
+  }
+  #shopify-section-{{ section.id }} .zoomin-carousel-slide img {
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover !important;
+    aspect-ratio: auto !important;
+  }
+
+  @media (min-width: 750px) {
+    #shopify-section-{{ section.id }} .zoomin-carousel {
+      height: 90vh;
+    }
+  }
+
   /* ── Container ── */
   .zoomin-carousel {
     position: relative;
