@@ -480,7 +480,7 @@
       "name": "Zoomin Product Carousel",
       "settings": {
         "slide_width_mobile": 75,
-        "start_index": 8,
+        "start_index": 7,
         "image_ratio": "portrait",
         "show_dots": false,
         "background_color": "#fafafa",
