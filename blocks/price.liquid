@@ -44,6 +44,11 @@
     {% render 'typography-style', settings: block_settings %}
     {% render 'spacing-style', settings: block_settings %}
     --width: {{ block_settings.width }};
+    margin-left: {{ block.settings.left_offset_px | default: 0 }}px !important;
+    display: block !important;
+    width: fit-content !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
   "
   {{ block.shopify_attributes }}
 >
@@ -441,6 +446,12 @@
       "max": 100,
       "step": 1,
       "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "number",
+      "id": "left_offset_px",
+      "label": "Left offset (px)",
       "default": 0
     }
   ],

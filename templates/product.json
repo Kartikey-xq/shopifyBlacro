@@ -142,7 +142,7 @@
                     "show_installments": false,
                     "show_tax_info": false,
                     "type_preset": "paragraph",
-                    "width": "fit-content",
+                    "width": "100%",
                     "alignment": "right",
                     "font": "var(--font-body--family)",
                     "font_size": "1rem",
@@ -152,8 +152,9 @@
                     "color": "var(--color-foreground)",
                     "padding-block-start": 0,
                     "padding-block-end": 0,
-                    "padding-inline-start": 100,
-                    "padding-inline-end": 0
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0,
+                    "left_offset_px": 0
                   },
                   "blocks": {}
                 }
