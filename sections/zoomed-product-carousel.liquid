@@ -241,6 +241,40 @@
     transition: transform 0.1s ease-out;
     transform-origin: center center;
   }
+
+  .zoom-prev-btn,
+  .zoom-next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 40px;
+    border: none;
+    backdrop-filter: blur(4px);
+    border-radius: 4px;
+    z-index: 10001;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+  }
+  .zoom-prev-btn:hover,
+  .zoom-next-btn:hover {
+    background: rgba(255,255,255,0.3);
+  }
+  .zoom-prev-btn { left: 12px; }
+  .zoom-next-btn { right: 12px; }
+
+  @media (max-width: 749px) {
+    .zoom-prev-btn,
+    .zoom-next-btn {
+      display: none;
+    }
+  }
 </style>
 
 <section class="zoomin-carousel ratio-{{ section.settings.image_ratio }}" role="region" aria-label="Product zoom gallery" style="--zoomin-slide-width: {{ section.settings.slide_width_mobile }}%;">
@@ -296,6 +330,10 @@
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
+    {% if slide_count > 1 %}
+      <button class="zoom-prev-btn" aria-label="Previous image" type="button">&larr;</button>
+      <button class="zoom-next-btn" aria-label="Next image" type="button">&rarr;</button>
+    {% endif %}
     <div class="zoomin-lightbox-content">
       <img class="zoomin-lightbox-image" src="" alt="" draggability="false">
     </div>
@@ -358,6 +396,8 @@
       const lightboxImg = lightbox.querySelector('.zoomin-lightbox-image');
       const lightboxContent = lightbox.querySelector('.zoomin-lightbox-content');
       const closeBtn = lightbox.querySelector('.zoomin-lightbox-close');
+      const zoomPrevBtn = lightbox.querySelector('.zoom-prev-btn');
+      const zoomNextBtn = lightbox.querySelector('.zoom-next-btn');
 
       let scale = 1;
       let translateX = 0;
@@ -370,6 +410,11 @@
       let initialDistance = 0;
       let initialScale = 1;
 
+      // Swipe / slide indexing state
+      let zoomCurrentIndex = 0;
+      let touchStartX = 0;
+      let touchEndX = 0;
+
       function resetLightbox() {
         scale = 1;
         translateX = 0;
@@ -381,26 +426,50 @@
         lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
       }
 
+      function showImageAtIndex(idx) {
+        if (idx < 0) {
+          zoomCurrentIndex = slides.length - 1;
+        } else if (idx >= slides.length) {
+          zoomCurrentIndex = 0;
+        } else {
+          zoomCurrentIndex = idx;
+        }
+
+        const slide = slides[zoomCurrentIndex];
+        if (!slide) return;
+        const img = slide.querySelector('img');
+        if (!img) return;
+
+        const srcset = img.getAttribute('srcset');
+        let largeSrc = img.getAttribute('src');
+        if (srcset) {
+          const urls = srcset.split(',').map(s => s.trim().split(' ')[0]);
+          largeSrc = urls[urls.length - 1] || largeSrc;
+        }
+
+        lightboxImg.setAttribute('src', largeSrc);
+        lightboxImg.setAttribute('alt', img.getAttribute('alt') || '');
+        resetLightbox();
+      }
+
+      function showNextImage() {
+        showImageAtIndex(zoomCurrentIndex + 1);
+      }
+
+      function showPrevImage() {
+        showImageAtIndex(zoomCurrentIndex - 1);
+      }
+
       // Hook click events on slide images
-      slides.forEach(slide => {
+      slides.forEach((slide, index) => {
         const img = slide.querySelector('img');
         if (img) {
           img.addEventListener('click', (e) => {
             e.stopPropagation();
-            
-            // Get full resolution image URL from srcset if available
-            const srcset = img.getAttribute('srcset');
-            let largeSrc = img.getAttribute('src');
-            if (srcset) {
-              const urls = srcset.split(',').map(s => s.trim().split(' ')[0]);
-              largeSrc = urls[urls.length - 1] || largeSrc;
-            }
-            
-            lightboxImg.setAttribute('src', largeSrc);
-            lightboxImg.setAttribute('alt', img.getAttribute('alt') || '');
+            zoomCurrentIndex = index;
+            showImageAtIndex(zoomCurrentIndex);
             lightbox.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
-            resetLightbox();
           });
         }
       });
@@ -416,6 +485,55 @@
       lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox || e.target === lightboxContent) {
           closeLightbox();
+        }
+      });
+
+      // Swipe navigation
+      lightbox.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      lightbox.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipeGesture();
+      }, { passive: true });
+
+      function handleSwipeGesture() {
+        if (scale > 1) return;
+        const diff = touchEndX - touchStartX;
+        if (diff > 50) {
+          showPrevImage();
+        } else if (diff < -50) {
+          showNextImage();
+        }
+      }
+
+      // Arrow buttons
+      if (zoomPrevBtn) {
+        zoomPrevBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showPrevImage();
+        });
+      }
+      if (zoomNextBtn) {
+        zoomNextBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showNextImage();
+        });
+      }
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e) => {
+        if (lightbox.getAttribute('aria-hidden') === 'false') {
+          if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            showPrevImage();
+          } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            showNextImage();
+          } else if (e.key === 'Escape') {
+            closeLightbox();
+          }
         }
       });
 
