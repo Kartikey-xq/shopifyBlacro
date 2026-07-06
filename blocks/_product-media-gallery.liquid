@@ -1,4 +1,16 @@
 
+{%- style -%}
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} slideshow-controls[pagination-position='center'] {
+      justify-content: flex-start !important;
+    }
+    #shopify-section-{{ section.id }} .slideshow-controls__dots,
+    #shopify-section-{{ section.id }} .slideshow-controls__counter {
+      justify-content: flex-start !important;
+    }
+  }
+{%- endstyle -%}
+
 {% render 'product-media-gallery-content',
   media_presentation: block.settings.media_presentation,
   block_settings: block.settings,
