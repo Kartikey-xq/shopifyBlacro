@@ -1,0 +1,541 @@
+{%- style -%}
+  #ProductInfoTabs-{{ block.id }} {
+    display: block;
+    margin-top: {{ block.settings.margin_top }}px;
+    margin-bottom: {{ block.settings.margin_bottom }}px;
+    padding-top: {{ block.settings.padding_top }}px;
+    padding-bottom: {{ block.settings.padding_bottom }}px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  @media screen and (min-width: 768px) {
+    #ProductInfoTabs-{{ block.id }} {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-container {
+    border: {{ block.settings.border_width }}px solid {{ block.settings.border_color }};
+    border-radius: {{ block.settings.corner_radius }}px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-nav-wrapper {
+    border-bottom: {{ block.settings.border_width }}px solid {{ block.settings.border_color }};
+    width: 100%;
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-nav {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-btn {
+    flex: 1 1 auto;
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: {{ block.settings.tab_font_size }}px;
+    color: {{ block.settings.inactive_tab_color }};
+    font-weight: 400;
+    padding: 14px 20px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-btn:hover {
+    color: {{ block.settings.active_tab_color }};
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-btn.active {
+    color: {{ block.settings.active_tab_color }};
+    font-weight: 700;
+    border-bottom-color: {{ block.settings.active_tab_color }};
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-content {
+    padding: 24px;
+    box-sizing: border-box;
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-panel {
+    display: none;
+    outline: none;
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-panel.active {
+    display: block;
+    animation: fadeInTabs-{{ block.id }} 0.3s ease-in-out;
+  }
+
+  #ProductInfoTabs-{{ block.id }} .product-info-tabs-panel-body {
+    font-size: {{ block.settings.content_font_size }}px;
+    line-height: 1.6;
+  }
+
+  @keyframes fadeInTabs-{{ block.id }} {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media screen and (max-width: 768px) {
+    #ProductInfoTabs-{{ block.id }} {
+      padding-left: var(--page-margin, 1.5rem) !important;
+      padding-right: var(--page-margin, 1.5rem) !important;
+    }
+
+    #ProductInfoTabs-{{ block.id }} .product-info-tabs-nav {
+      justify-content: flex-start;
+    }
+
+    #ProductInfoTabs-{{ block.id }} .product-info-tabs-btn {
+      flex: 0 0 auto;
+      padding: 12px 16px;
+      font-size: calc({{ block.settings.tab_font_size }}px - 1px);
+    }
+
+    #ProductInfoTabs-{{ block.id }} .product-info-tabs-content {
+      padding: 16px;
+    }
+
+    #ProductInfoTabs-{{ block.id }} .product-info-tabs-panel-body {
+      font-size: calc({{ block.settings.content_font_size }}px - 1px);
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign tab_count = block.settings.tab_count | plus: 0
+-%}
+
+<div class="product-info-tabs-outer-container">
+  <product-info-tabs class="product-info-tabs-wrapper" id="ProductInfoTabs-{{ block.id }}" {{ block.shopify_attributes }}>
+    <div class="product-info-tabs-container" style="background-color: {{ block.settings.background_color | default: '#ffffff' }};">
+      <div class="product-info-tabs-nav-wrapper">
+        <div class="product-info-tabs-nav" role="tablist" aria-label="Product Information">
+          {%- assign visible_tab_count = 0 -%}
+          {%- for i in (1..tab_count) -%}
+            {%- capture label_key -%}tab_{{ i }}_label{%- endcapture -%}
+            {%- capture content_key -%}tab_{{ i }}_content{%- endcapture -%}
+            {%- capture namespace_key -%}tab_{{ i }}_metafield_namespace{%- endcapture -%}
+            {%- capture metafield_key -%}tab_{{ i }}_metafield_key{%- endcapture -%}
+
+            {%- assign tab_label = block.settings[label_key] -%}
+            {%- assign tab_content = block.settings[content_key] -%}
+            {%- assign tab_namespace = block.settings[namespace_key] -%}
+            {%- assign tab_metafield_key = block.settings[metafield_key] -%}
+
+            {%- liquid
+              assign tab_panel_content = blank
+              if tab_namespace != blank and tab_metafield_key != blank
+                assign ns = tab_namespace | strip
+                assign key = tab_metafield_key | strip
+                assign mf = product.metafields[ns][key]
+                if mf != blank
+                  if mf.type == 'rich_text_field'
+                    assign tab_panel_content = mf | metafield_tag
+                  else
+                    assign tab_panel_content = mf.value
+                  endif
+                endif
+              endif
+
+              if tab_panel_content == blank
+                assign tab_panel_content = tab_content
+              endif
+            -%}
+            {%- if tab_label != blank and tab_panel_content != blank -%}
+              {%- assign visible_tab_count = visible_tab_count | plus: 1 -%}
+              <button
+                class="product-info-tabs-btn{% if visible_tab_count == 1 %} active{% endif %}"
+                role="tab"
+                aria-selected="{% if visible_tab_count == 1 %}true{% else %}false{% endif %}"
+                aria-controls="ProductInfoTabPanel-{{ block.id }}-{{ i }}"
+                id="ProductInfoTabBtn-{{ block.id }}-{{ i }}"
+                tabindex="{% if visible_tab_count == 1 %}0{% else %}-1{% endif %}"
+                type="button"
+              >
+                {{ tab_label }}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="product-info-tabs-content">
+        {%- assign visible_panel_count = 0 -%}
+        {%- for i in (1..tab_count) -%}
+          {%- capture label_key -%}tab_{{ i }}_label{%- endcapture -%}
+          {%- capture content_key -%}tab_{{ i }}_content{%- endcapture -%}
+          {%- capture namespace_key -%}tab_{{ i }}_metafield_namespace{%- endcapture -%}
+          {%- capture metafield_key -%}tab_{{ i }}_metafield_key{%- endcapture -%}
+
+          {%- assign tab_label = block.settings[label_key] -%}
+          {%- assign tab_content = block.settings[content_key] -%}
+          {%- assign tab_namespace = block.settings[namespace_key] -%}
+          {%- assign tab_metafield_key = block.settings[metafield_key] -%}
+
+          {%- liquid
+            assign tab_panel_content = blank
+            if tab_namespace != blank and tab_metafield_key != blank
+              assign ns = tab_namespace | strip
+              assign key = tab_metafield_key | strip
+              assign mf = product.metafields[ns][key]
+              if mf != blank
+                if mf.type == 'rich_text_field'
+                  assign tab_panel_content = mf | metafield_tag
+                else
+                  assign tab_panel_content = mf.value
+                endif
+              endif
+            endif
+
+            if tab_panel_content == blank
+              assign tab_panel_content = tab_content
+            endif
+          -%}
+          {%- if tab_label != blank and tab_panel_content != blank -%}
+            {%- assign visible_panel_count = visible_panel_count | plus: 1 -%}
+            <div
+              class="product-info-tabs-panel{% if visible_panel_count == 1 %} active{% endif %}"
+              id="ProductInfoTabPanel-{{ block.id }}-{{ i }}"
+              role="tabpanel"
+              aria-labelledby="ProductInfoTabBtn-{{ block.id }}-{{ i }}"
+              {% unless visible_panel_count == 1 %}hidden{% endunless %}
+            >
+              <div class="product-info-tabs-panel-body rte">
+                {{ tab_panel_content }}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </product-info-tabs>
+</div>
+
+<script>
+  if (!customElements.get('product-info-tabs')) {
+    customElements.define('product-info-tabs', class ProductInfoTabs extends HTMLElement {
+      constructor() {
+        super();
+        this.tabs = Array.from(this.querySelectorAll('[role="tab"]'));
+        this.panels = Array.from(this.querySelectorAll('[role="tabpanel"]'));
+        this.init();
+      }
+
+      init() {
+        this.tabs.forEach((tab, index) => {
+          tab.addEventListener('click', () => this.switchTab(tab));
+          tab.addEventListener('keydown', (e) => this.handleKeydown(e, index));
+        });
+      }
+
+      switchTab(activeTab) {
+        this.tabs.forEach(tab => {
+          tab.classList.remove('active');
+          tab.setAttribute('aria-selected', 'false');
+          tab.setAttribute('tabindex', '-1');
+        });
+
+        this.panels.forEach(panel => {
+          panel.classList.remove('active');
+          panel.hidden = true;
+        });
+
+        activeTab.classList.add('active');
+        activeTab.setAttribute('aria-selected', 'true');
+        activeTab.setAttribute('tabindex', '0');
+
+        const controlsId = activeTab.getAttribute('aria-controls');
+        const targetPanel = this.querySelector(`#${controlsId}`);
+        if (targetPanel) {
+          targetPanel.classList.add('active');
+          targetPanel.hidden = false;
+        }
+      }
+
+      handleKeydown(event, index) {
+        let targetIndex = null;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+          targetIndex = (index + 1) % this.tabs.length;
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+          targetIndex = (index - 1 + this.tabs.length) % this.tabs.length;
+        } else if (event.key === 'Home') {
+          targetIndex = 0;
+        } else if (event.key === 'End') {
+          targetIndex = this.tabs.length - 1;
+        }
+
+        if (targetIndex !== null) {
+          event.preventDefault();
+          const targetTab = this.tabs[targetIndex];
+          targetTab.focus();
+          this.switchTab(targetTab);
+        }
+      }
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Product Info Tabs",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Tabs"
+    },
+    {
+      "type": "range",
+      "id": "tab_count",
+      "label": "Number of tabs",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "tab_1_label",
+      "label": "Tab 1 Label",
+      "default": "Details & Description"
+    },
+    {
+      "type": "richtext",
+      "id": "tab_1_content",
+      "label": "Tab 1 Content"
+    },
+    {
+      "type": "text",
+      "id": "tab_1_metafield_namespace",
+      "label": "Tab 1 Metafield Namespace"
+    },
+    {
+      "type": "text",
+      "id": "tab_1_metafield_key",
+      "label": "Tab 1 Metafield Key"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_label",
+      "label": "Tab 2 Label",
+      "default": "Washcare"
+    },
+    {
+      "type": "richtext",
+      "id": "tab_2_content",
+      "label": "Tab 2 Content"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_metafield_namespace",
+      "label": "Tab 2 Metafield Namespace"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_metafield_key",
+      "label": "Tab 2 Metafield Key"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_label",
+      "label": "Tab 3 Label",
+      "default": "Shipping & Returns"
+    },
+    {
+      "type": "richtext",
+      "id": "tab_3_content",
+      "label": "Tab 3 Content"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_metafield_namespace",
+      "label": "Tab 3 Metafield Namespace"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_metafield_key",
+      "label": "Tab 3 Metafield Key"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_label",
+      "label": "Tab 4 Label",
+      "default": "Tab 4"
+    },
+    {
+      "type": "richtext",
+      "id": "tab_4_content",
+      "label": "Tab 4 Content"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_metafield_namespace",
+      "label": "Tab 4 Metafield Namespace"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_metafield_key",
+      "label": "Tab 4 Metafield Key"
+    },
+    {
+      "type": "text",
+      "id": "tab_5_label",
+      "label": "Tab 5 Label",
+      "default": "Tab 5"
+    },
+    {
+      "type": "richtext",
+      "id": "tab_5_content",
+      "label": "Tab 5 Content"
+    },
+    {
+      "type": "text",
+      "id": "tab_5_metafield_namespace",
+      "label": "Tab 5 Metafield Namespace"
+    },
+    {
+      "type": "text",
+      "id": "tab_5_metafield_key",
+      "label": "Tab 5 Metafield Key"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Styling"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "active_tab_color",
+      "label": "Active tab color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "inactive_tab_color",
+      "label": "Inactive tab color",
+      "default": "#888888"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "tab_font_size",
+      "label": "Tab font size",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "content_font_size",
+      "label": "Content font size",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    }
+  ]
+}
+{% endschema %}

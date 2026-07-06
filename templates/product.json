@@ -251,8 +251,20 @@
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi"
           ]
+        },
+        "product-info-tabs-1": {
+          "type": "product-info-tabs",
+          "settings": {
+            "tab_count": 3,
+            "tab_1_label": "Details & Description",
+            "tab_2_label": "Washcare",
+            "tab_3_label": "Shipping & Returns"
+          }
         }
       },
+      "block_order": [
+        "product-info-tabs-1"
+      ],
       "settings": {
         "content_width": "content-center-aligned",
         "desktop_media_position": "left",
@@ -263,58 +275,6 @@
         "color_scheme": "scheme-3",
         "padding-block-start": 0,
         "padding-block-end": 0
-      }
-    },
-    "product_info_tabs_6VJ6V8": {
-      "type": "product-info-tabs",
-      "blocks": {
-        "tab_Vq7zAw": {
-          "type": "tab",
-          "settings": {
-            "tab_label": "Details & Description",
-            "tab_content": "<p>Provide detailed specifications and descriptions of the product here.</p>",
-            "tab_metafield_namespace": "",
-            "tab_metafield_key": ""
-          }
-        },
-        "tab_nQh4eR": {
-          "type": "tab",
-          "settings": {
-            "tab_label": "Washcare",
-            "tab_content": "<p>Detail instructions for washing, drying, and ironing the product safely.</p>",
-            "tab_metafield_namespace": "",
-            "tab_metafield_key": ""
-          }
-        },
-        "tab_UUT9c9": {
-          "type": "tab",
-          "settings": {
-            "tab_label": "Shipping & Returns",
-            "tab_content": "<p>Specify shipping rates, methods, delivery times, and returns policy information here.</p>",
-            "tab_metafield_namespace": "",
-            "tab_metafield_key": ""
-          }
-        }
-      },
-      "block_order": [
-        "tab_Vq7zAw",
-        "tab_nQh4eR",
-        "tab_UUT9c9"
-      ],
-      "name": "Product Info Tabs",
-      "settings": {
-        "corner_radius": 0,
-        "padding_top": 16,
-        "padding_bottom": 16,
-        "margin_top": 20,
-        "margin_bottom": 20,
-        "border_color": "#e5e5e5",
-        "border_width": 1,
-        "active_tab_color": "#FAFAFA",
-        "inactive_tab_color": "#888888",
-        "background_color": "",
-        "tab_font_size": 13,
-        "content_font_size": 13
       }
     },
     "custom_50_50_split": {
@@ -550,7 +510,6 @@
   },
   "order": [
     "main",
-    "product_info_tabs_6VJ6V8",
     "custom_50_50_split",
     "zoomed_product_carousel_pNYttr",
     "product_recommendations_qggXJq",
