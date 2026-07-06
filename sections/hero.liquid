@@ -539,6 +539,33 @@
   </div>
 </div>
 
+<script>
+  (function() {
+    function initScrollButton() {
+      const button = document.querySelector('#shopify-section-{{ section.id }} .custom-button-block--centered');
+      const target = document.getElementById('shopify-section-template--22814731141370__collection_hover_carousel_Hj7YGa');
+      if (button && target) {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          const header = document.querySelector('header');
+          const offset = header ? header.offsetHeight : 0;
+          const targetPosition = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initScrollButton);
+    } else {
+      initScrollButton();
+    }
+  })();
+</script>
+
 {% stylesheet %}
   .hero-wrapper {
     --hero-height-offset: 0px;
