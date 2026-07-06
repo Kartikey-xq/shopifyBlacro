@@ -40,6 +40,19 @@
   </div>
 {% endif %}
 
+{% if settings.buy_now_custom_text != blank %}
+  <style>
+    .shopify-payment-button__button--unbranded {
+      font-size: 0 !important;
+    }
+    .shopify-payment-button__button--unbranded::before {
+      content: {{ settings.buy_now_custom_text | json }} !important;
+      font-size: var(--font-paragraph--size) !important;
+      line-height: var(--font-paragraph--line-height) !important;
+    }
+  </style>
+{% endif %}
+
 {% stylesheet %}
   .accelerated-checkout-block[data-shopify-visual-preview] {
     width: 300px;

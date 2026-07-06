@@ -136,7 +136,11 @@
           <span class="add-to-cart-text__content">
             <span>
               {%- if current_variant.available -%}
-                {{- 'products.product.add_to_cart' | t -}}
+                {%- if settings.add_to_cart_custom_text != blank -%}
+                  {{- settings.add_to_cart_custom_text -}}
+                {%- else -%}
+                  {{- 'products.product.add_to_cart' | t -}}
+                {%- endif -%}
               {%- elsif current_variant == blank -%}
                 {{- 'products.product.unavailable' | t -}}
               {%- else -%}

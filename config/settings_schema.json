@@ -1706,6 +1706,20 @@
     "name": "t:names.cart",
     "settings": [
       {
+        "type": "text",
+        "id": "add_to_cart_custom_text",
+        "label": "Add to cart button text",
+        "default": "Add to cart",
+        "info": "Leave empty to use the default locale string."
+      },
+      {
+        "type": "text",
+        "id": "buy_now_custom_text",
+        "label": "Buy now button text",
+        "default": "Buy it now",
+        "info": "Applies to the unbranded accelerated checkout button."
+      },
+      {
         "type": "image_picker",
         "id": "custom_cart_icon",
         "label": "Custom Cart Icon",
