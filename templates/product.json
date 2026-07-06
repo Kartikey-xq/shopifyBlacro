@@ -257,8 +257,11 @@
           "settings": {
             "tab_count": 3,
             "tab_1_label": "Details & Description",
+            "tab_1_content": "<p>Provide detailed specifications and descriptions of the product here.</p>",
             "tab_2_label": "Washcare",
-            "tab_3_label": "Shipping & Returns"
+            "tab_2_content": "<p>Detail instructions for washing, drying, and ironing the product safely.</p>",
+            "tab_3_label": "Shipping & Returns",
+            "tab_3_content": "<p>Specify shipping rates, methods, delivery times, and returns policy information here.</p>"
           }
         }
       },
