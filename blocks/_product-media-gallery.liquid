@@ -1,4 +1,17 @@
 
+{%- style -%}
+  #shopify-section-{{ section.id }} .slideshow-controls__dots,
+  #shopify-section-{{ section.id }} .slideshow-controls__counter {
+    display: inline-flex !important;
+    margin-inline: {% if block.settings.pagination_position == 'left' %}0 auto{% elsif block.settings.pagination_position == 'right' %}auto 0{% else %}auto{% endif %} !important;
+  }
+
+  #shopify-section-{{ section.id }} slideshow-controls {
+    display: flex !important;
+    justify-content: {% if block.settings.pagination_position == 'left' %}flex-start{% elsif block.settings.pagination_position == 'right' %}flex-end{% else %}center{% endif %} !important;
+  }
+{%- endstyle -%}
+
 {% render 'product-media-gallery-content',
   media_presentation: block.settings.media_presentation,
   block_settings: block.settings,
@@ -139,6 +152,17 @@
           "label": "t:options.thumbnails"
         }
       ]
+    },
+    {
+      "type": "select",
+      "id": "pagination_position",
+      "label": "Pagination position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
     },
     {
       "type": "header",
