@@ -72,8 +72,8 @@
   }
 
   #CollectionCarousel-{{ section.id }} {
-    --carousel-gap: {{ section.settings.carousel_gap }}px;
-    --carousel-padding-horizontal: {{ section.settings.padding_horizontal }}px;
+    --carousel-gap: {{ section.settings.carousel_gap | default: 20 }}px;
+    --carousel-padding-horizontal: {{ section.settings.padding_horizontal | default: 8 }}px;
     --cols-desktop: {{ cols_desktop }};
     --cols-tablet: {{ cols_tablet }};
     --cols-mobile: {{ cols_mobile }};
@@ -81,6 +81,8 @@
     --collection-carousel-aspect-ratio: {{ aspect_ratio }};
     --desktop-image-height: {{ desktop_image_height }};
     --quick-add-icon-color: {{ section.settings.quick_add_icon_color | default: '#ffffff' }};
+    --grid-columns-desktop: {{ section.settings.grid_columns_desktop | default: 4 }};
+    --mobile-grid-row-gap: {{ section.settings.mobile_grid_row_gap | default: 24 }}px;
     width: 100% !important;
     max-width: 100% !important;
     padding-left: 0 !important;
@@ -403,7 +405,7 @@
       #shopify-section-{{ section.id }} .collection-hover-carousel__track {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        column-gap: {{ section.settings.carousel_gap }}px !important;
+        column-gap: {{ section.settings.carousel_gap | default: 20 }}px !important;
         row-gap: {{ section.settings.mobile_grid_row_gap | default: 24 }}px !important;
         overflow-x: visible !important;
         scroll-snap-type: none !important;
@@ -431,8 +433,8 @@
       #shopify-section-{{ section.id }} .collection-hover-carousel__track--grid-2x2 {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        column-gap: {{ section.settings.carousel_gap }}px !important;
-        row-gap: {{ section.settings.grid_row_gap }}px !important;
+        column-gap: {{ section.settings.carousel_gap | default: 20 }}px !important;
+        row-gap: {{ section.settings.grid_row_gap | default: 24 }}px !important;
         overflow-x: visible !important;
         scroll-behavior: auto !important;
         scroll-snap-type: none !important;
@@ -1029,8 +1031,8 @@
 
   .collection-hover-carousel__track--grid {
     display: grid;
-    grid-template-columns: repeat({{ section.settings.grid_columns_desktop }}, 1fr);
-    gap: {{ section.settings.carousel_gap }}px;
+    grid-template-columns: repeat(var(--grid-columns-desktop, 4), 1fr);
+    gap: var(--carousel-gap, 20px);
     overflow-x: visible;
     scroll-behavior: auto;
     scroll-snap-type: none;
@@ -1045,8 +1047,8 @@
   @media screen and (max-width: 749px) {
     .collection-hover-carousel__track--grid {
       grid-template-columns: repeat(2, 1fr) !important;
-      column-gap: {{ section.settings.carousel_gap }}px !important;
-      row-gap: {{ section.settings.mobile_grid_row_gap | default: 24 }}px !important;
+      column-gap: var(--carousel-gap, 20px) !important;
+      row-gap: var(--mobile-grid-row-gap, 24px) !important;
     }
   }
 
