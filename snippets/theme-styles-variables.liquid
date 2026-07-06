@@ -125,6 +125,8 @@
 
   :root {
     /* Page Layout */
+    --pagination-counter-radius: {{ settings.pagination_counter_border_radius }}px;
+    --pagination-counter-bg: {% if settings.pagination_counter_transparent_bg %}transparent{% else %}initial{% endif %};
     --sidebar-width: 25rem;
     --narrow-content-width: 36rem;
     --normal-content-width: 42rem;

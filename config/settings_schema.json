@@ -2407,6 +2407,27 @@
     ]
   },
   {
+    "name": "Media",
+    "settings": [
+      {
+        "type": "range",
+        "id": "pagination_counter_border_radius",
+        "label": "Pagination counter border radius",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "default": 4
+      },
+      {
+        "type": "checkbox",
+        "id": "pagination_counter_transparent_bg",
+        "label": "Transparent counter background",
+        "default": false
+      }
+    ]
+  },
+  {
     "name": "Social media",
     "settings": [
       {
