@@ -5,6 +5,12 @@
 {% endcomment %}
 
 <style>
+  #shopify-section-{{ section.id }} {
+    --footer-header-color: {{ section.settings.footer_header_color }};
+    --footer-link-color: {{ section.settings.footer_link_color }};
+    --footer-divider-text-color: {{ section.settings.footer_divider_text_color }};
+  }
+
   #BlacroFooter-{{ section.id }} {
     background-color: var(--footer-bg);
     color: #ffffff;
@@ -98,7 +104,7 @@
     font-size: var(--fs-labels);
     letter-spacing: var(--ls);
     text-transform: uppercase;
-    color: #888888;
+    color: var(--footer-header-color);
     margin: 0 0 16px 0;
     font-weight: 600;
   }
@@ -116,7 +122,7 @@
     letter-spacing: var(--ls);
     text-transform: uppercase;
     text-decoration: none;
-    color: #ffffff;
+    color: var(--footer-link-color);
     opacity: 1;
     display: inline-flex;
     align-items: center;
@@ -261,7 +267,10 @@
   }
 
   #BlacroFooter-{{ section.id }} .footer-badge-row {
-    width: 100%;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
     box-sizing: border-box;
     border-top: {{ section.settings.footer_row_line_thickness }}px solid {{ section.settings.footer_row_top_line_color }};
     border-bottom: {{ section.settings.footer_row_line_thickness }}px solid {{ section.settings.footer_row_bottom_line_color }};
@@ -276,8 +285,18 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding-inline: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: var(--ph);
+    padding-right: var(--ph);
     box-sizing: border-box;
+  }
+
+  @media screen and (min-width: 769px) {
+    #BlacroFooter-{{ section.id }} .footer-badge-row__inner {
+      padding-left: var(--ph-desktop);
+      padding-right: var(--ph-desktop);
+    }
   }
 
   #BlacroFooter-{{ section.id }} .footer-badge-row__col {
@@ -304,7 +323,7 @@
     font-size: var(--fs-links);
     letter-spacing: var(--ls);
     text-transform: uppercase;
-    color: #ffffff;
+    color: var(--footer-divider-text-color);
     white-space: nowrap;
   }
 
@@ -320,7 +339,8 @@
       margin-bottom: 16px;
     }
     #BlacroFooter-{{ section.id }} .footer-badge-row__inner {
-      padding-inline: 0.5rem;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
     }
     #BlacroFooter-{{ section.id }} .footer-badge-row__image {
       max-width: calc({{ section.settings.footer_row_image_max_width }}px * 0.75) !important;
@@ -952,6 +972,24 @@
       "unit": "px",
       "default": 60,
       "label": "Logo/icon max width"
+    },
+    {
+      "type": "color",
+      "id": "footer_header_color",
+      "label": "Group Header Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "footer_link_color",
+      "label": "Link Color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "footer_divider_text_color",
+      "label": "Divider Text Color",
+      "default": "#ffffff"
     }
   ],
   "blocks": [
