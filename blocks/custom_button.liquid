@@ -5,6 +5,7 @@
 <div 
   class="{% if block.settings.center_horizontally %}custom-button-block--centered{% else %}custom-position-block{% endif %} custom-font-style"
   style="{% render 'custom-block-styles', settings: block.settings, type: 'button' %}"
+  aria-label="Scroll to collection"
   {{ block.shopify_attributes }}
 >
   <a
