@@ -460,6 +460,7 @@
     padding-bottom: {{ section.settings.padding_bottom }}px;
     {% if section.settings.custom_bg_color != blank %}--collection-carousel-bg: {{ section.settings.custom_bg_color }};{% endif %}
     {% if section.settings.custom_text_color != blank %}--collection-carousel-text: {{ section.settings.custom_text_color }};{% endif %}
+    --product-title-font-weight: {{ section.settings.product_title_font_weight | default: '700' }};
   "
 >
   <div class="page-width">
@@ -593,7 +594,7 @@
                   </div>
                 </div>
                 <div class="collection-hover-carousel__info{% if section.settings.justify_title_price %} collection-hover-carousel__info--justify{% endif %}">
-                  <h4 class="collection-hover-carousel__product-title"><a href="{{ card_url }}" class="collection-hover-carousel__title-link">{{ title }}</a></h4>
+                  <h4 class="collection-hover-carousel__product-title"><a href="{{ card_url }}" class="collection-hover-carousel__title-link" style="font-weight: var(--product-title-font-weight);">{{ title }}</a></h4>
                   <p class="collection-hover-carousel__product-price">{{ price_text }}</p>
                 </div>
                 
@@ -648,7 +649,7 @@
                   <a href="#" class="collection-hover-carousel__card-link-overlay" aria-label="Sample Product {{ i }}"></a>
                 </div>
                 <div class="collection-hover-carousel__info{% if section.settings.justify_title_price %} collection-hover-carousel__info--justify{% endif %}">
-                  <h4 class="collection-hover-carousel__product-title"><a href="#" class="collection-hover-carousel__title-link">Sample Product {{ i }}</a></h4>
+                  <h4 class="collection-hover-carousel__product-title"><a href="#" class="collection-hover-carousel__title-link" style="font-weight: var(--product-title-font-weight);">Sample Product {{ i }}</a></h4>
                   <p class="collection-hover-carousel__product-price">Rs. 1,200 INR</p>
                 </div>
               </div>
@@ -2001,6 +2002,23 @@
         }
       ],
       "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "product_title_font_weight",
+      "label": "Product title font weight",
+      "default": "700",
+      "options": [
+        { "value": "100", "label": "100 – Thin" },
+        { "value": "200", "label": "200 – Extra Light" },
+        { "value": "300", "label": "300 – Light" },
+        { "value": "400", "label": "400 – Normal" },
+        { "value": "500", "label": "500 – Medium" },
+        { "value": "600", "label": "600 – Semi Bold" },
+        { "value": "700", "label": "700 – Bold" },
+        { "value": "800", "label": "800 – Extra Bold" },
+        { "value": "900", "label": "900 – Black" }
+      ]
     },
     {
       "type": "paragraph",
