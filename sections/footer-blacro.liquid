@@ -259,6 +259,76 @@
     color: rgba(255, 255, 255, 0.08);
     user-select: none;
   }
+
+  #BlacroFooter-{{ section.id }} .footer-badge-row {
+    width: 100%;
+    box-sizing: border-box;
+    border-top: {{ section.settings.footer_row_line_thickness }}px solid {{ section.settings.footer_row_top_line_color }};
+    border-bottom: {{ section.settings.footer_row_line_thickness }}px solid {{ section.settings.footer_row_bottom_line_color }};
+    padding-top: {{ section.settings.footer_row_padding_top }}px;
+    padding-bottom: {{ section.settings.footer_row_padding_bottom }}px;
+    margin-top: 48px;
+    margin-bottom: 24px;
+  }
+
+  #BlacroFooter-{{ section.id }} .footer-badge-row__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-inline: 1rem;
+    box-sizing: border-box;
+  }
+
+  #BlacroFooter-{{ section.id }} .footer-badge-row__col {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  #BlacroFooter-{{ section.id }} .footer-badge-row__col--left {
+    justify-content: flex-start;
+  }
+
+  #BlacroFooter-{{ section.id }} .footer-badge-row__col--center {
+    justify-content: center;
+  }
+
+  #BlacroFooter-{{ section.id }} .footer-badge-row__col--right {
+    justify-content: flex-end;
+  }
+
+  #BlacroFooter-{{ section.id }} .footer-badge-row__text {
+    font-family: inherit;
+    font-size: var(--fs-links);
+    letter-spacing: var(--ls);
+    text-transform: uppercase;
+    color: #ffffff;
+    white-space: nowrap;
+  }
+
+  #BlacroFooter-{{ section.id }} .footer-badge-row__image {
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  @media (max-width: 749px) {
+    #BlacroFooter-{{ section.id }} .footer-badge-row {
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+    #BlacroFooter-{{ section.id }} .footer-badge-row__inner {
+      padding-inline: 0.5rem;
+    }
+    #BlacroFooter-{{ section.id }} .footer-badge-row__image {
+      max-width: calc({{ section.settings.footer_row_image_max_width }}px * 0.75) !important;
+    }
+    #BlacroFooter-{{ section.id }} .footer-badge-row__text {
+      font-size: max(9px, calc(var(--fs-links) * 0.8));
+    }
+  }
 </style>
 
 <div 
@@ -391,6 +461,42 @@
       </div>
 
     </div>
+
+    {%- if section.settings.footer_row_text_left != blank or section.settings.footer_row_image_center != blank or section.settings.footer_row_text_right != blank -%}
+      <div class="footer-badge-row" style="border-top: {{ section.settings.footer_row_line_thickness }}px solid {{ section.settings.footer_row_top_line_color }}; border-bottom: {{ section.settings.footer_row_line_thickness }}px solid {{ section.settings.footer_row_bottom_line_color }};">
+        <div class="footer-badge-row__inner">
+          <div class="footer-badge-row__col footer-badge-row__col--left">
+            {%- if section.settings.footer_row_text_left != blank -%}
+              <span class="footer-badge-row__text">{{ section.settings.footer_row_text_left }}</span>
+            {%- else -%}
+              <span></span>
+            {%- endif -%}
+          </div>
+          <div class="footer-badge-row__col footer-badge-row__col--center">
+            {%- if section.settings.footer_row_image_center != blank -%}
+              <img 
+                src="{{ section.settings.footer_row_image_center | image_url: width: 200 }}" 
+                alt="{{ section.settings.footer_row_image_center.alt | escape }}" 
+                loading="lazy" 
+                width="{{ section.settings.footer_row_image_center.width }}"
+                height="{{ section.settings.footer_row_image_center.height }}"
+                class="footer-badge-row__image"
+                style="max-width: {{ section.settings.footer_row_image_max_width }}px;"
+              >
+            {%- else -%}
+              <span></span>
+            {%- endif -%}
+          </div>
+          <div class="footer-badge-row__col footer-badge-row__col--right">
+            {%- if section.settings.footer_row_text_right != blank -%}
+              <span class="footer-badge-row__text">{{ section.settings.footer_row_text_right }}</span>
+            {%- else -%}
+              <span></span>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
 
     <!-- COPYRIGHT BAR -->
     <hr class="blacro-footer__divider">
@@ -773,6 +879,79 @@
       "id": "footer_bg_color",
       "label": "Footer background color",
       "default": "#0a0a0a"
+    },
+    {
+      "type": "header",
+      "content": "Decorative Badge Row Settings"
+    },
+    {
+      "type": "color",
+      "id": "footer_row_top_line_color",
+      "label": "Row top line color",
+      "default": "#C9A84C"
+    },
+    {
+      "type": "color",
+      "id": "footer_row_bottom_line_color",
+      "label": "Row bottom line color",
+      "default": "#C9A84C"
+    },
+    {
+      "type": "range",
+      "id": "footer_row_line_thickness",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "label": "Row line thickness"
+    },
+    {
+      "type": "range",
+      "id": "footer_row_padding_top",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 16,
+      "label": "Row padding top"
+    },
+    {
+      "type": "range",
+      "id": "footer_row_padding_bottom",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 16,
+      "label": "Row padding bottom"
+    },
+    {
+      "type": "text",
+      "id": "footer_row_text_left",
+      "label": "Left text",
+      "default": "ARCHIVE // RELIC_001"
+    },
+    {
+      "type": "image_picker",
+      "id": "footer_row_image_center",
+      "label": "Center logo/icon"
+    },
+    {
+      "type": "text",
+      "id": "footer_row_text_right",
+      "label": "Right text",
+      "default": "BHARAT // EST. 2026"
+    },
+    {
+      "type": "range",
+      "id": "footer_row_image_max_width",
+      "min": 20,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 60,
+      "label": "Logo/icon max width"
     }
   ],
   "blocks": [
