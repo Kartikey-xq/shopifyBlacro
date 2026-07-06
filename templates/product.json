@@ -12,6 +12,26 @@
     "main": {
       "type": "product-information",
       "blocks": {
+        "product-info-tabs-1": {
+          "type": "product-info-tabs",
+          "settings": {
+            "tab_1_label": "Product details",
+            "tab_1_content": "{{ closest.product.description }}",
+            "tab_2_label": "Washcare",
+            "tab_2_content": "<p>dry wash</p>",
+            "tab_3_label": "Shipping",
+            "tab_3_content": "<p>Specify shipping rates, methods, delivery times, and returns policy information here.</p>",
+            "corner_radius": 0,
+            "border_color": "#e5e5e5",
+            "active_tab_color": "#000000",
+            "inactive_tab_color": "#888888",
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "margin_top": 0,
+            "margin_bottom": 20
+          },
+          "blocks": {}
+        },
         "media-gallery": {
           "type": "_product-media-gallery",
           "static": true,
@@ -251,18 +271,6 @@
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi"
           ]
-        },
-        "product-info-tabs-1": {
-          "type": "product-info-tabs",
-          "settings": {
-            "tab_count": 3,
-            "tab_1_label": "Details & Description",
-            "tab_1_content": "<p>Provide detailed specifications and descriptions of the product here.</p>",
-            "tab_2_label": "Washcare",
-            "tab_2_content": "<p>Detail instructions for washing, drying, and ironing the product safely.</p>",
-            "tab_3_label": "Shipping & Returns",
-            "tab_3_content": "<p>Specify shipping rates, methods, delivery times, and returns policy information here.</p>"
-          }
         }
       },
       "block_order": [
