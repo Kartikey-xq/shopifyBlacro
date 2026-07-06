@@ -16,6 +16,7 @@
       "name": "Blacro Footer",
       "settings": {
         "logo": "shopify://shop_images/ChatGPT_Image_Jun_5_2026_01_34_21_PM.png",
+        "brand_icon": "shopify://shop_images/Copy_of_Blacro_Logo-26-removebg-preview.png",
         "brand_logo_width": 160,
         "brand_logo_x_offset": -28,
         "brand_icon_width": 80,
@@ -49,12 +50,15 @@
         "footer_row_top_line_color": "#c9a84c",
         "footer_row_bottom_line_color": "#c9a84c",
         "footer_row_line_thickness": 1,
-        "footer_row_padding_top": 16,
-        "footer_row_padding_bottom": 16,
+        "footer_row_padding_top": 4,
+        "footer_row_padding_bottom": 4,
         "footer_row_text_left": "ARCHIVE // RELIC_001",
-        "footer_row_image_center": "shopify://shop_images/icons8-down-arrow-50.png",
+        "footer_row_image_center": "shopify://shop_images/Copy_of_Blacro_Logo-01-removebg-preview_ebd17b7d-07c2-4a95-9ce6-9649cf23b1cf.png",
         "footer_row_text_right": "BHARAT // EST. 2026",
-        "footer_row_image_max_width": 20
+        "footer_row_image_max_width": 30,
+        "footer_header_color": "#605D5D",
+        "footer_link_color": "#C9C6C6",
+        "footer_divider_text_color": "#4B4545"
       }
     }
   },
