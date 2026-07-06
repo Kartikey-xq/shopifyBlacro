@@ -24,7 +24,7 @@
             "padding-inline-start": 0,
             "padding-inline-end": 0,
             "logo_inverse_height": 80,
-            "logo_inverse_height_mobile": 98
+            "logo_inverse_height_mobile": 20
           },
           "blocks": {}
         },
@@ -57,7 +57,7 @@
         "menu_label": "Menu",
         "menu_font_preset": "custom",
         "menu_font_family": "subheading",
-        "menu_font_size": 13,
+        "menu_font_size": 14,
         "menu_font_weight": "normal",
         "menu_letter_spacing": 0,
         "menu_text_transform": "none",
