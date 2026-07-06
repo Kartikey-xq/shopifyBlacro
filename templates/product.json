@@ -243,121 +243,13 @@
                 }
               },
               "block_order": []
-            },
-            "product_description_q6rMtw": {
-              "type": "product-description",
-              "name": "t:names.product_description",
-              "settings": {
-                "title": "Product Details",
-                "text": "{{ closest.product.description }}",
-                "title_font": "custom",
-                "title_font_family": "var(--font-accent--family)",
-                "title_custom_size": 12,
-                "title_font_weight": "700",
-                "title_text_transform": "none",
-                "title_color": "",
-                "body_font": "custom",
-                "body_font_family": "var(--font-body--family)",
-                "body_custom_size": 14,
-                "body_font_weight": "400",
-                "body_line_height": "normal",
-                "body_color": "",
-                "read_more_font": "body",
-                "read_more_font_family": "var(--font-body--family)",
-                "read_more_custom_size": 16,
-                "read_more_font_weight": "700",
-                "read_more_text_transform": "none",
-                "read_more_color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "popup_link_7jpUMq": {
-              "type": "popup-link",
-              "name": "t:names.popup_link",
-              "settings": {
-                "style_as_accordion": true,
-                "header_font": "custom",
-                "header_custom_size": 12,
-                "behavior": "default",
-                "heading": "Shipping and return",
-                "type_preset": "paragraph",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {
-                "text_z6kcw6": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<h2>What is the return policy?</h2>",
-                    "width": "fit-content",
-                    "max_width": "normal",
-                    "alignment": "left",
-                    "type_preset": "rte",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "var(--color-foreground)",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 16,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "text_EEWMgK": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>Our goal is for every customer to be totally satisfied with their purchase. If this isn't the case, let us know and we'll do our best to work with you to make it right.</p>",
-                    "width": "fit-content",
-                    "max_width": "normal",
-                    "alignment": "left",
-                    "type_preset": "rte",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "var(--color-foreground)",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "text_z6kcw6",
-                "text_EEWMgK"
-              ]
             }
           },
           "block_order": [
             "group_icgrde",
             "text_cGBfKn",
             "variant_picker_R3rGDr",
-            "buy_buttons_eYQEYi",
-            "product_description_q6rMtw",
-            "popup_link_7jpUMq"
+            "buy_buttons_eYQEYi"
           ]
         }
       },
@@ -371,6 +263,58 @@
         "color_scheme": "scheme-3",
         "padding-block-start": 0,
         "padding-block-end": 0
+      }
+    },
+    "product_info_tabs_6VJ6V8": {
+      "type": "product-info-tabs",
+      "blocks": {
+        "tab_Vq7zAw": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Details & Description",
+            "tab_content": "<p>Provide detailed specifications and descriptions of the product here.</p>",
+            "tab_metafield_namespace": "",
+            "tab_metafield_key": ""
+          }
+        },
+        "tab_nQh4eR": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Washcare",
+            "tab_content": "<p>Detail instructions for washing, drying, and ironing the product safely.</p>",
+            "tab_metafield_namespace": "",
+            "tab_metafield_key": ""
+          }
+        },
+        "tab_UUT9c9": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Shipping & Returns",
+            "tab_content": "<p>Specify shipping rates, methods, delivery times, and returns policy information here.</p>",
+            "tab_metafield_namespace": "",
+            "tab_metafield_key": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_Vq7zAw",
+        "tab_nQh4eR",
+        "tab_UUT9c9"
+      ],
+      "name": "Product Info Tabs",
+      "settings": {
+        "corner_radius": 0,
+        "padding_top": 16,
+        "padding_bottom": 16,
+        "margin_top": 20,
+        "margin_bottom": 20,
+        "border_color": "#e5e5e5",
+        "border_width": 1,
+        "active_tab_color": "#FAFAFA",
+        "inactive_tab_color": "#888888",
+        "background_color": "",
+        "tab_font_size": 13,
+        "content_font_size": 13
       }
     },
     "custom_50_50_split": {
@@ -606,6 +550,7 @@
   },
   "order": [
     "main",
+    "product_info_tabs_6VJ6V8",
     "custom_50_50_split",
     "zoomed_product_carousel_pNYttr",
     "product_recommendations_qggXJq",
