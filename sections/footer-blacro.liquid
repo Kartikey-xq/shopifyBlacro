@@ -163,8 +163,8 @@
     text-align: center;
     line-height: 1.5;
     width: 100%;
-    padding-top: var(--copyright-pt);
-    padding-bottom: var(--copyright-pb);
+    padding-top: {{ section.settings.copyright_padding_top }}px;
+    padding-bottom: {{ section.settings.copyright_padding_bottom }}px;
   }
 
   #BlacroFooter-{{ section.id }} .blacro-footer__split {
@@ -179,9 +179,6 @@
   #BlacroFooter-{{ section.id }} .blacro-footer__split-half {
     position: relative;
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     height: 100%;
     width: 100%;
   }
@@ -192,78 +189,36 @@
     }
   }
 
-  #BlacroFooter-{{ section.id }} .blacro-footer__split-video-wrap {
+  #BlacroFooter-{{ section.id }} .split-gallery-bg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
   }
 
-  #BlacroFooter-{{ section.id }} .blacro-footer__video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  #BlacroFooter-{{ section.id }} iframe.blacro-footer__video {
+  #BlacroFooter-{{ section.id }} .split-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    transform: translate(-50%, -50%);
-    border: none;
+    background-color: var(--split-overlay-color, #000000);
+    z-index: 2;
+    opacity: 1;
+    pointer-events: none;
   }
 
-  /* Make sure video iframe covers the container on larger screen width */
-  @media screen and (min-aspect-ratio: 16/9) {
-    #BlacroFooter-{{ section.id }} iframe.blacro-footer__video {
-      height: 56.25vw;
-    }
-  }
-  @media screen and (max-aspect-ratio: 16/9) {
-    #BlacroFooter-{{ section.id }} iframe.blacro-footer__video {
-      width: 177.77vh;
-    }
+  #BlacroFooter-{{ section.id }} .split-overlay.is-hiding {
+    transition: opacity var(--split-overlay-duration, 600ms) cubic-bezier(0.4, 0, 1, 1);
   }
 
-  #BlacroFooter-{{ section.id }} .blacro-footer__split-img-wrap {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--footer-bg);
-  }
-
-  #BlacroFooter-{{ section.id }} .blacro-footer__split-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  #BlacroFooter-{{ section.id }} .blacro-footer__split-img-wrap--logo {
-    padding: var(--split-logo-pv) var(--split-logo-ph);
-    box-sizing: border-box;
-  }
-
-  #BlacroFooter-{{ section.id }} .blacro-footer__split-logo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-  }
-
-  #BlacroFooter-{{ section.id }} .blacro-footer__split-logo-text {
-    font-size: clamp(32px, 5vw, 64px);
-    font-weight: 900;
-    letter-spacing: var(--ls);
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.08);
-    user-select: none;
+  #BlacroFooter-{{ section.id }} .split-overlay.is-revealed {
+    opacity: 0;
   }
 
   #BlacroFooter-{{ section.id }} .footer-badge-row {
@@ -277,7 +232,7 @@
     padding-top: {{ section.settings.footer_row_padding_top }}px;
     padding-bottom: {{ section.settings.footer_row_padding_bottom }}px;
     margin-top: 48px;
-    margin-bottom: 24px;
+    margin-bottom: 0;
   }
 
   #BlacroFooter-{{ section.id }} .footer-badge-row__inner {
@@ -336,7 +291,7 @@
   @media (max-width: 749px) {
     #BlacroFooter-{{ section.id }} .footer-badge-row {
       margin-top: 32px;
-      margin-bottom: 16px;
+      margin-bottom: 0;
     }
     #BlacroFooter-{{ section.id }} .footer-badge-row__inner {
       padding-left: 0.5rem;
@@ -362,19 +317,17 @@
     --group-gap: {{ section.settings.group_gap }}px;
     --link-gap: {{ section.settings.link_gap }}px;
     --header-mb: {{ section.settings.header_margin_bottom }}px;
-    --copyright-pt: {{ section.settings.copyright_padding_top }}px;
-    --copyright-pb: {{ section.settings.copyright_padding_bottom }}px;
     --split-height: {{ section.settings.split_section_height }}px;
     --split-height-mobile: {{ section.settings.split_height_mobile }}px;
     --split-gap: {{ section.settings.split_gap }}px;
-    --split-logo-ph: {{ section.settings.split_logo_padding_horizontal }}%;
-    --split-logo-pv: {{ section.settings.split_logo_padding_vertical }}%;
     --footer-bg: {{ section.settings.footer_bg_color }};
     --logo-x-offset: {{ section.settings.brand_logo_x_offset | default: 0 }}px;
     --fs-links: {{ section.settings.font_size_links }}px;
     --fs-labels: {{ section.settings.font_size_labels }}px;
     --fs-copyright: {{ section.settings.font_size_copyright }}px;
     --ls: {{ section.settings.letter_spacing }}px;
+    --split-overlay-color: {{ section.settings.split_overlay_color }};
+    --split-overlay-duration: {{ section.settings.split_overlay_duration }}ms;
   "
 >
   <div class="blacro-footer__top-container">
@@ -519,75 +472,187 @@
     {%- endif -%}
 
     <!-- COPYRIGHT BAR -->
-    <hr class="blacro-footer__divider">
+    {%- unless section.settings.footer_row_text_left != blank or section.settings.footer_row_image_center != blank or section.settings.footer_row_text_right != blank -%}
+      <hr class="blacro-footer__divider">
+    {%- endunless -%}
     <div class="blacro-footer__copyright">
       {{ section.settings.copyright_text | upcase }}
     </div>
 
   </div>
 
+  {%- assign image_urls = "" -%}
+  {%- for i in (1..5) -%}
+    {%- assign img_key = 'split_image_' | append: i -%}
+    {%- assign img = section.settings[img_key] -%}
+    {%- if img != blank -%}
+      {%- if image_urls != "" -%}{%- assign image_urls = image_urls | append: "," -%}{%- endif -%}
+      {%- assign img_url = img | image_url: width: 1200 -%}
+      {%- assign image_urls = image_urls | append: img_url -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if image_urls == "" and section.settings.logo != blank -%}
+    {%- assign image_urls = section.settings.logo | image_url: width: 1200 -%}
+  {%- endif -%}
+
+  {%- assign image_list = image_urls | split: "," -%}
+
+  {%- comment -%} Preload all split gallery images {%- endcomment -%}
+  {%- for img_url in image_list -%}
+    {%- if img_url != blank -%}
+      <link rel="preload" as="image" href="{{ img_url }}">
+    {%- endif -%}
+  {%- endfor -%}
+
   <!-- 50/50 SPLIT SECTION -->
-  <div class="blacro-footer__split">
-    
-    <!-- Left Half: Video -->
-    <div class="blacro-footer__split-half">
-      {%- if section.settings.split_video != blank -%}
-        <div class="blacro-footer__split-video-wrap">
-          {{ section.settings.split_video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, class: "blacro-footer__video" }}
-        </div>
-      {%- elsif section.settings.split_video_url != blank -%}
-        <div class="blacro-footer__split-video-wrap">
-          {%- if section.settings.split_video_url.type == 'youtube' -%}
-            <iframe 
-              class="blacro-footer__video" 
-              src="https://www.youtube.com/embed/{{ section.settings.split_video_url.id }}?autoplay=1&mute=1&loop=1&playlist={{ section.settings.split_video_url.id }}&controls=0&showinfo=0&rel=0&playsinline=1" 
-              allow="autoplay; encrypted-media" 
-              allowfullscreen
-            ></iframe>
-          {%- elsif section.settings.split_video_url.type == 'vimeo' -%}
-            <iframe 
-              class="blacro-footer__video" 
-              src="https://player.vimeo.com/video/{{ section.settings.split_video_url.id }}?autoplay=1&muted=1&loop=1&autopause=0&background=1" 
-              allow="autoplay; fullscreen" 
-              allowfullscreen
-            ></iframe>
-          {%- endif -%}
-        </div>
-      {%- else -%}
-        <div class="blacro-footer__split-img-wrap" style="background-color: var(--footer-bg);">
-          <span class="blacro-footer__split-logo-text">BREED APART</span>
-        </div>
-      {%- endif -%}
+  <div 
+    class="blacro-footer__split"
+    id="BlacroFooterSplit-{{ section.id }}"
+    data-autoplay="{{ section.settings.autoplay }}"
+    data-slide-duration="{{ section.settings.split_overlay_duration }}"
+    data-images='{{ image_list | json }}'
+  >
+    <!-- Left Half -->
+    <div class="blacro-footer__split-half blacro-footer__split-half--left">
+      <div class="split-gallery-bg"></div>
+      <div class="split-overlay"></div>
     </div>
 
-    <!-- Right Half: Image -->
-    <div class="blacro-footer__split-half">
-      <div class="blacro-footer__split-img-wrap{% if section.settings.split_image == blank and section.settings.logo != blank %} blacro-footer__split-img-wrap--logo{% endif %}">
-        {%- if section.settings.split_image != blank -%}
-          <img 
-            class="blacro-footer__split-img" 
-            src="{{ section.settings.split_image | image_url: width: 1200 }}" 
-            alt="BLACRO Campaign" 
-            loading="lazy"
-            width="{{ section.settings.split_image.width }}"
-            height="{{ section.settings.split_image.height }}"
-          >
-        {%- elsif section.settings.logo != blank -%}
-          <img 
-            class="blacro-footer__split-logo-img" 
-            src="{{ section.settings.logo | image_url: width: 600 }}" 
-            alt="{{ shop.name }} Logo" 
-            loading="lazy"
-            width="{{ section.settings.logo.width }}"
-            height="{{ section.settings.logo.height }}"
-          >
-        {%- else -%}
-          <span class="blacro-footer__split-logo-text">BLACRO</span>
-        {%- endif -%}
-      </div>
+    <!-- Right Half -->
+    <div class="blacro-footer__split-half blacro-footer__split-half--right">
+      <div class="split-gallery-bg"></div>
+      <div class="split-overlay"></div>
     </div>
-
   </div>
+
+  <script>
+  (function() {
+    function initGallery(sectionContainer) {
+      const splitContainer = sectionContainer.querySelector('.blacro-footer__split');
+      if (!splitContainer) return;
+
+      const imagesJson = splitContainer.getAttribute('data-images');
+      if (!imagesJson) return;
+
+      let images = [];
+      try {
+        images = JSON.parse(imagesJson);
+      } catch(e) {
+        console.error("Failed to parse gallery images", e);
+        return;
+      }
+
+      if (images.length === 0) return;
+
+      const autoplay = splitContainer.getAttribute('data-autoplay') === 'true';
+      const duration = parseFloat(splitContainer.getAttribute('data-slide-duration'));
+
+      const leftBg = splitContainer.querySelector('.blacro-footer__split-half--left .split-gallery-bg');
+      const rightBg = splitContainer.querySelector('.blacro-footer__split-half--right .split-gallery-bg');
+      const leftOverlay = splitContainer.querySelector('.blacro-footer__split-half--left .split-overlay');
+      const rightOverlay = splitContainer.querySelector('.blacro-footer__split-half--right .split-overlay');
+
+      if (!leftBg || !rightBg || !leftOverlay || !rightOverlay) return;
+
+      let rightIndex = 0;
+      let leftIndex = 0;
+      let currentState = 0; // State machine: 0 (Right revealed), 1 (Right covering), 2 (Left revealed), 3 (Left covering)
+
+      function renderStep() {
+        if (currentState === 0) {
+          const rightImg = images[rightIndex % images.length];
+          rightBg.style.backgroundImage = `url("${rightImg}")`;
+          
+          rightOverlay.classList.remove('is-hiding');
+          rightOverlay.classList.add('is-revealed');
+          
+          leftOverlay.classList.remove('is-revealed');
+        } else if (currentState === 1) {
+          rightOverlay.classList.add('is-hiding');
+          rightOverlay.classList.remove('is-revealed');
+          
+          leftOverlay.classList.remove('is-revealed');
+        } else if (currentState === 2) {
+          leftIndex = rightIndex;
+          const leftImg = images[(leftIndex + 1) % images.length];
+          leftBg.style.backgroundImage = `url("${leftImg}")`;
+          
+          leftOverlay.classList.remove('is-hiding');
+          leftOverlay.classList.add('is-revealed');
+          
+          rightOverlay.classList.remove('is-revealed');
+        } else if (currentState === 3) {
+          leftOverlay.classList.add('is-hiding');
+          leftOverlay.classList.remove('is-revealed');
+          
+          rightOverlay.classList.remove('is-revealed');
+        }
+      }
+
+      // Initial render
+      renderStep();
+
+      if (images.length === 0 || duration <= 0) return;
+
+      function nextStep() {
+        currentState = (currentState + 1) % 4;
+        if (currentState === 0) {
+          rightIndex = (rightIndex + 2) % images.length;
+        }
+        renderStep();
+      }
+
+      function startTimer() {
+        if (!autoplay) return;
+        stopTimer();
+        splitContainer.galleryTimer = setInterval(nextStep, duration);
+      }
+
+      function stopTimer() {
+        if (splitContainer.galleryTimer) {
+          clearInterval(splitContainer.galleryTimer);
+          splitContainer.galleryTimer = null;
+        }
+      }
+
+      // Stop existing timers if any
+      if (splitContainer.galleryTimer) {
+        clearInterval(splitContainer.galleryTimer);
+      }
+
+      startTimer();
+
+      // Pause on hover
+      splitContainer.addEventListener('mouseenter', stopTimer);
+      splitContainer.addEventListener('mouseleave', startTimer);
+    }
+
+    // Hook Shopify theme editor events
+    document.addEventListener('shopify:section:load', function(event) {
+      if (event.detail.sectionId === '{{ section.id }}' || event.target.querySelector('#BlacroFooterSplit-{{ section.id }}')) {
+        const section = event.target.classList.contains('shopify-section') ? event.target : event.target.closest('.shopify-section');
+        if (section) {
+          initGallery(section);
+        }
+      }
+    });
+
+    // Regular page load
+    function init() {
+      const section = document.querySelector('#shopify-section-{{ section.id }}');
+      if (section) {
+        initGallery(section);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
 </div>
 
 {% schema %}
@@ -701,26 +766,47 @@
     },
     {
       "type": "header",
-      "content": "50/50 Split Bottom Section"
-    },
-    {
-      "type": "video",
-      "id": "split_video",
-      "label": "Split native video",
-      "info": "Upload a native video to Shopify. Takes priority over URL settings below."
-    },
-    {
-      "type": "video_url",
-      "id": "split_video_url",
-      "label": "Split video URL (YouTube/Vimeo)",
-      "accept": ["youtube", "vimeo"],
-      "info": "Alternative video source URL."
+      "content": "50/50 split bottom section"
     },
     {
       "type": "image_picker",
-      "id": "split_image",
-      "label": "Split image (Right half)",
-      "info": "Defaults to brand logo if left blank."
+      "id": "split_image_1",
+      "label": "Split Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "split_image_2",
+      "label": "Split Image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "split_image_3",
+      "label": "Split Image 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "split_image_4",
+      "label": "Split Image 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "split_image_5",
+      "label": "Split Image 5"
+    },
+    {
+      "type": "range",
+      "id": "split_overlay_duration",
+      "label": "Overlay Duration (ms)",
+      "min": 200,
+      "max": 2000,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "color",
+      "id": "split_overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
     },
     {
       "type": "range",
@@ -750,7 +836,7 @@
       "step": 2,
       "unit": "px",
       "default": 0,
-      "label": "Gap between video and logo panels"
+      "label": "Gap between left and right panels"
     },
     {
       "type": "range",
@@ -771,6 +857,12 @@
       "unit": "px",
       "default": 600,
       "label": "50/50 split height (desktop)"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": true
     },
     {
       "type": "header",
@@ -919,11 +1011,11 @@
     {
       "type": "range",
       "id": "footer_row_line_thickness",
-      "min": 1,
+      "min": 0.5,
       "max": 5,
-      "step": 1,
+      "step": 0.5,
       "unit": "px",
-      "default": 1,
+      "default": 0.5,
       "label": "Row line thickness"
     },
     {
