@@ -213,6 +213,10 @@
     pointer-events: none;
   }
 
+  #BlacroFooter-{{ section.id }} .split-overlay.is-hiding {
+    transition: opacity var(--split-overlay-duration, 600ms) cubic-bezier(0.4, 0, 1, 1);
+  }
+
   #BlacroFooter-{{ section.id }} .split-overlay.is-revealed {
     opacity: 0;
   }
@@ -323,7 +327,7 @@
     --fs-copyright: {{ section.settings.font_size_copyright }}px;
     --ls: {{ section.settings.letter_spacing }}px;
     --split-overlay-color: {{ section.settings.split_overlay_color }};
-    --split-duration: {{ section.settings.split_display_duration }}s;
+    --split-overlay-duration: {{ section.settings.split_overlay_duration }}ms;
   "
 >
   <div class="blacro-footer__top-container">
@@ -506,7 +510,7 @@
     class="blacro-footer__split"
     id="BlacroFooterSplit-{{ section.id }}"
     data-autoplay="{{ section.settings.autoplay }}"
-    data-slide-duration="{{ section.settings.split_display_duration }}"
+    data-slide-duration="{{ section.settings.split_overlay_duration }}"
     data-images='{{ image_list | json }}'
   >
     <!-- Left Half -->
@@ -542,7 +546,7 @@
       if (images.length === 0) return;
 
       const autoplay = splitContainer.getAttribute('data-autoplay') === 'true';
-      const duration = parseFloat(splitContainer.getAttribute('data-slide-duration')) * 1000;
+      const duration = parseFloat(splitContainer.getAttribute('data-slide-duration'));
 
       const leftBg = splitContainer.querySelector('.blacro-footer__split-half--left .split-gallery-bg');
       const rightBg = splitContainer.querySelector('.blacro-footer__split-half--right .split-gallery-bg');
@@ -553,20 +557,35 @@
 
       let rightIndex = 0;
       let leftIndex = 0;
-      let isStepA = true;
+      let currentState = 0; // State machine: 0 (Right revealed), 1 (Right covering), 2 (Left revealed), 3 (Left covering)
 
       function renderStep() {
-        if (isStepA) {
+        if (currentState === 0) {
           const rightImg = images[rightIndex % images.length];
           rightBg.style.backgroundImage = `url("${rightImg}")`;
           
-          leftOverlay.classList.remove('is-revealed');
+          rightOverlay.classList.remove('is-hiding');
           rightOverlay.classList.add('is-revealed');
-        } else {
+          
+          leftOverlay.classList.remove('is-revealed');
+        } else if (currentState === 1) {
+          rightOverlay.classList.add('is-hiding');
+          rightOverlay.classList.remove('is-revealed');
+          
+          leftOverlay.classList.remove('is-revealed');
+        } else if (currentState === 2) {
+          leftIndex = rightIndex;
           const leftImg = images[(leftIndex + 1) % images.length];
           leftBg.style.backgroundImage = `url("${leftImg}")`;
           
+          leftOverlay.classList.remove('is-hiding');
           leftOverlay.classList.add('is-revealed');
+          
+          rightOverlay.classList.remove('is-revealed');
+        } else if (currentState === 3) {
+          leftOverlay.classList.add('is-hiding');
+          leftOverlay.classList.remove('is-revealed');
+          
           rightOverlay.classList.remove('is-revealed');
         }
       }
@@ -577,12 +596,9 @@
       if (images.length === 0 || duration <= 0) return;
 
       function nextStep() {
-        if (isStepA) {
-          leftIndex = rightIndex;
-          isStepA = false;
-        } else {
+        currentState = (currentState + 1) % 4;
+        if (currentState === 0) {
           rightIndex = (rightIndex + 2) % images.length;
-          isStepA = true;
         }
         renderStep();
       }
@@ -779,12 +795,12 @@
     },
     {
       "type": "range",
-      "id": "split_display_duration",
-      "label": "Image Display Duration (seconds)",
-      "min": 1,
-      "max": 10,
-      "step": 1,
-      "default": 3
+      "id": "split_overlay_duration",
+      "label": "Overlay Duration (ms)",
+      "min": 200,
+      "max": 2000,
+      "step": 100,
+      "default": 600
     },
     {
       "type": "color",
@@ -995,11 +1011,11 @@
     {
       "type": "range",
       "id": "footer_row_line_thickness",
-      "min": 1,
+      "min": 0.5,
       "max": 5,
-      "step": 1,
+      "step": 0.5,
       "unit": "px",
-      "default": 1,
+      "default": 0.5,
       "label": "Row line thickness"
     },
     {
