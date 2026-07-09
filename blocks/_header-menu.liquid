@@ -18,7 +18,7 @@
       data-hydration-key="header-drawer-mobile"
       {{ block.shopify_attributes }}
     >
-      {% render 'header-drawer', linklist: block_settings.menu, data_header_drawer_type: 'mobile-drawer', section: section, transparent_color_scheme: transparent_color_scheme %}
+      {% render 'header-drawer', linklist: block_settings.menu, data_header_drawer_type: 'mobile-drawer', section: section, transparent_color_scheme: transparent_color_scheme, block: block %}
     </div>
 
   {% when 'navigation_bar' %}
@@ -946,6 +946,170 @@
       "id": "drawer_dividers",
       "label": "t:settings.dividers",
       "default": false
+    },
+    {
+      "type": "header",
+      "content": "Custom Subsections Settings"
+    },
+    {
+      "type": "range",
+      "id": "divider_thickness",
+      "label": "Section divider thickness",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Section divider color",
+      "default": "#000000"
+    },
+    {
+      "type": "image_picker",
+      "id": "gift_card_image",
+      "label": "Gift card image artwork"
+    },
+    {
+      "type": "text",
+      "id": "gift_card_heading",
+      "label": "Gift card heading",
+      "default": "GIFT CARD"
+    },
+    {
+      "type": "text",
+      "id": "gift_card_subtext",
+      "label": "Gift card subtext",
+      "default": "Give culture. Wear identity."
+    },
+    {
+      "type": "range",
+      "id": "gift_card_image_radius",
+      "label": "Gift card image border radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "gift_card_image_padding_left",
+      "label": "Gift card image padding left",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "gift_card_image_padding_right",
+      "label": "Gift card image padding right",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "url",
+      "id": "gift_card_link_url",
+      "label": "Gift card link URL"
+    },
+    {
+      "type": "font_picker",
+      "id": "drawer_nav_font",
+      "label": "Menu drawer link font",
+      "default": "anonymous_pro_n4"
+    },
+    {
+      "type": "header",
+      "content": "Menu Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "menu_section_padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "label": "Menu section — padding top"
+    },
+    {
+      "type": "range",
+      "id": "menu_section_padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "label": "Menu section — padding bottom"
+    },
+    {
+      "type": "header",
+      "content": "Gift Card Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "gift_card_section_padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "label": "Gift card section — padding top"
+    },
+    {
+      "type": "range",
+      "id": "gift_card_section_padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "label": "Gift card section — padding bottom"
+    },
+    {
+      "type": "header",
+      "content": "Featured Products Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "carousel_section_padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "label": "Featured products section — padding top"
+    },
+    {
+      "type": "range",
+      "id": "carousel_section_padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "label": "Featured products section — padding bottom"
+    },
+    {
+      "type": "header",
+      "content": "Menu Font Size"
+    },
+    {
+      "type": "range",
+      "id": "drawer_nav_font_size",
+      "min": 12,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "label": "Menu link font size"
     }
   ]
 }

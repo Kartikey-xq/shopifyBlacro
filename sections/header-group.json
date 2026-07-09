@@ -45,7 +45,24 @@
             "navigation_bar": false,
             "drawer_accordion": true,
             "drawer_accordion_expand_first": false,
-            "drawer_dividers": false
+            "drawer_dividers": false,
+            "divider_thickness": 10,
+            "divider_color": "#332727",
+            "gift_card_image": "shopify://shop_images/Screenshot_2026-07-09_133817-removebg-preview.png",
+            "gift_card_heading": "GIFT CARD",
+            "gift_card_subtext": "Give culture. Wear identity.",
+            "gift_card_image_radius": 12,
+            "gift_card_image_padding_left": 0,
+            "gift_card_image_padding_right": 20,
+            "gift_card_link_url": "",
+            "drawer_nav_font": "inter_n1",
+            "menu_section_padding_top": 4,
+            "menu_section_padding_bottom": 4,
+            "gift_card_section_padding_top": 27,
+            "gift_card_section_padding_bottom": 27,
+            "carousel_section_padding_top": 0,
+            "carousel_section_padding_bottom": 0,
+            "drawer_nav_font_size": 20
           },
           "blocks": {}
         }
