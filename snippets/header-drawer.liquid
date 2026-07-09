@@ -112,6 +112,16 @@
 
       <!-- Subsection 1: Navigation Menu -->
       <nav class="menu-drawer__navigation menu-drawer__custom-nav">
+        <style>
+          #menu-drawer .menu-drawer__navigation li,
+          #menu-drawer .menu-drawer__navigation a {
+            margin-bottom: {{ block.settings.menu_link_gap | default: 16 }}px !important;
+            padding-bottom: 0 !important;
+          }
+          #menu-drawer .menu-drawer__navigation ul {
+            gap: {{ block.settings.menu_link_gap | default: 16 }}px !important;
+          }
+        </style>
         <ul class="custom-nav__list">
           <li class="custom-nav__item">
             <a href="/" class="custom-nav__link">Home</a>
@@ -182,12 +192,8 @@
         {%- endif -%}
 
           {%- if block_settings.gift_card_image != blank -%}
-            {{ block_settings.gift_card_image | image_url: width: 600 | image_tag: class: 'gift-card__image-simplified', alt: block_settings.gift_card_heading | default: 'Gift Card' }}
+            {{ block_settings.gift_card_image | image_url: width: 600 | image_tag: class: 'gift-card__image-simplified', alt: 'Gift Card' }}
           {%- endif -%}
-          <div class="menu-drawer__gift-card-info">
-            <h3 class="gift-card__info-heading">{{ block_settings.gift_card_heading | default: "GIFT CARD" }}</h3>
-            <p class="gift-card__info-subtext">{{ block_settings.gift_card_subtext | default: "Give culture. Wear identity." }}</p>
-          </div>
 
         {%- if block_settings.gift_card_link_url != blank -%}
           </a>
@@ -218,6 +224,47 @@
 
       <!-- Separator 3 -->
       {%- comment -%}DIVIDER-2{%- endcomment -%}
+      <hr class="menu-drawer__divider" style="display: block !important; height: {{ block.settings.divider_thickness | default: 1 }}px; background-color: {{ block.settings.divider_color | default: '#000000' }}; width: calc(100% + 40px); margin-left: -20px; margin-right: -20px; border: none; padding: 0; opacity: 1; visibility: visible; box-sizing: border-box; flex-shrink: 0;"></hr>
+
+      <!-- Subsection: Community Signup Block -->
+      <div class="menu-drawer__community-section">
+        <style>
+          #menu-drawer .menu-drawer__community-heading {
+            font-size: {{ block.settings.community_heading_font_size | default: 12 }}px !important;
+          }
+          #menu-drawer .menu-drawer__community-subtext {
+            font-size: {{ block.settings.community_subtext_font_size | default: 12 }}px !important;
+          }
+          #menu-drawer .menu-drawer__community-btn {
+            font-size: {{ block.settings.community_button_font_size | default: 12 }}px !important;
+            width: {{ block.settings.community_button_width | default: 100 }}% !important;
+            padding-left: {{ block.settings.community_button_padding_left | default: 16 }}px !important;
+            padding-right: {{ block.settings.community_button_padding_right | default: 16 }}px !important;
+          }
+        </style>
+        {%- if block_settings.community_heading != blank -%}
+          <h3 class="menu-drawer__community-heading">{{ block_settings.community_heading | escape }}</h3>
+        {%- endif -%}
+        {%- if block_settings.community_subtext != blank -%}
+          <p class="menu-drawer__community-subtext">{{ block_settings.community_subtext | escape }}</p>
+        {%- endif -%}
+        {%- form 'customer', class: 'menu-drawer__community-form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <input
+            type="email"
+            name="contact[email]"
+            placeholder="Enter your email."
+            required
+            autocorrect="off"
+            autocapitalize="off"
+            autocomplete="email"
+          >
+          <button type="submit" class="menu-drawer__community-btn">Subscribe</button>
+        {%- endform -%}
+      </div>
+
+      <!-- Separator 4 -->
+      {%- comment -%}DIVIDER-3{%- endcomment -%}
       <hr class="menu-drawer__divider" style="display: block !important; height: {{ block.settings.divider_thickness | default: 1 }}px; background-color: {{ block.settings.divider_color | default: '#000000' }}; width: calc(100% + 40px); margin-left: -20px; margin-right: -20px; border: none; padding: 0; opacity: 1; visibility: visible; box-sizing: border-box; flex-shrink: 0;"></hr>
 
       {% if top_level_featured_collections.size > 0 or top_level_featured_products_collection.products_count > 0 %}
@@ -1237,5 +1284,60 @@
   #menu-drawer .menu-drawer__close-button {
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
+  }
+  #menu-drawer .menu-drawer__community-section {
+    padding-inline: var(--drawer-padding, 20px) !important;
+    padding-top: var(--menu-section-padding-top, 24px) !important;
+    padding-bottom: var(--menu-section-padding-bottom, 24px) !important;
+  }
+  #menu-drawer .menu-drawer__community-heading {
+    font-family: var(--font-heading-family, sans-serif) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.15em !important;
+    margin: 0 0 8px 0 !important;
+    color: #000000 !important;
+  }
+  #menu-drawer .menu-drawer__community-subtext {
+    font-family: var(--font-body-family, sans-serif) !important;
+    line-height: 1.4 !important;
+    color: #666666 !important;
+    margin: 0 0 16px 0 !important;
+  }
+  #menu-drawer .menu-drawer__community-form {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  #menu-drawer .menu-drawer__community-form input[type="email"] {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border: 1px solid currentColor !important;
+    border-radius: 0 !important;
+    padding: 12px 16px !important;
+    background: transparent !important;
+    font-size: inherit !important;
+    outline: none !important;
+  }
+  #menu-drawer .menu-drawer__community-form input[type="email"]::placeholder {
+    color: #999999 !important;
+  }
+  #menu-drawer .menu-drawer__community-btn {
+    width: 100% !important;
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    cursor: pointer !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    transition: background-color 0.2s ease, opacity 0.2s ease !important;
+  }
+  #menu-drawer .menu-drawer__community-btn:hover {
+    opacity: 0.9 !important;
   }
 {% endstylesheet %}
