@@ -46,7 +46,7 @@
             "drawer_accordion": true,
             "drawer_accordion_expand_first": false,
             "drawer_dividers": false,
-            "divider_thickness": 10,
+            "divider_thickness": 1,
             "divider_color": "#332727",
             "gift_card_image": "shopify://shop_images/Screenshot_2026-07-09_133817-removebg-preview.png",
             "gift_card_heading": "GIFT CARD",
