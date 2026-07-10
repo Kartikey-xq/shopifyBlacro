@@ -1,9 +1,47 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "gift-card-product-layout",
       "settings": {
-        "color_scheme": "scheme-3"
+        "color_scheme": "scheme-3",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "media_content_margin": 0,
+        "text_elements_gap": 12,
+        "text_left_offset": 0,
+        "title_left_position": -35,
+        "price_right_position": -29,
+        "media_bg_color": "#d1cece",
+        "counter_font_size": 10,
+        "counter_font_weight": "300",
+        "counter_color": "#000000",
+        "counter_position": "left",
+        "denom_button_width": 73,
+        "gap_between_denoms": 2,
+        "title_font_family_preset": "subheading",
+        "title_font_family_custom": "Outfit",
+        "title_font_size": 12,
+        "title_font_weight": "400",
+        "price_font_family_preset": "body",
+        "price_font_family_custom": "Outfit",
+        "price_font_size": 12,
+        "price_font_weight": "300",
+        "denom_font_family_preset": "body",
+        "denom_font_family_custom": "Outfit",
+        "denom_font_size": 10,
+        "btn_font_family_preset": "body",
+        "btn_font_family_custom": "Outfit",
+        "btn_font_size": 12,
+        "btn_font_weight": "500"
       }
     },
     "product_recommendations_qggXJq": {

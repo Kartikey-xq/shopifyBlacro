@@ -381,15 +381,29 @@
         </div>
       </div>
 
-      <!-- EMAIL group -->
+      <!-- Footer Link Group 4 (Support) -->
+      {%- if linklists[section.settings.footer_menu_4].links.size > 0 -%}
+        <div class="blacro-footer__group">
+          <h3 class="blacro-footer__group-label">{{ section.settings.footer_menu_4_heading | default: "Links" | upcase }}</h3>
+          <div class="blacro-footer__group-content">
+            {%- for link in linklists[section.settings.footer_menu_4].links -%}
+              <a class="blacro-footer__link" href="{{ link.url }}">
+                <span class="bracket">[</span> <span class="link-text">{{ link.title | upcase }}</span> <span class="bracket">]</span>
+              </a>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      <!-- LEGAL group -->
       <div class="blacro-footer__group">
-        <h3 class="blacro-footer__group-label">EMAIL</h3>
+        <h3 class="blacro-footer__group-label">LEGAL</h3>
         <div class="blacro-footer__group-content">
-          {%- if section.settings.email != blank -%}
-            <a class="blacro-footer__link" href="mailto:{{ section.settings.email }}">
-              <span class="bracket">[</span> <span class="link-text">{{ section.settings.email | upcase }}</span> <span class="bracket">]</span>
+          {%- for link in linklists[section.settings.legal_menu].links -%}
+            <a class="blacro-footer__link" href="{{ link.url }}">
+              <span class="bracket">[</span> <span class="link-text">{{ link.title | upcase }}</span> <span class="bracket">]</span>
             </a>
-          {%- endif -%}
+          {%- endfor -%}
         </div>
       </div>
 
@@ -421,31 +435,17 @@
         </div>
       </div>
 
-      <!-- LEGAL group -->
+      <!-- EMAIL group -->
       <div class="blacro-footer__group">
-        <h3 class="blacro-footer__group-label">LEGAL</h3>
+        <h3 class="blacro-footer__group-label">EMAIL</h3>
         <div class="blacro-footer__group-content">
-          {%- for link in linklists[section.settings.legal_menu].links -%}
-            <a class="blacro-footer__link" href="{{ link.url }}">
-              <span class="bracket">[</span> <span class="link-text">{{ link.title | upcase }}</span> <span class="bracket">]</span>
+          {%- if section.settings.email != blank -%}
+            <a class="blacro-footer__link" href="mailto:{{ section.settings.email }}">
+              <span class="bracket">[</span> <span class="link-text">{{ section.settings.email | upcase }}</span> <span class="bracket">]</span>
             </a>
-          {%- endfor -%}
+          {%- endif -%}
         </div>
       </div>
-
-      <!-- Footer Link Group 4 -->
-      {%- if linklists[section.settings.footer_menu_4].links.size > 0 -%}
-        <div class="blacro-footer__group">
-          <h3 class="blacro-footer__group-label">{{ section.settings.footer_menu_4_heading | default: "Links" | upcase }}</h3>
-          <div class="blacro-footer__group-content">
-            {%- for link in linklists[section.settings.footer_menu_4].links -%}
-              <a class="blacro-footer__link" href="{{ link.url }}">
-                <span class="bracket">[</span> <span class="link-text">{{ link.title | upcase }}</span> <span class="bracket">]</span>
-              </a>
-            {%- endfor -%}
-          </div>
-        </div>
-      {%- endif -%}
 
     </div>
 
