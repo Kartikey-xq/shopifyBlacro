@@ -34,6 +34,55 @@
   </div>
 {% endif %}
 
+{% stylesheet %}
+  .shopify-section:has(.custom-image-block) {
+    position: relative;
+    z-index: 7 !important;
+    overflow: visible !important;
+  }
+
+  .shopify-section:has(.custom-image-block) .hero,
+  .shopify-section:has(.custom-image-block) .hero__container,
+  .shopify-section:has(.custom-image-block) .hero__content-wrapper,
+  .shopify-section:has(.custom-image-block) .section-content-wrapper {
+    overflow: visible !important;
+  }
+
+  .shopify-block:has(> .custom-image-block),
+  shopify-block:has(> .custom-image-block) {
+    display: contents !important;
+  }
+
+  .custom-image-block {
+    position: absolute;
+    top: var(--ci-top);
+    bottom: var(--ci-bottom);
+    left: var(--ci-left);
+    right: var(--ci-right);
+    width: var(--ci-width);
+    z-index: var(--ci-z, 5);
+    opacity: var(--ci-opacity);
+    transform: var(--ci-transform);
+    pointer-events: none;
+  }
+
+  .custom-image-block__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: var(--ci-object-fit);
+  }
+
+  @media (max-width: 749px) {
+    .custom-image-block {
+      top: var(--ci-top-m);
+      bottom: var(--ci-bottom-m);
+      left: var(--ci-left-m);
+      right: var(--ci-right-m);
+      width: var(--ci-width-m);
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
