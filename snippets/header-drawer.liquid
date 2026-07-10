@@ -176,20 +176,31 @@
         </ul>
       </nav>
 
-      <!-- Separator 2 -->
-      {%- comment -%}DIVIDER-1{%- endcomment -%}
-      <hr class="menu-drawer__divider" style="display: block !important; height: {{ block.settings.divider_thickness | default: 1 }}px; background-color: {{ block.settings.divider_color | default: '#000000' }}; width: calc(100% + 40px); margin-left: -20px; margin-right: -20px; border: none; padding: 0; opacity: 1; visibility: visible; box-sizing: border-box; flex-shrink: 0;"></hr>
-
       <!-- Subsection 2: Gift Card UI Treat -->
       <div 
         class="menu-drawer__gift-card-section"
         style="--gift-card-image-radius: {{ block_settings.gift_card_image_radius | default: 12 }}px;"
       >
+        <style>
+          #menu-drawer .menu-drawer__gift-card-section {
+            margin-top: {{ block.settings.gift_card_section_margin_top | default: 24 }}px !important;
+          }
+          #menu-drawer .menu-drawer__gift-card-section img {
+            width: {{ block.settings.gift_card_image_width | default: 200 }}px !important;
+            max-width: 100% !important;
+            height: auto !important;
+          }
+        </style>
         {%- if block_settings.gift_card_link_url != blank -%}
           <a href="{{ block_settings.gift_card_link_url }}" class="menu-drawer__gift-card-link">
         {%- else -%}
           <div class="menu-drawer__gift-card-link menu-drawer__gift-card-no-link">
         {%- endif -%}
+
+          <div class="menu-drawer__gift-card-text">
+            <h3 class="gift-card__info-heading">{{ block_settings.gift_card_heading | default: "GIFT CARD" }}</h3>
+            <p class="gift-card__info-subtext">{{ block_settings.gift_card_subtext | default: "Give culture. Wear identity." }}</p>
+          </div>
 
           {%- if block_settings.gift_card_image != blank -%}
             {{ block_settings.gift_card_image | image_url: width: 600 | image_tag: class: 'gift-card__image-simplified', alt: 'Gift Card' }}
@@ -263,9 +274,6 @@
         {%- endform -%}
       </div>
 
-      <!-- Separator 4 -->
-      {%- comment -%}DIVIDER-3{%- endcomment -%}
-      <hr class="menu-drawer__divider" style="display: block !important; height: {{ block.settings.divider_thickness | default: 1 }}px; background-color: {{ block.settings.divider_color | default: '#000000' }}; width: calc(100% + 40px); margin-left: -20px; margin-right: -20px; border: none; padding: 0; opacity: 1; visibility: visible; box-sizing: border-box; flex-shrink: 0;"></hr>
 
       {% if top_level_featured_collections.size > 0 or top_level_featured_products_collection.products_count > 0 %}
         <div
@@ -1223,25 +1231,35 @@
     padding-inline: var(--drawer-padding, 20px) !important;
     padding-top: var(--gift-card-section-padding-top, 24px) !important;
     padding-bottom: var(--gift-card-section-padding-bottom, 24px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0 !important;
   }
   #menu-drawer .menu-drawer__gift-card-link {
     text-decoration: none !important;
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0 !important;
+    width: 100% !important;
     margin: 0 !important;
     cursor: pointer !important;
   }
-  #menu-drawer .gift-card__image-simplified {
+  #menu-drawer .menu-drawer__gift-card-section .menu-drawer__gift-card-text {
+    display: flex !important;
+    flex-direction: column !important;
     width: 100% !important;
-    height: auto !important;
-    border-radius: var(--gift-card-image-radius, 12px) !important;
+  }
+  #menu-drawer .menu-drawer__gift-card-section img {
     display: block !important;
+    margin-top: 10px !important;
+    margin-left: 0 !important;
+    flex-shrink: 0 !important;
+    border-radius: var(--gift-card-image-radius, 12px) !important;
     padding-left: var(--gift-card-image-padding-left, 0px) !important;
     padding-right: var(--gift-card-image-padding-right, 0px) !important;
     box-sizing: border-box !important;
-  }
-  #menu-drawer .menu-drawer__gift-card-info {
-    margin-top: 12px !important;
-    text-align: left !important;
   }
   #menu-drawer .gift-card__info-heading {
     font-family: var(--font-heading-family, sans-serif) !important;
@@ -1325,19 +1343,29 @@
     color: #999999 !important;
   }
   #menu-drawer .menu-drawer__community-btn {
+    display: block !important;
     width: 100% !important;
+    box-sizing: border-box !important;
+    border: 1.5px solid #000000 !important;
+    border-radius: 0 !important;
+    padding: 13px 20px !important;
+    min-height: 48px !important;
     background-color: #000000 !important;
     color: #ffffff !important;
-    border: none !important;
-    font-weight: 600 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.1em !important;
+    letter-spacing: 0.12em !important;
+    font-weight: 500 !important;
     cursor: pointer !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
-    transition: background-color 0.2s ease, opacity 0.2s ease !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    transition: background-color 0.2s ease, color 0.2s ease !important;
+    margin-top: 8px !important;
   }
   #menu-drawer .menu-drawer__community-btn:hover {
-    opacity: 0.9 !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  #menu-drawer .menu-drawer__community-btn:active {
+    opacity: 0.8 !important;
   }
 {% endstylesheet %}

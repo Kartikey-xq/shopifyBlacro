@@ -433,6 +433,20 @@
         </div>
       </div>
 
+      <!-- Footer Link Group 4 -->
+      {%- if linklists[section.settings.footer_menu_4].links.size > 0 -%}
+        <div class="blacro-footer__group">
+          <h3 class="blacro-footer__group-label">{{ section.settings.footer_menu_4_heading | default: "Links" | upcase }}</h3>
+          <div class="blacro-footer__group-content">
+            {%- for link in linklists[section.settings.footer_menu_4].links -%}
+              <a class="blacro-footer__link" href="{{ link.url }}">
+                <span class="bracket">[</span> <span class="link-text">{{ link.title | upcase }}</span> <span class="bracket">]</span>
+              </a>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
     </div>
 
     {%- if section.settings.footer_row_text_left != blank or section.settings.footer_row_image_center != blank or section.settings.footer_row_text_right != blank -%}
@@ -482,7 +496,7 @@
   </div>
 
   {%- assign image_urls = "" -%}
-  {%- for i in (1..5) -%}
+  {%- for i in (1..6) -%}
     {%- assign img_key = 'split_image_' | append: i -%}
     {%- assign img = section.settings[img_key] -%}
     {%- if img != blank -%}
@@ -726,6 +740,22 @@
       "default": "footer"
     },
     {
+      "type": "header",
+      "content": "Footer link group 4"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_4",
+      "label": "Menu",
+      "default": "footer"
+    },
+    {
+      "type": "text",
+      "id": "footer_menu_4_heading",
+      "label": "Heading",
+      "default": "Links"
+    },
+    {
       "type": "text",
       "id": "email",
       "label": "Email Address",
@@ -792,6 +822,11 @@
       "type": "image_picker",
       "id": "split_image_5",
       "label": "Split Image 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "split_image_6",
+      "label": "Split Image 6"
     },
     {
       "type": "range",

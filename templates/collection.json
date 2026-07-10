@@ -15,7 +15,7 @@
         "text_4PF49E": {
           "type": "text",
           "settings": {
-            "text": "<p>Relic</p>",
+            "text": "<p>RELIC VOL. I</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "center",
@@ -30,10 +30,10 @@
             "background": false,
             "background_color": "#f3222226",
             "corner_radius": 0,
-            "padding-block-start": 32,
-            "padding-block-end": 53,
-            "padding-inline-start": 22,
-            "padding-inline-end": 22
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
           },
           "blocks": {}
         }
@@ -65,7 +65,7 @@
         "section_height": "medium",
         "section_height_custom": 50,
         "color_scheme": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
-        "toggle_overlay": true,
+        "toggle_overlay": false,
         "overlay_color": "#85242436",
         "overlay_opacity": 15,
         "overlay_style": "gradient",
@@ -73,7 +73,7 @@
         "gradient_down": false,
         "gradient_left": false,
         "gradient_right": false,
-        "blurred_reflection": true,
+        "blurred_reflection": false,
         "reflection_opacity": 73,
         "padding-block-start": 68,
         "padding-block-end": 0
@@ -286,8 +286,8 @@
         "image_ratio": "portrait",
         "desktop_card_height": "adapt",
         "desktop_card_custom_height": 380,
-        "padding_top": 20,
-        "padding_bottom": 28,
+        "padding_top": 36,
+        "padding_bottom": 36,
         "padding_horizontal": 0,
         "carousel_gap": 2
       }
