@@ -135,6 +135,7 @@
   #CollectionCarousel-{{ section.id }} .collection-hover-carousel__header {
     margin-top: {{ section.settings.title_margin_top | default: 0 }}px !important;
     margin-bottom: {{ section.settings.title_margin_bottom | default: 30 }}px !important;
+    justify-content: {% if section.settings.title_alignment == 'left' %}flex-start{% elsif section.settings.title_alignment == 'right' %}flex-end{% else %}center{% endif %} !important;
   }
 
   #CollectionCarousel-{{ section.id }} .collection-hover-carousel__title {
