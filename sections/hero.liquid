@@ -587,7 +587,6 @@
     >
       {% content_for 'blocks' %}
     </div>
-  </div>
 </div>
 
 <script>
@@ -648,7 +647,8 @@
   .hero {
     position: relative;
     min-height: calc(var(--hero-min-height) - var(--hero-height-offset));
-    z-index:var(--layer-base);
+    z-index: 2;
+    overflow: visible;
   }
 
   .hero[data-shopify-visual-preview] {
@@ -658,7 +658,7 @@
 
   .hero__container {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     border: var(--hero-border-width) var(--hero-border-style) rgb(var(--color-border-rgb) / var(--hero-border-opacity));
     min-height: inherit;
     align-items: var(--vertical-alignment-mobile);
@@ -840,6 +840,7 @@
       }
     }
   }
+
 {% endstylesheet %}
 
 {% schema %}
@@ -883,6 +884,9 @@
     },
     {
       "type": "custom_text"
+    },
+    {
+      "type": "custom_image"
     },
     {
       "type": "custom_button"

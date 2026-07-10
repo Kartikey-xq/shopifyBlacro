@@ -221,7 +221,7 @@
                 "swatch_size": 16,
                 "size_box_bg_color": "#e8e8e8",
                 "size_selected_dot_color": "#058133",
-                "padding-block-start": 6,
+                "padding-block-start": 0,
                 "padding-block-end": 10,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
