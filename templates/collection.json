@@ -54,47 +54,21 @@
             "transform": "none"
           },
           "blocks": {}
-        },
-        "custom_heading_nfYHCV": {
-          "type": "custom_heading",
-          "name": "Custom Heading",
-          "settings": {
-            "heading": "RELIC VOL. I",
-            "width": "fit-content",
-            "text_alignment": "left",
-            "font_preset": "custom",
-            "custom_font_family": "heading",
-            "color_text": "#eeeeeeed",
-            "font_size": 41,
-            "line_height": 1.2,
-            "letter_spacing": 0,
-            "pos_top": "90px",
-            "pos_bottom": "auto",
-            "pos_left": "auto",
-            "pos_right": "auto",
-            "pos_top_mobile": "90px",
-            "pos_bottom_mobile": "auto",
-            "pos_left_mobile": "auto",
-            "pos_right_mobile": "auto",
-            "z_index": 10
-          },
-          "blocks": {}
         }
       },
       "block_order": [
         "custom_image_TzmHf3",
-        "custom_image_QVg3PV",
-        "custom_heading_nfYHCV"
+        "custom_image_QVg3PV"
       ],
       "name": "t:names.hero",
       "settings": {
         "media_type_1": "image",
-        "image_1": "shopify://shop_images/art_finall.png",
+        "image_1": "shopify://shop_images/file_00000000cf4071faa2c6614926af1762.png",
         "media_type_2": "video",
         "stack_media_on_mobile": false,
-        "custom_mobile_media": false,
+        "custom_mobile_media": true,
         "media_type_1_mobile": "image",
-        "image_1_mobile": "shopify://shop_images/Screenshot_2026-06-02_111215.png",
+        "image_1_mobile": "shopify://shop_images/file_00000000f7987208b3f548a543109ea5.png",
         "media_type_2_mobile": "image",
         "link": "",
         "open_in_new_tab": false,
@@ -284,9 +258,9 @@
         "collection_title": "RELIC COLLECTION",
         "show_collection_title": true,
         "title_alignment": "center",
-        "title_line_color": "#2C2A27",
-        "title_animation": "fade-up",
-        "title_animation_duration": 700,
+        "title_line_color": "#2c2a27",
+        "title_animation": "zoom-in",
+        "title_animation_duration": 200,
         "collection": "relic",
         "enable_carousel": true,
         "desktop_layout": "grid_2x2",
