@@ -22,6 +22,8 @@
         "brand_icon_width": 50,
         "nav_menu": "main-menu",
         "legal_menu": "footer",
+        "footer_menu_4": "footer",
+        "footer_menu_4_heading": "Links",
         "email": "info@blacro.in",
         "use_shop_social_links": true,
         "copyright_text": "®2026 BLACRO WEARABLE PRIVATE LIMITED , ALL RIGHTS RESERVED",
