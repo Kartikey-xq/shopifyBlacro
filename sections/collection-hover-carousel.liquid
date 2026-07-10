@@ -6,6 +6,7 @@
 
 {% liquid
   assign collection_title = section.settings.collection_title | default: section.settings.collection.title | default: 'Featured Collection'
+  assign cleaned_collection_title = collection_title | remove: "━" | strip
   assign collection_url = section.settings.collection.url | default: '#'
   assign section_collection = section.settings.collection
   assign collection_products = section_collection.products
@@ -137,6 +138,11 @@
   }
 
   #CollectionCarousel-{{ section.id }} .collection-hover-carousel__title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+    width: 100% !important;
+    justify-content: {% if section.settings.title_alignment == 'left' %}flex-start{% elsif section.settings.title_alignment == 'right' %}flex-end{% else %}center{% endif %} !important;
     {% if section.settings.collection_title_font == 'body' %}
       font-family: var(--font-paragraph--family) !important;
       font-size: var(--font-paragraph--size, 1.6rem) !important;
@@ -177,6 +183,14 @@
         text-transform: var(--font-accent--case, none) !important;
       {% endif %}
     {% endif %}
+  }
+
+  #CollectionCarousel-{{ section.id }} .collection-hover-carousel__title-line {
+    display: block !important;
+    height: 1px !important;
+    width: 40px !important;
+    background-color: {{ section.settings.title_line_color | default: 'currentColor' }} !important;
+    flex-shrink: 0 !important;
   }
 
   #CollectionCarousel-{{ section.id }} .collection-hover-carousel__product-title {
@@ -471,7 +485,11 @@
       <div class="collection-hover-carousel__header collection-hover-carousel__header--{{ title_animation }}" style="--title-animation-duration: {{ title_animation_duration }}ms;">
         {% if section.settings.show_collection_title %}
           <div class="collection-hover-carousel__heading">
-            <h2 class="collection-hover-carousel__title">{{ collection_title }}</h2>
+            <h2 class="collection-hover-carousel__title">
+              <span class="collection-hover-carousel__title-line"></span>
+              <span class="collection-hover-carousel__title-text">{{ cleaned_collection_title }}</span>
+              <span class="collection-hover-carousel__title-line"></span>
+            </h2>
           </div>
         {% endif %}
         {% if false %}
@@ -1676,6 +1694,23 @@
       "id": "show_collection_title",
       "label": "Show Collection Title",
       "default": true
+    },
+    {
+      "type": "select",
+      "id": "title_alignment",
+      "label": "Title text alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "title_line_color",
+      "label": "Title line color",
+      "default": "#000000"
     },
     {
       "type": "select",

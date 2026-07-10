@@ -1,0 +1,165 @@
+{% comment %}
+  Custom Image block. Absolute positioning, responsive width, opacity, object fit, and CSS transform.
+{% endcomment %}
+
+{% if block.settings.image != blank %}
+  <div
+    class="custom-image-block"
+    style="
+      --ci-top: {{ block.settings.pos_top }};
+      --ci-bottom: {{ block.settings.pos_bottom }};
+      --ci-left: {{ block.settings.pos_left }};
+      --ci-right: {{ block.settings.pos_right }};
+      --ci-top-m: {{ block.settings.pos_top_mobile }};
+      --ci-bottom-m: {{ block.settings.pos_bottom_mobile }};
+      --ci-left-m: {{ block.settings.pos_left_mobile }};
+      --ci-right-m: {{ block.settings.pos_right_mobile }};
+      --ci-width: {{ block.settings.image_width }}px;
+      --ci-width-m: {{ block.settings.image_width_mobile }}px;
+      --ci-opacity: {{ block.settings.image_opacity | divided_by: 100.0 }};
+      --ci-object-fit: {{ block.settings.object_fit }};
+      --ci-z: {{ block.settings.z_index }};
+      --ci-transform: {{ block.settings.transform }};
+    "
+    {{ block.shopify_attributes }}
+  >
+    {{
+      block.settings.image
+      | image_url: width: block.settings.image_width
+      | image_tag:
+        loading: 'lazy',
+        class: 'custom-image-block__img',
+        widths: '100, 200, 400, 600, 800'
+    }}
+  </div>
+{% endif %}
+
+
+{% schema %}
+{
+  "name": "Custom Image",
+  "tag": null,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image width (px)",
+      "min": 20,
+      "max": 800,
+      "step": 10,
+      "default": 200
+    },
+    {
+      "type": "range",
+      "id": "image_width_mobile",
+      "label": "Image width mobile (px)",
+      "min": 20,
+      "max": 400,
+      "step": 4,
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "image_opacity",
+      "label": "Opacity (%)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "object_fit",
+      "label": "Object fit",
+      "options": [
+        { "value": "contain", "label": "Contain" },
+        { "value": "cover", "label": "Cover" },
+        { "value": "fill", "label": "Fill" }
+      ],
+      "default": "contain"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Positioning"
+    },
+    {
+      "type": "text",
+      "id": "pos_top",
+      "label": "Top (Desktop)",
+      "default": "auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_bottom",
+      "label": "Bottom (Desktop)",
+      "default": "auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_left",
+      "label": "Left (Desktop)",
+      "default": "auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_right",
+      "label": "Right (Desktop)",
+      "default": "auto"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Positioning"
+    },
+    {
+      "type": "text",
+      "id": "pos_top_mobile",
+      "label": "Top (Mobile)",
+      "default": "auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_bottom_mobile",
+      "label": "Bottom (Mobile)",
+      "default": "auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_left_mobile",
+      "label": "Left (Mobile)",
+      "default": "auto"
+    },
+    {
+      "type": "text",
+      "id": "pos_right_mobile",
+      "label": "Right (Mobile)",
+      "default": "auto"
+    },
+    {
+      "type": "range",
+      "id": "z_index",
+      "label": "Z-index",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "text",
+      "id": "transform",
+      "label": "CSS transform (optional)",
+      "default": "none",
+      "info": "e.g. rotate(5deg) or translateX(-10px)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Image"
+    }
+  ]
+}
+{% endschema %}

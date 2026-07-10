@@ -450,6 +450,17 @@
   {% endif %}
 {% endcapture %}
 
+<style>
+  #shopify-section-{{ section.id }} {
+    position: relative;
+    z-index: 2 !important;
+  }
+  #shopify-section-{{ section.id }} ~ .shopify-section {
+    position: relative;
+    z-index: 1 !important;
+  }
+</style>
+
 <div
   id="Hero-{{ section.id }}"
   class="hero color-{{ section.settings.color_scheme }}{% if section.blocks.size == 0 and section.settings.section_height == 'auto' %} hero--no-blocks-auto-height{% endif %}{% if section.settings.stack_media_on_mobile %} hero--stack-mobile{% endif %}"
@@ -587,7 +598,6 @@
     >
       {% content_for 'blocks' %}
     </div>
-  </div>
 </div>
 
 <script>
@@ -648,7 +658,8 @@
   .hero {
     position: relative;
     min-height: calc(var(--hero-min-height) - var(--hero-height-offset));
-    z-index:var(--layer-base);
+    z-index: 2;
+    overflow: visible;
   }
 
   .hero[data-shopify-visual-preview] {
@@ -658,7 +669,7 @@
 
   .hero__container {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     border: var(--hero-border-width) var(--hero-border-style) rgb(var(--color-border-rgb) / var(--hero-border-opacity));
     min-height: inherit;
     align-items: var(--vertical-alignment-mobile);
@@ -840,6 +851,41 @@
       }
     }
   }
+
+  .custom-image-block {
+    position: absolute;
+    top: var(--ci-top);
+    bottom: var(--ci-bottom);
+    left: var(--ci-left);
+    right: var(--ci-right);
+    width: var(--ci-width);
+    z-index: var(--ci-z);
+    opacity: var(--ci-opacity);
+    transform: var(--ci-transform);
+    pointer-events: none;
+  }
+
+  .custom-image-block__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: var(--ci-object-fit);
+  }
+
+  @media (max-width: 749px) {
+    .custom-image-block {
+      top: var(--ci-top-m);
+      bottom: var(--ci-bottom-m);
+      left: var(--ci-left-m);
+      right: var(--ci-right-m);
+      width: var(--ci-width-m);
+    }
+  }
+
+  .shopify-block:has(> .custom-image-block),
+  shopify-block:has(> .custom-image-block) {
+    display: contents !important;
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -883,6 +929,9 @@
     },
     {
       "type": "custom_text"
+    },
+    {
+      "type": "custom_image"
     },
     {
       "type": "custom_button"
