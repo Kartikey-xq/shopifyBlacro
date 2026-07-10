@@ -18,7 +18,7 @@
             "tab_1_label": "Product details",
             "tab_1_content": "{{ closest.product.description }}",
             "tab_2_label": "Washcare",
-            "tab_2_content": "<p>dry wash</p>",
+            "tab_2_content": "<p>Machine Wash Cold, Inside Out<br/>Wash with Similar Colours<br/>Do Not Bleach<br/>Do Not Tumble Dry<br/>Cool Iron on Reverse<br/>Do Not Iron Directly on Print<br/>Hang Dry in Shade</p>",
             "tab_3_label": "Shipping",
             "tab_3_content": "<p>Specify shipping rates, methods, delivery times, and returns policy information here.</p>",
             "corner_radius": 0,
@@ -279,7 +279,7 @@
       "settings": {
         "content_width": "content-center-aligned",
         "desktop_media_position": "left",
-        "equal_columns": false,
+        "equal_columns": true,
         "limit_details_width": false,
         "gap": 4,
         "enable_sticky_add_to_cart": false,
@@ -295,7 +295,7 @@
           "type": "text_point",
           "settings": {
             "title": "Top length type",
-            "text": "<p></p>{{ product.metafields.shopify[\"top-length-type\"] | metafield_tag: field: 'label' }}",
+            "text": "{{ product.metafields.shopify[\"top-length-type\"] | metafield_tag: field: 'label' }}",
             "title_font_preset": "custom",
             "title_font_family": "var(--font-accent--family)",
             "title_custom_size": 14,

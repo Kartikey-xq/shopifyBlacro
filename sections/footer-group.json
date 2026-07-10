@@ -33,6 +33,8 @@
         "split_image_2": "shopify://shop_images/file_00000000a1ec71f8a9f903b2b3e39da0.png",
         "split_image_3": "shopify://shop_images/file_00000000de707208af1c07a4d920694f.png",
         "split_image_4": "shopify://shop_images/file_0000000081a4720b876c8d7f8f6e471d.png",
+        "split_image_5": "shopify://shop_images/logo.png",
+        "split_image_6": "shopify://shop_images/logo2.png",
         "split_overlay_duration": 600,
         "split_overlay_color": "#212121",
         "split_logo_padding_horizontal": 0,
