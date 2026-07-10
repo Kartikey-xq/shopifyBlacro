@@ -274,6 +274,28 @@
     "hero_tAFGje": {
       "type": "hero",
       "blocks": {
+        "custom_image_dPBaDB": {
+          "type": "custom_image",
+          "name": "Custom Image",
+          "settings": {
+            "image": "shopify://shop_images/file_00000000649c72069d455878624f6185.png",
+            "image_width": 800,
+            "image_width_mobile": 400,
+            "image_opacity": 100,
+            "object_fit": "contain",
+            "pos_top": "357px",
+            "pos_bottom": "auto",
+            "pos_left": "auto",
+            "pos_right": "auto",
+            "pos_top_mobile": "502px",
+            "pos_bottom_mobile": "auto",
+            "pos_left_mobile": "auto",
+            "pos_right_mobile": "auto",
+            "z_index": 10,
+            "transform": "none"
+          },
+          "blocks": {}
+        },
         "custom_button_MUizKi": {
           "type": "custom_button",
           "name": "Custom Button",
@@ -599,34 +621,10 @@
             "z_index": 10
           },
           "blocks": {}
-        },
-        "custom_text_BfWdbm": {
-          "type": "custom_text",
-          "name": "Custom Text",
-          "settings": {
-            "text": "<p>COLLECTION INTRODUCTION</p>",
-            "width": "100%",
-            "text_alignment": "left",
-            "font_preset": "custom",
-            "custom_font_family": "subheading",
-            "color_text": "#ac7002",
-            "font_size": 10,
-            "line_height": 1.2,
-            "letter_spacing": 0,
-            "pos_top": "20px",
-            "pos_bottom": "auto",
-            "pos_left": "5px",
-            "pos_right": "auto",
-            "pos_top_mobile": "15px",
-            "pos_bottom_mobile": "auto",
-            "pos_left_mobile": "5px",
-            "pos_right_mobile": "auto",
-            "z_index": 10
-          },
-          "blocks": {}
         }
       },
       "block_order": [
+        "custom_image_dPBaDB",
         "custom_button_MUizKi",
         "custom_icon_KAEnR9",
         "custom_underline_7QNbt8",
@@ -639,8 +637,7 @@
         "custom_text_7tqJTh",
         "custom_text_gKderx",
         "custom_heading_zc6n7x",
-        "custom_heading_ARjFLN",
-        "custom_text_BfWdbm"
+        "custom_heading_ARjFLN"
       ],
       "name": "t:names.hero",
       "settings": {
@@ -685,10 +682,12 @@
       "name": "Collection Carousel Hover",
       "settings": {
         "quick_add_icon_color": "#ffffff",
-        "collection_title": "",
-        "show_collection_title": false,
-        "title_animation": "slide-left",
-        "title_animation_duration": 1500,
+        "collection_title": "RELIC COLLECTION",
+        "show_collection_title": true,
+        "title_alignment": "right",
+        "title_line_color": "#AD875D",
+        "title_animation": "fade-up",
+        "title_animation_duration": 200,
         "collection": "relic",
         "enable_carousel": true,
         "desktop_layout": "grid_2x2",
@@ -702,13 +701,13 @@
         "product_info_left_offset": 4.5,
         "justify_title_price": false,
         "color_scheme": "scheme-a7bd06a8-8563-4ae5-ace6-44eb32b1b4d9",
-        "custom_bg_color": "#fafafa",
+        "custom_bg_color": "#EBDFD2",
         "custom_text_color": "",
         "collection_title_font": "custom",
         "collection_title_custom_font": "subheading",
-        "collection_title_custom_size": 24,
-        "title_margin_top": 0,
-        "title_margin_bottom": 0,
+        "collection_title_custom_size": 12,
+        "title_margin_top": 8,
+        "title_margin_bottom": 18,
         "title_font": "custom",
         "product_title_font_weight": "600",
         "title_custom_font": "subheading",
@@ -735,7 +734,7 @@
         "image_ratio": "portrait",
         "desktop_card_height": "large",
         "desktop_card_custom_height": 380,
-        "padding_top": 0,
+        "padding_top": 20,
         "padding_bottom": 68,
         "padding_horizontal": 0,
         "carousel_gap": 2
