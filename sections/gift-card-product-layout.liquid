@@ -1,0 +1,981 @@
+{% liquid
+  assign sec_settings = section.settings
+  assign scheme = sec_settings.color_scheme
+  if scheme != blank
+    assign bg_color = scheme.settings.background
+    assign text_color = scheme.settings.foreground
+  else
+    assign bg_color = 'var(--color-background)'
+    assign text_color = 'var(--color-foreground)'
+  endif
+%}
+
+{%- liquid
+  case section.settings.title_font_family_preset
+    when 'heading'
+      assign title_font_family = 'var(--font-heading--family, sans-serif)'
+    when 'subheading'
+      assign title_font_family = 'var(--font-subheading--family, sans-serif)'
+    when 'body'
+      assign title_font_family = 'var(--font-paragraph--family, var(--font-body--family, sans-serif))'
+    when 'accent'
+      assign title_font_family = 'var(--font-accent--family, sans-serif)'
+    when 'custom'
+      assign title_font_family = section.settings.title_font_family_custom
+  endcase
+
+  case section.settings.price_font_family_preset
+    when 'heading'
+      assign price_font_family = 'var(--font-heading--family, sans-serif)'
+    when 'subheading'
+      assign price_font_family = 'var(--font-subheading--family, sans-serif)'
+    when 'body'
+      assign price_font_family = 'var(--font-paragraph--family, var(--font-body--family, sans-serif))'
+    when 'accent'
+      assign price_font_family = 'var(--font-accent--family, sans-serif)'
+    when 'custom'
+      assign price_font_family = section.settings.price_font_family_custom
+  endcase
+
+  case section.settings.denom_font_family_preset
+    when 'heading'
+      assign denom_font_family = 'var(--font-heading--family, sans-serif)'
+    when 'subheading'
+      assign denom_font_family = 'var(--font-subheading--family, sans-serif)'
+    when 'body'
+      assign denom_font_family = 'var(--font-paragraph--family, var(--font-body--family, sans-serif))'
+    when 'accent'
+      assign denom_font_family = 'var(--font-accent--family, sans-serif)'
+    when 'custom'
+      assign denom_font_family = section.settings.denom_font_family_custom
+  endcase
+
+  case section.settings.btn_font_family_preset
+    when 'heading'
+      assign btn_font_family = 'var(--font-heading--family, sans-serif)'
+    when 'subheading'
+      assign btn_font_family = 'var(--font-subheading--family, sans-serif)'
+    when 'body'
+      assign btn_font_family = 'var(--font-paragraph--family, var(--font-body--family, sans-serif))'
+    when 'accent'
+      assign btn_font_family = 'var(--font-accent--family, sans-serif)'
+    when 'custom'
+      assign btn_font_family = section.settings.btn_font_family_custom
+  endcase
+-%}
+
+{%- style -%}
+  #Section-{{ section.id }} {
+    background-color: {{ bg_color }};
+    color: {{ text_color }};
+    --color-background: {{ bg_color }};
+    --color-foreground: {{ text_color }};
+    --title-font-family: {{ title_font_family }};
+    --title-font-size: {{ section.settings.title_font_size | default: 24 }}px;
+    --title-font-weight: {{ section.settings.title_font_weight | default: 700 }};
+    --price-font-family: {{ price_font_family }};
+    --price-font-size: {{ section.settings.price_font_size | default: 20 }}px;
+    --price-font-weight: {{ section.settings.price_font_weight | default: 500 }};
+    --denom-font-family: {{ denom_font_family }};
+    --denom-font-size: {{ section.settings.denom_font_size | default: 14 }}px;
+    --btn-font-family: {{ btn_font_family }};
+    --btn-font-size: {{ section.settings.btn_font_size | default: 14 }}px;
+    --btn-font-weight: {{ section.settings.btn_font_weight | default: 500 }};
+    padding-top: {{ section.settings.padding_top | default: 40 }}px !important;
+    padding-bottom: {{ section.settings.padding_bottom | default: 40 }}px !important;
+  }
+{%- endstyle -%}
+
+<div
+  id="Section-{{ section.id }}"
+  class="gift-card-layout color-{{ sec_settings.color_scheme }}"
+>
+  <!-- Left Column: Media Carousel -->
+  <div class="gift-card-layout__media-column">
+    {%- assign gift_card_media = product.media | slice: 2, product.media.size -%}
+    {%- if gift_card_media.size > 0 -%}
+      <div class="gift-card-carousel" data-total-slides="{{ gift_card_media.size }}">
+        <div class="gift-card-carousel__slides">
+          {%- for media in gift_card_media -%}
+            <div class="gift-card-carousel__slide{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}">
+              {%- case media.media_type -%}
+                {%- when 'image' -%}
+                  {{ media | image_url: width: 1200 | image_tag: class: 'gift-card-carousel__img', loading: 'lazy', alt: media.alt | escape }}
+                {%- when 'video' -%}
+                  {{ media | video_tag: controls: true, autoplay: false, loop: false, class: 'gift-card-carousel__video' }}
+                {%- when 'external_video' -%}
+                  <div class="gift-card-carousel__video-wrapper">
+                    {{ media | external_video_tag: class: 'gift-card-carousel__external-video' }}
+                  </div>
+                {%- when 'model' -%}
+                  {{ media | model_viewer_tag: controls: true, class: 'gift-card-carousel__model' }}
+              {%- endcase -%}
+            </div>
+          {%- endfor -%}
+        </div>
+        {%- if gift_card_media.size > 1 -%}
+          <button class="gift-card-carousel__arrow gift-card-carousel__arrow--prev" aria-label="Previous image">
+            <svg viewBox="0 0 100 100" width="20" height="20"><path d="M70 10 L30 50 L70 90" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="gift-card-carousel__arrow gift-card-carousel__arrow--next" aria-label="Next image">
+            <svg viewBox="0 0 100 100" width="20" height="20"><path d="M30 10 L70 50 L30 90" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="gift-card-carousel__dots">
+            {%- for media in gift_card_media -%}
+              <button class="gift-card-carousel__dot{% if forloop.first %} is-active{% endif %}" data-slide="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}"></button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        <div class="gift-card-carousel__counter">
+          1 / {{ gift_card_media.size }}
+        </div>
+      </div>
+    {%- else -%}
+      <div class="gift-card-layout__media-placeholder">
+        <div class="gift-card-layout__placeholder-skeleton"></div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <!-- Right Column: Product Info -->
+  <div class="gift-card-layout__info-column">
+    <div class="gift-card-layout__info-container">
+      {%- assign current_variant = product.selected_or_first_available_variant -%}
+      <div class="gift-card-layout__header-row">
+        <h1 class="gift-card-layout__title">{{ product.title }}</h1>
+        <span class="gift-card-layout__price">{{ current_variant.price | money }}</span>
+      </div>
+
+      {%- assign product_form_id = 'BuyButtons-ProductForm-' | append: section.id -%}
+      {%- form 'product', product, id: product_form_id, class: 'gift-card-layout__form', data-type: 'add-to-cart-form' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+        {%- unless product.has_only_default_variant -%}
+          <div class="gift-card-layout__variants">
+            {%- for option in product.options_with_values -%}
+              <fieldset class="gift-card-layout__variant-option">
+                <legend class="gift-card-layout__variant-label">{{ option.name }}</legend>
+                <div class="gift-card-layout__variant-values">
+                  {%- for value in option.values -%}
+                    <label class="gift-card-layout__variant-value-label{% if option.selected_value == value %} is-selected{% endif %}">
+                      <input 
+                        type="radio" 
+                        name="option-{{ option.position }}" 
+                        value="{{ value | escape }}" 
+                        {% if option.selected_value == value %}checked{% endif %}
+                        class="gift-card-layout__variant-input"
+                        data-option-position="{{ option.position }}"
+                      >
+                      <span class="gift-card-layout__variant-value-text">{{ value }}</span>
+                    </label>
+                  {%- endfor -%}
+                </div>
+              </fieldset>
+            {%- endfor -%}
+          </div>
+        {%- endunless -%}
+
+        <div class="gift-card-layout__buttons">
+          <button 
+            type="submit" 
+            name="add" 
+            class="button add-to-cart-button"
+            {% unless current_variant.available %}disabled{% endunless %}
+          >
+            <span>
+              {%- if current_variant.available -%}
+                Add to Bag
+              {%- else -%}
+                Sold Out
+              {%- endif -%}
+            </span>
+          </button>
+          
+          {{ form | payment_button }}
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+<style>
+  .gift-card-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+  }
+  .gift-card-layout__media-column {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    height: 60vh;
+    background-color: {{ section.settings.media_bg_color | default: '#f7f7f7' }} !important;
+  }
+  .gift-card-carousel,
+  .gift-card-carousel__slides,
+  .gift-card-carousel__slide {
+    background-color: {{ section.settings.media_bg_color | default: '#f7f7f7' }} !important;
+  }
+  .gift-card-layout__info-column {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent !important;
+  }
+  .gift-card-layout__info-container {
+    max-width: 580px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: {{ section.settings.text_elements_gap | default: 16 }}px !important;
+    overflow: visible !important;
+  }
+  .gift-card-layout__header-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    flex-wrap: nowrap !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  .gift-card-layout__title {
+    font-family: var(--title-font-family) !important;
+    font-size: var(--title-font-size) !important;
+    font-weight: var(--title-font-weight) !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    margin-left: {{ section.settings.title_left_position | default: 0 }}px !important;
+  }
+  .gift-card-layout__price {
+    font-family: var(--price-font-family) !important;
+    font-size: var(--price-font-size) !important;
+    font-weight: var(--price-font-weight) !important;
+    margin-right: {{ section.settings.price_right_position | default: 0 }}px !important;
+  }
+  .gift-card-layout__form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.text_elements_gap | default: 16 }}px !important;
+  }
+  .gift-card-layout__variants {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.text_elements_gap | default: 16 }}px !important;
+    margin: 0 !important;
+    padding-left: {{ section.settings.text_left_offset | default: 0 }}px !important;
+    box-sizing: border-box !important;
+  }
+  .gift-card-layout__variant-option {
+    border: none;
+    padding: 0;
+    margin: 0 !important;
+  }
+  .gift-card-layout__variant-label {
+    font-family: var(--font-heading-family, sans-serif);
+    font-weight: 600;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .gift-card-layout__variant-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: {{ section.settings.gap_between_denoms | default: 8 }}px !important;
+  }
+  .gift-card-layout__variant-value-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 0;
+    width: {{ section.settings.denom_button_width | default: 80 }}px !important;
+    background-color: transparent;
+    color: #000000;
+    border: 1px solid #000000;
+    border-radius: 0 !important; /* Rectangular outlined buttons */
+    cursor: pointer;
+    font-family: var(--denom-font-family) !important;
+    font-size: var(--denom-font-size) !important;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    user-select: none;
+    position: relative;
+    box-sizing: border-box !important;
+  }
+  .gift-card-layout__variant-value-label:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .gift-card-layout__variant-value-label.is-selected {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-color: #000000 !important;
+  }
+  .gift-card-layout__variant-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
+  .gift-card-layout__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin: 0 !important;
+  }
+  .gift-card-layout__buttons .button.add-to-cart-button,
+  .gift-card-layout__buttons .shopify-payment-button__button,
+  .gift-card-layout__buttons .shopify-payment-button__button--unbranded {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 0 !important; /* Sharp corners */
+    cursor: pointer !important;
+    font-size: var(--btn-font-size, 14px) !important;
+    font-weight: var(--btn-font-weight, 500) !important;
+    font-family: var(--btn-font-family, inherit) !important;
+    text-transform: none !important; /* Sentence case */
+    transition: opacity 0.2s ease !important;
+    margin: 0 !important;
+  }
+  .gift-card-layout__buttons .button.add-to-cart-button:hover,
+  .gift-card-layout__buttons .shopify-payment-button__button:hover,
+  .gift-card-layout__buttons .shopify-payment-button__button--unbranded:hover {
+    opacity: 0.85 !important;
+  }
+  .gift-card-layout__media-placeholder {
+    width: 100%;
+    height: 100%;
+  }
+  .gift-card-layout__placeholder-skeleton {
+    width: 100%;
+    height: 100%;
+    background-color: #e5e5e5;
+  }
+
+  /* Carousel CSS */
+  .gift-card-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .gift-card-carousel__slides {
+    position: relative;
+    width: 100%;
+    flex-grow: 1;
+    height: 0;
+  }
+  .gift-card-carousel__slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+  }
+  .gift-card-carousel__slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+  }
+  .gift-card-carousel__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+    display: block;
+  }
+  .gift-card-carousel__video,
+  .gift-card-carousel__model,
+  .gift-card-carousel__external-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+    display: block;
+  }
+  .gift-card-carousel__video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .gift-card-carousel__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    color: #000000;
+    transition: background 0.2s ease;
+  }
+  .gift-card-carousel__arrow:hover {
+    background: #ffffff;
+  }
+  .gift-card-carousel__arrow--prev {
+    left: 16px;
+  }
+  .gift-card-carousel__arrow--next {
+    right: 16px;
+  }
+  .gift-card-carousel__dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+  .gift-card-carousel__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .gift-card-carousel__dot.is-active {
+    background: #ffffff;
+    transform: scale(1.2);
+  }
+  .gift-card-carousel__counter {
+    position: relative !important;
+    bottom: auto !important;
+    z-index: 1 !important;
+    font-size: {{ section.settings.counter_font_size | default: 14 }}px !important;
+    font-weight: {{ section.settings.counter_font_weight | default: '500' }} !important;
+    color: {{ section.settings.counter_color | default: '#000000' }} !important;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 4px 8px;
+    border-radius: 2px;
+    width: fit-content;
+    {% if section.settings.counter_position == 'left' %}
+      margin-left: 16px !important;
+      margin-right: auto !important;
+    {% elsif section.settings.counter_position == 'center' %}
+      margin-left: auto !important;
+      margin-right: auto !important;
+    {% elsif section.settings.counter_position == 'right' %}
+      margin-left: auto !important;
+      margin-right: 16px !important;
+    {% endif %}
+  }
+
+  @media screen and (max-width: 749px) {
+    .gift-card-layout__info-column {
+      padding: 0 2.5rem 5rem !important; /* flush/edge-to-edge side padding, top padding is 0 */
+      margin-top: {{ section.settings.media_content_margin | default: 24 }}px !important;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .gift-card-layout {
+      flex-direction: row;
+      min-height: 100vh;
+    }
+    .gift-card-layout__media-column {
+      width: 50%;
+      flex: 1 1 50%;
+      height: 100vh;
+    }
+    .gift-card-layout__info-column {
+      width: 50%;
+      flex: 1 1 50%;
+      min-height: 100vh;
+      padding: 8rem 5rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 1. Carousel setup
+    const carousels = document.querySelectorAll('.gift-card-carousel');
+    carousels.forEach(carousel => {
+      const slides = carousel.querySelectorAll('.gift-card-carousel__slide');
+      const dots = carousel.querySelectorAll('.gift-card-carousel__dot');
+      const prevBtn = carousel.querySelector('.gift-card-carousel__arrow--prev');
+      const nextBtn = carousel.querySelector('.gift-card-carousel__arrow--next');
+      let currentIndex = 0;
+      const totalSlides = slides.length;
+
+      function showSlide(index) {
+        if (index < 0) index = totalSlides - 1;
+        if (index >= totalSlides) index = 0;
+        currentIndex = index;
+
+        slides.forEach((slide, i) => {
+          if (i === currentIndex) {
+            slide.classList.add('is-active');
+          } else {
+            slide.classList.remove('is-active');
+          }
+        });
+
+        dots.forEach((dot, i) => {
+          if (i === currentIndex) {
+            dot.classList.add('is-active');
+          } else {
+            dot.classList.remove('is-active');
+          }
+        });
+
+        const counter = carousel.querySelector('.gift-card-carousel__counter');
+        if (counter) {
+          counter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+        }
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          showSlide(currentIndex - 1);
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          showSlide(currentIndex + 1);
+        });
+      }
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', (e) => {
+          e.preventDefault();
+          showSlide(i);
+        });
+      });
+    });
+
+    // 2. Variant selection helper
+    const layouts = document.querySelectorAll('.gift-card-layout');
+    layouts.forEach(layout => {
+      const form = layout.querySelector('.gift-card-layout__form');
+      if (!form) return;
+
+      const variantData = {{ product.variants | json }};
+      const optionInputs = form.querySelectorAll('.gift-card-layout__variant-input');
+      const variantIdInput = form.querySelector('input[name="id"]');
+      const priceSpan = layout.querySelector('.gift-card-layout__price');
+      const atcButton = form.querySelector('.add-to-cart-button');
+
+      function getSelectedOptions() {
+        const selected = {};
+        const checkedInputs = form.querySelectorAll('.gift-card-layout__variant-input:checked');
+        checkedInputs.forEach(input => {
+          const position = input.getAttribute('data-option-position');
+          selected['option' + position] = input.value;
+        });
+        return selected;
+      }
+
+      function updateVariant() {
+        const selectedOptions = getSelectedOptions();
+        const matchedVariant = variantData.find(variant => {
+          return Object.keys(selectedOptions).every(key => {
+            return variant[key] === selectedOptions[key];
+          });
+        });
+
+        if (matchedVariant) {
+          variantIdInput.value = matchedVariant.id;
+          
+          const formattedPrice = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: matchedVariant.currency || {{ cart.currency.iso_code | json }}
+          }).format(matchedVariant.price / 100);
+          
+          if (priceSpan) priceSpan.textContent = formattedPrice;
+
+          if (matchedVariant.available) {
+            atcButton.disabled = false;
+            atcButton.querySelector('span').textContent = 'Add to Bag';
+          } else {
+            atcButton.disabled = true;
+            atcButton.querySelector('span').textContent = 'Sold Out';
+          }
+
+          document.dispatchEvent(new CustomEvent('variant:change', {
+            detail: { variant: matchedVariant }
+          }));
+        } else {
+          atcButton.disabled = true;
+          atcButton.querySelector('span').textContent = 'Unavailable';
+        }
+      }
+
+      optionInputs.forEach(input => {
+        input.addEventListener('change', function() {
+          const fieldset = this.closest('.gift-card-layout__variant-option');
+          fieldset.querySelectorAll('.gift-card-layout__variant-value-label').forEach(label => {
+            label.classList.remove('is-selected');
+          });
+          this.closest('.gift-card-layout__variant-value-label').classList.add('is-selected');
+
+          updateVariant();
+        });
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Gift Card Product Layout",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-3"
+    },
+    {
+      "type": "header",
+      "content": "Positional & Spacing Settings"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "media_content_margin",
+      "label": "Margin between media and content",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_elements_gap",
+      "label": "Gap between text elements",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "number",
+      "id": "text_left_offset",
+      "label": "Text left offset",
+      "default": 0
+    },
+    {
+      "type": "number",
+      "id": "title_left_position",
+      "label": "Title left position",
+      "default": 0
+    },
+    {
+      "type": "number",
+      "id": "price_right_position",
+      "label": "Price right position",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Media & Counter Settings"
+    },
+    {
+      "type": "color",
+      "id": "media_bg_color",
+      "label": "Media background color",
+      "default": "#f7f7f7"
+    },
+    {
+      "type": "range",
+      "id": "counter_font_size",
+      "label": "Counter font size",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "counter_font_weight",
+      "label": "Counter font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "color",
+      "id": "counter_color",
+      "label": "Counter color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "counter_position",
+      "label": "Counter position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Denomination Button Settings"
+    },
+    {
+      "type": "number",
+      "id": "denom_button_width",
+      "label": "Denomination button width",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "gap_between_denoms",
+      "label": "Gap between denominations",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Product Title Typography"
+    },
+    {
+      "type": "select",
+      "id": "title_font_family_preset",
+      "label": "Font family preset",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "heading"
+    },
+    {
+      "type": "text",
+      "id": "title_font_family_custom",
+      "label": "Custom font family stack",
+      "default": "Outfit"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" },
+        { "value": "800", "label": "800" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "header",
+      "content": "Price Typography"
+    },
+    {
+      "type": "select",
+      "id": "price_font_family_preset",
+      "label": "Font family preset",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "text",
+      "id": "price_font_family_custom",
+      "label": "Custom font family stack",
+      "default": "Outfit"
+    },
+    {
+      "type": "range",
+      "id": "price_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "price_font_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" },
+        { "value": "800", "label": "800" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Denomination Typography"
+    },
+    {
+      "type": "select",
+      "id": "denom_font_family_preset",
+      "label": "Font family preset",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "text",
+      "id": "denom_font_family_custom",
+      "label": "Custom font family stack",
+      "default": "Outfit"
+    },
+    {
+      "type": "range",
+      "id": "denom_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Button Typography"
+    },
+    {
+      "type": "select",
+      "id": "btn_font_family_preset",
+      "label": "Font family preset",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "text",
+      "id": "btn_font_family_custom",
+      "label": "Custom font family stack",
+      "default": "Outfit"
+    },
+    {
+      "type": "range",
+      "id": "btn_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "btn_font_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" },
+        { "value": "800", "label": "800" }
+      ],
+      "default": "500"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gift Card Product Layout"
+    }
+  ]
+}
+{% endschema %}
