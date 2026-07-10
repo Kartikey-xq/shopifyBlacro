@@ -59,7 +59,7 @@
 
   .product-info-tabs-{{ block.id }} .tab-button.active {
     color: {{ block.settings.active_tab_color | default: '#000000' }};
-    font-weight: 600;
+    font-weight: {{ block.settings.tab_nav_weight }};
     border-bottom-color: {{ block.settings.active_tab_color | default: '#000000' }};
   }
 
@@ -88,6 +88,42 @@
   @keyframes fadeInTabs-{{ block.id }} {
     from { opacity: 0; transform: translateY(2px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  .product-info-tabs-{{ block.id }} .tab-button {
+    {%- if block.settings.tab_nav_font != blank -%}
+      font-family: {{ block.settings.tab_nav_font.family }}, {{ block.settings.tab_nav_font.fallback_families }};
+    {%- endif -%}
+    font-size: {{ block.settings.tab_nav_size }}px;
+    font-weight: {{ block.settings.tab_nav_weight }};
+    text-transform: {{ block.settings.tab_nav_transform }};
+    letter-spacing: {{ block.settings.tab_nav_letter_spacing }}px;
+  }
+
+  .product-info-tabs-{{ block.id }} .tab-panel-body strong,
+  .product-info-tabs-{{ block.id }} .tab-panel-body b,
+  .product-info-tabs-{{ block.id }} .tab-panel-body h1,
+  .product-info-tabs-{{ block.id }} .tab-panel-body h2,
+  .product-info-tabs-{{ block.id }} .tab-panel-body h3,
+  .product-info-tabs-{{ block.id }} .tab-panel-body h4,
+  .product-info-tabs-{{ block.id }} .tab-panel-body h5,
+  .product-info-tabs-{{ block.id }} .tab-panel-body h6 {
+    {%- if block.settings.tab_title_font != blank -%}
+      font-family: {{ block.settings.tab_title_font.family }}, {{ block.settings.tab_title_font.fallback_families }};
+    {%- endif -%}
+    font-size: {{ block.settings.tab_title_size }}px;
+    font-weight: {{ block.settings.tab_title_weight }};
+  }
+
+  .product-info-tabs-{{ block.id }} .tab-panel-body p,
+  .product-info-tabs-{{ block.id }} .tab-panel-body li,
+  .product-info-tabs-{{ block.id }} .tab-panel-body span {
+    {%- if block.settings.tab_desc_font != blank -%}
+      font-family: {{ block.settings.tab_desc_font.family }}, {{ block.settings.tab_desc_font.fallback_families }};
+    {%- endif -%}
+    font-size: {{ block.settings.tab_desc_size }}px;
+    font-weight: {{ block.settings.tab_desc_weight }};
+    line-height: {{ block.settings.tab_desc_line_height }};
   }
 {%- endstyle -%}
 
@@ -266,6 +302,142 @@
       "type": "richtext",
       "id": "tab_3_content",
       "label": "Tab 3 Content"
+    },
+    {
+      "type": "header",
+      "content": "Tab Nav Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "tab_nav_font",
+      "label": "Nav font",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "tab_nav_size",
+      "label": "Nav font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "tab_nav_weight",
+      "label": "Nav font weight",
+      "options": [
+        { "value": "300", "label": "300 Light" },
+        { "value": "400", "label": "400 Regular" },
+        { "value": "500", "label": "500 Medium" },
+        { "value": "600", "label": "600 Semibold" },
+        { "value": "700", "label": "700 Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "tab_nav_transform",
+      "label": "Nav text transform",
+      "options": [
+        { "value": "none", "label": "none" },
+        { "value": "uppercase", "label": "uppercase" },
+        { "value": "capitalize", "label": "capitalize" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "tab_nav_letter_spacing",
+      "label": "Nav letter spacing",
+      "min": 0,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Tab Title Typography"
+    },
+    {
+      "type": "paragraph",
+      "content": "Applies to bold text and headings inside tab content."
+    },
+    {
+      "type": "font_picker",
+      "id": "tab_title_font",
+      "label": "Title font",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "tab_title_size",
+      "label": "Title font size",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "tab_title_weight",
+      "label": "Title font weight",
+      "options": [
+        { "value": "400", "label": "400 Regular" },
+        { "value": "500", "label": "500 Medium" },
+        { "value": "600", "label": "600 Semibold" },
+        { "value": "700", "label": "700 Bold" },
+        { "value": "800", "label": "800 Extrabold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "header",
+      "content": "Tab Description Typography"
+    },
+    {
+      "type": "paragraph",
+      "content": "Applies to paragraph and body text inside tab content."
+    },
+    {
+      "type": "font_picker",
+      "id": "tab_desc_font",
+      "label": "Description font",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "tab_desc_size",
+      "label": "Description font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "tab_desc_weight",
+      "label": "Description font weight",
+      "options": [
+        { "value": "300", "label": "300 Light" },
+        { "value": "400", "label": "400 Regular" },
+        { "value": "500", "label": "500 Medium" },
+        { "value": "600", "label": "600 Semibold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "tab_desc_line_height",
+      "label": "Description line height",
+      "min": 1.2,
+      "max": 2.4,
+      "step": 0.1,
+      "default": 1.6
     },
     {
       "type": "header",
