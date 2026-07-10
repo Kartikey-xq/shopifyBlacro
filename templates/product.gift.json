@@ -12,26 +12,6 @@
     "main": {
       "type": "product-information",
       "blocks": {
-        "product-info-tabs-1": {
-          "type": "product-info-tabs",
-          "settings": {
-            "tab_1_label": "Product details",
-            "tab_1_content": "{{ closest.product.description }}",
-            "tab_2_label": "Washcare",
-            "tab_2_content": "<p>Machine Wash Cold, Inside Out<br/>Wash with Similar Colours<br/>Do Not Bleach<br/>Do Not Tumble Dry<br/>Cool Iron on Reverse<br/>Do Not Iron Directly on Print<br/>Hang Dry in Shade</p>",
-            "tab_3_label": "Shipping",
-            "tab_3_content": "<p>Specify shipping rates, methods, delivery times, and returns policy information here.</p>",
-            "corner_radius": 0,
-            "border_color": "#e5e5e5",
-            "active_tab_color": "#000000",
-            "inactive_tab_color": "#888888",
-            "padding_top": 0,
-            "padding_bottom": 0,
-            "margin_top": 0,
-            "margin_bottom": 20
-          },
-          "blocks": {}
-        },
         "media-gallery": {
           "type": "_product-media-gallery",
           "static": true,
@@ -273,13 +253,10 @@
           ]
         }
       },
-      "block_order": [
-        "product-info-tabs-1"
-      ],
       "settings": {
         "content_width": "content-center-aligned",
         "desktop_media_position": "left",
-        "equal_columns": true,
+        "equal_columns": false,
         "limit_details_width": false,
         "gap": 4,
         "enable_sticky_add_to_cart": false,
@@ -288,121 +265,15 @@
         "padding-block-end": 0
       }
     },
-    "custom_50_50_split": {
-      "type": "product-split-features-video",
-      "blocks": {
-        "text_1": {
-          "type": "text_point",
-          "settings": {
-            "title": "Top length type",
-            "text": "{{ product.metafields.shopify[\"top-length-type\"] | metafield_tag: field: 'label' }}",
-            "title_font_preset": "custom",
-            "title_font_family": "var(--font-accent--family)",
-            "title_custom_size": 14,
-            "title_font_weight": "600",
-            "title_text_transform": "none",
-            "title_text_color": "",
-            "body_font_preset": "custom",
-            "body_font_family": "var(--font-body--family)",
-            "body_custom_size": 14,
-            "body_font_weight": "300",
-            "body_line_height": "normal",
-            "body_text_transform": "none",
-            "body_text_color": "",
-            "margin_bottom": 16
-          }
-        },
-        "text_2": {
-          "type": "text_point",
-          "settings": {
-            "title": "Neckline type",
-            "text": "<p></p>{{ product.metafields.shopify.neckline | metafield_tag: field: 'label' }}",
-            "title_font_preset": "custom",
-            "title_font_family": "var(--font-accent--family)",
-            "title_custom_size": 14,
-            "title_font_weight": "600",
-            "title_text_transform": "none",
-            "title_text_color": "",
-            "body_font_preset": "custom",
-            "body_font_family": "var(--font-body--family)",
-            "body_custom_size": 14,
-            "body_font_weight": "300",
-            "body_line_height": "normal",
-            "body_text_transform": "none",
-            "body_text_color": "",
-            "margin_bottom": 16
-          }
-        },
-        "text_point_My9Mtd": {
-          "type": "text_point",
-          "settings": {
-            "title": "Sleeve length type",
-            "text": "<p></p>{{ product.metafields.shopify[\"sleeve-length-type\"] | metafield_tag: field: 'label' }}",
-            "title_font_preset": "custom",
-            "title_font_family": "var(--font-accent--family)",
-            "title_custom_size": 14,
-            "title_font_weight": "600",
-            "title_text_transform": "none",
-            "title_text_color": "",
-            "body_font_preset": "custom",
-            "body_font_family": "var(--font-body--family)",
-            "body_custom_size": 14,
-            "body_font_weight": "300",
-            "body_line_height": "normal",
-            "body_text_transform": "none",
-            "body_text_color": "",
-            "margin_bottom": 16
-          }
-        },
-        "text_point_bamwrr": {
-          "type": "text_point",
-          "settings": {
-            "title": "Color",
-            "text": "<p></p>{{ product.metafields.shopify[\"color-pattern\"] | metafield_tag: field: 'label' }}",
-            "title_font_preset": "custom",
-            "title_font_family": "var(--font-accent--family)",
-            "title_custom_size": 14,
-            "title_font_weight": "600",
-            "title_text_transform": "none",
-            "title_text_color": "",
-            "body_font_preset": "custom",
-            "body_font_family": "var(--font-body--family)",
-            "body_custom_size": 14,
-            "body_font_weight": "300",
-            "body_line_height": "normal",
-            "body_text_transform": "none",
-            "body_text_color": "",
-            "margin_bottom": 16
-          }
-        }
-      },
-      "block_order": [
-        "text_1",
-        "text_2",
-        "text_point_My9Mtd",
-        "text_point_bamwrr"
-      ],
+    "gift_card_media": {
+      "type": "gift-card-media",
       "settings": {
-        "video_fit": "cover",
-        "desktop_layout": "text_left",
-        "mobile_video_height": "60vh",
-        "color_scheme": "scheme-3",
-        "custom_bg_color": "",
-        "custom_text_color": "",
-        "mobile_stack_order": "video_first"
-      }
-    },
-    "zoomed_product_carousel_pNYttr": {
-      "type": "zoomed-product-carousel",
-      "name": "Zoomin Product Carousel",
-      "settings": {
-        "slide_width_mobile": 75,
-        "start_index": 8,
-        "image_ratio": "portrait",
-        "show_dots": false,
-        "background_color": "#fafafa",
-        "image_gap": 0,
-        "enable_zoom": true
+        "columns_desktop": 2,
+        "grid_gap": 16,
+        "background_color": "#ffffff",
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "padding_horizontal": 16
       }
     },
     "product_recommendations_qggXJq": {
@@ -521,8 +392,7 @@
   },
   "order": [
     "main",
-    "custom_50_50_split",
-    "zoomed_product_carousel_pNYttr",
+    "gift_card_media",
     "product_recommendations_qggXJq",
     "blocks_hDFhXh"
   ]

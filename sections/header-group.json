@@ -54,7 +54,7 @@
             "gift_card_image_radius": 0,
             "gift_card_image_padding_left": 0,
             "gift_card_image_padding_right": 0,
-            "gift_card_link_url": "",
+            "gift_card_link_url": "shopify://products/gift-card",
             "drawer_nav_font": "inter_n1",
             "menu_section_padding_top": 4,
             "menu_section_padding_bottom": 0,
