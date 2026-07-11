@@ -6,20 +6,11 @@
   <div
     class="custom-image-block"
     style="
-      --ci-top: {{ block.settings.pos_top }};
-      --ci-bottom: {{ block.settings.pos_bottom }};
-      --ci-left: {{ block.settings.pos_left }};
-      --ci-right: {{ block.settings.pos_right }};
-      --ci-top-m: {{ block.settings.pos_top_mobile }};
-      --ci-bottom-m: {{ block.settings.pos_bottom_mobile }};
-      --ci-left-m: {{ block.settings.pos_left_mobile }};
-      --ci-right-m: {{ block.settings.pos_right_mobile }};
       --ci-width: {{ block.settings.image_width }}px;
       --ci-width-m: {{ block.settings.image_width_mobile }}px;
       --ci-opacity: {{ block.settings.image_opacity | divided_by: 100.0 }};
       --ci-object-fit: {{ block.settings.object_fit }};
       --ci-z: {{ block.settings.z_index }};
-      --ci-transform: {{ block.settings.transform }};
     "
     {{ block.shopify_attributes }}
   >
@@ -55,14 +46,12 @@
 
   .custom-image-block {
     position: absolute;
-    top: var(--ci-top);
-    bottom: var(--ci-bottom);
-    left: var(--ci-left);
-    right: var(--ci-right);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(calc(50% + 2px));
     width: var(--ci-width);
     z-index: var(--ci-z, 5);
     opacity: var(--ci-opacity);
-    transform: var(--ci-transform);
     pointer-events: none;
   }
 
@@ -75,10 +64,6 @@
 
   @media (max-width: 749px) {
     .custom-image-block {
-      top: var(--ci-top-m);
-      bottom: var(--ci-bottom-m);
-      left: var(--ci-left-m);
-      right: var(--ci-right-m);
       width: var(--ci-width-m);
     }
   }
