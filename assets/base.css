@@ -5252,6 +5252,12 @@ shopify-block:has(> .custom-position-block) {
   text-decoration: none;
   cursor: pointer;
   transition: opacity 0.2s ease, transform 0.1s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.custom-button > * {
+  pointer-events: none;
 }
 
 .custom-button:not(.button):not(.button-secondary):not(.link) {
