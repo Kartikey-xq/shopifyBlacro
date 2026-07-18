@@ -15,6 +15,7 @@
         "custom_image_TzmHf3": {
           "type": "custom_image",
           "name": "Custom Image",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/file_00000000649c72069d455878624f6185.png",
             "image_width": 800,
@@ -37,6 +38,7 @@
         "custom_image_QVg3PV": {
           "type": "custom_image",
           "name": "Custom Image",
+          "disabled": true,
           "settings": {
             "image_width": 200,
             "image_width_mobile": 120,
@@ -263,7 +265,7 @@
         "title_animation_duration": 200,
         "collection": "relic",
         "enable_carousel": true,
-        "desktop_layout": "grid_2x2",
+        "desktop_layout": "carousel",
         "grid_row_gap": 44,
         "mobile_layout": "grid",
         "mobile_grid_row_gap": 24,
