@@ -691,7 +691,7 @@
         "title_animation_duration": 200,
         "collection": "relic",
         "enable_carousel": true,
-        "desktop_layout": "grid_2x2",
+        "desktop_layout": "carousel",
         "grid_row_gap": 4,
         "mobile_layout": "grid",
         "mobile_grid_row_gap": 40,
