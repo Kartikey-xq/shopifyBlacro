@@ -277,6 +277,7 @@
         "custom_image_dPBaDB": {
           "type": "custom_image",
           "name": "Custom Image",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/file_0000000090ac720794d8df10bf06c6a7_1.png",
             "image_width": 800,
