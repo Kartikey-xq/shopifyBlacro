@@ -236,7 +236,7 @@
       "name": "t:names.hero",
       "settings": {
         "media_type_1": "image",
-        "image_1": "shopify://shop_images/DSC02525-1_d3718a6b-4785-4e3a-95d4-d05e09b55df6.jpg",
+        "image_1": "shopify://shop_images/DSC02190-1.jpg",
         "media_type_2": "image",
         "stack_media_on_mobile": true,
         "custom_mobile_media": true,
@@ -259,7 +259,7 @@
         "color_scheme": "scheme-2",
         "toggle_overlay": true,
         "overlay_color": "#000000c7",
-        "overlay_opacity": 55,
+        "overlay_opacity": 35,
         "overlay_style": "gradient",
         "gradient_up": true,
         "gradient_down": true,
