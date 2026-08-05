@@ -664,7 +664,7 @@
         "section_height": "full-screen",
         "section_height_custom": 100,
         "color_scheme": "scheme-2",
-        "toggle_overlay": true,
+        "toggle_overlay": false,
         "overlay_color": "#eee5dc",
         "overlay_opacity": 55,
         "overlay_style": "solid",
