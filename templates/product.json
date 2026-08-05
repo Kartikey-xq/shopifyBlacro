@@ -307,7 +307,7 @@
           "type": "text_point",
           "settings": {
             "title": "Top length type",
-            "text": "{{ product.metafields.shopify[\"top-length-type\"] | metafield_tag: field: 'label' }}",
+            "text": "",
             "title_font_preset": "custom",
             "title_font_family": "var(--font-accent--family)",
             "title_custom_size": 14,
