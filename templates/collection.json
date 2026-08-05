@@ -15,6 +15,7 @@
         "custom_image_TzmHf3": {
           "type": "custom_image",
           "name": "Custom Image",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/file_00000000649c72069d455878624f6185.png",
             "image_width": 800,
@@ -37,6 +38,7 @@
         "custom_image_QVg3PV": {
           "type": "custom_image",
           "name": "Custom Image",
+          "disabled": true,
           "settings": {
             "image_width": 200,
             "image_width_mobile": 120,
@@ -63,12 +65,12 @@
       "name": "t:names.hero",
       "settings": {
         "media_type_1": "image",
-        "image_1": "shopify://shop_images/file_00000000cf4071faa2c6614926af1762.png",
+        "image_1": "shopify://shop_images/DSC02275-1.jpg",
         "media_type_2": "video",
         "stack_media_on_mobile": false,
         "custom_mobile_media": true,
         "media_type_1_mobile": "image",
-        "image_1_mobile": "shopify://shop_images/file_00000000f7987208b3f548a543109ea5.png",
+        "image_1_mobile": "shopify://shop_images/DSC02280-1_1.jpg",
         "media_type_2_mobile": "image",
         "link": "",
         "open_in_new_tab": false,
@@ -263,7 +265,7 @@
         "title_animation_duration": 200,
         "collection": "relic",
         "enable_carousel": true,
-        "desktop_layout": "grid_2x2",
+        "desktop_layout": "carousel",
         "grid_row_gap": 44,
         "mobile_layout": "grid",
         "mobile_grid_row_gap": 24,
@@ -280,7 +282,7 @@
         "collection_title_custom_font": "subheading",
         "collection_title_custom_size": 12,
         "title_margin_top": 0,
-        "title_margin_bottom": 20,
+        "title_margin_bottom": 12,
         "title_font": "custom",
         "product_title_font_weight": "600",
         "title_custom_font": "subheading",
@@ -307,7 +309,7 @@
         "image_ratio": "portrait",
         "desktop_card_height": "adapt",
         "desktop_card_custom_height": 380,
-        "padding_top": 28,
+        "padding_top": 12,
         "padding_bottom": 36,
         "padding_horizontal": 0,
         "carousel_gap": 2
