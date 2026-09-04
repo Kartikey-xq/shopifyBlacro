@@ -252,6 +252,11 @@
             padding-left: {{ block.settings.community_button_padding_left | default: 16 }}px !important;
             padding-right: {{ block.settings.community_button_padding_right | default: 16 }}px !important;
           }
+          @media screen and (max-width: 749px) {
+            #menu-drawer .menu-drawer__community-section {
+              padding-bottom: {{ block.settings.community_bottom_padding | default: 24 }}px !important;
+            }
+          }
         </style>
         {%- if block_settings.community_heading != blank -%}
           <h3 class="menu-drawer__community-heading">{{ block_settings.community_heading | escape }}</h3>

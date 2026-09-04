@@ -242,6 +242,7 @@
             },
             "buy_buttons_eYQEYi": {
               "type": "buy-buttons",
+              "disabled": true,
               "settings": {
                 "stacking": true,
                 "show_pickup_availability": false,
@@ -275,12 +276,42 @@
                 }
               },
               "block_order": []
+            },
+            "preorder_panel": {
+              "type": "preorder-panel",
+              "settings": {
+                "enable_color_context": false,
+                "color_label": "Color",
+                "fallback_color_name": "Oracle White",
+                "show_promo_card": true,
+                "eyebrow_text": "PRE-ORDER EXCLUSIVE",
+                "title_text": "ARCHIVE 001 — THE ORIGIN PIECE",
+                "description_text": "A limited edition metal collectible, exclusively with every pre-order.",
+                "link_label": "Learn more",
+                "link_url": "",
+                "card_bg_color": "#FAF2E9",
+                "card_border_color": "#E1CFB3",
+                "eyebrow_color": "#B48A58",
+                "title_color": "#111111",
+                "text_color": "#333333",
+                "button_label": "PRE ORDER NOW",
+                "button_bg_color": "#000000",
+                "button_text_color": "#FFFFFF",
+                "show_details": true,
+                "close_date_text": "Pre-order closes on DD MMM YYYY",
+                "ship_date_text": "Ships by DD MMM YYYY",
+                "details_text_color": "#2B2B2B",
+                "margin_top": 16,
+                "margin_bottom": 24
+              },
+              "blocks": {}
             }
           },
           "block_order": [
             "group_icgrde",
             "text_cGBfKn",
             "variant_picker_R3rGDr",
+            "preorder_panel",
             "buy_buttons_eYQEYi"
           ]
         }
@@ -307,6 +338,7 @@
           "type": "text_point",
           "settings": {
             "title": "Top length type",
+            "metafield_key": "top-length-type",
             "text": "",
             "title_font_preset": "custom",
             "title_font_family": "var(--font-accent--family)",
@@ -328,7 +360,8 @@
           "type": "text_point",
           "settings": {
             "title": "Neckline type",
-            "text": "<p></p>{{ product.metafields.shopify.neckline | metafield_tag: field: 'label' }}",
+            "metafield_key": "neckline",
+            "text": "",
             "title_font_preset": "custom",
             "title_font_family": "var(--font-accent--family)",
             "title_custom_size": 14,
@@ -349,7 +382,8 @@
           "type": "text_point",
           "settings": {
             "title": "Sleeve length type",
-            "text": "<p></p>{{ product.metafields.shopify[\"sleeve-length-type\"] | metafield_tag: field: 'label' }}",
+            "metafield_key": "sleeve-length-type",
+            "text": "",
             "title_font_preset": "custom",
             "title_font_family": "var(--font-accent--family)",
             "title_custom_size": 14,
@@ -370,7 +404,8 @@
           "type": "text_point",
           "settings": {
             "title": "Color",
-            "text": "<p></p>{{ product.metafields.shopify[\"color-pattern\"] | metafield_tag: field: 'label' }}",
+            "metafield_key": "color-pattern",
+            "text": "",
             "title_font_preset": "custom",
             "title_font_family": "var(--font-accent--family)",
             "title_custom_size": 14,

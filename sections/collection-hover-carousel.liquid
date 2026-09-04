@@ -12,6 +12,10 @@
   assign collection_products = section_collection.products
   assign title_animation = section.settings.title_animation | default: 'fade-up'
   assign title_animation_duration = section.settings.title_animation_duration | default: 700
+  assign has_title_animation = true
+  if title_animation == 'none' or title_animation == 'off'
+    assign has_title_animation = false
+  endif
 
   # Enforce uniform aspect ratio
   assign aspect_ratio = '3 / 4'
@@ -185,6 +189,14 @@
       {% endif %}
     {% endif %}
   }
+
+  {%- unless has_title_animation -%}
+    #CollectionCarousel-{{ section.id }} .collection-hover-carousel__title {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  {%- endunless -%}
 
   #CollectionCarousel-{{ section.id }} .collection-hover-carousel__title-line {
     display: block !important;
@@ -483,7 +495,7 @@
   <div class="page-width">
     <!-- Header with Collection Title and Navigation Controls -->
     {% if section.settings.show_collection_title or section.settings.enable_carousel %}
-      <div class="collection-hover-carousel__header collection-hover-carousel__header--{{ title_animation }}" style="--title-animation-duration: {{ title_animation_duration }}ms;">
+      <div class="collection-hover-carousel__header{% if has_title_animation %} collection-hover-carousel__header--{{ title_animation }}{% endif %}"{% if has_title_animation %} style="--title-animation-duration: {{ title_animation_duration }}ms;"{% endif %}>
         {% if section.settings.show_collection_title %}
           <div class="collection-hover-carousel__heading">
             <h2 class="collection-hover-carousel__title">
@@ -944,6 +956,11 @@
     letter-spacing: -0.02em;
     color: var(--color-foreground-heading, inherit);
     text-transform: uppercase;
+  }
+
+  .collection-hover-carousel__header--fade-up .collection-hover-carousel__title,
+  .collection-hover-carousel__header--slide-left .collection-hover-carousel__title,
+  .collection-hover-carousel__header--zoom-in .collection-hover-carousel__title {
     opacity: 0;
     transition: opacity var(--title-animation-duration, 700ms) ease, transform var(--title-animation-duration, 700ms) ease;
     will-change: opacity, transform;
@@ -1298,6 +1315,11 @@
       const header = section.querySelector('.collection-hover-carousel__header');
       if (!header) return;
 
+      const hasAnimation = header.classList.contains('collection-hover-carousel__header--fade-up') ||
+                            header.classList.contains('collection-hover-carousel__header--slide-left') ||
+                            header.classList.contains('collection-hover-carousel__header--zoom-in');
+      if (!hasAnimation) return;
+
       if (!('IntersectionObserver' in window)) {
         header.classList.add('title-visible');
         return;
@@ -1651,14 +1673,18 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       initCarousel('{{ section.id }}');
-      initTitleReveal('{{ section.id }}');
+      {% if has_title_animation %}
+        initTitleReveal('{{ section.id }}');
+      {% endif %}
       initQuickAdd('{{ section.id }}');
     });
 
     document.addEventListener('shopify:section:load', function(event) {
       if (event.detail.sectionId === '{{ section.id }}') {
         initCarousel('{{ section.id }}');
-        initTitleReveal('{{ section.id }}');
+        {% if has_title_animation %}
+          initTitleReveal('{{ section.id }}');
+        {% endif %}
         initQuickAdd('{{ section.id }}');
       }
     });
@@ -1719,6 +1745,10 @@
       "label": "Title Animation",
       "default": "fade-up",
       "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
         {
           "value": "fade-up",
           "label": "Fade Up"

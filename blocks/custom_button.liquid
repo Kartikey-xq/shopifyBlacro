@@ -9,16 +9,14 @@
   {{ block.shopify_attributes }}
 >
   <a
-    {% if block.settings.link == blank %}
-      href="#"
-    {% else %}
+    {%- if block.settings.link != blank -%}
       href="{{ block.settings.link }}"
-    {% endif %}
-    class="custom-button custom-button--icon-{{ block.settings.icon_position }}{% if block.settings.button_style != 'custom' %} {{ block.settings.button_style }}{% endif %}"
-    {%- if block.settings.open_in_new_tab -%}
-      target="_blank"
-      rel="noopener noreferrer"
+      {%- if block.settings.open_in_new_tab -%}
+        target="_blank"
+        rel="noopener noreferrer"
+      {%- endif -%}
     {%- endif -%}
+    class="custom-button custom-button--icon-{{ block.settings.icon_position }}{% if block.settings.button_style != 'custom' %} {{ block.settings.button_style }}{% endif %}"
   >
     {%- if block.settings.icon_image != blank -%}
       {%- if block.settings.icon_position == 'left' or block.settings.icon_position == 'left-top' or block.settings.icon_position == 'top' -%}

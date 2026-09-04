@@ -1,0 +1,827 @@
+{% liquid
+  assign block_settings = block.settings
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+
+  assign current_variant = product.selected_or_first_available_variant
+  assign is_available = current_variant.available
+  assign product_form_id = 'Preorder-ProductForm-' | append: block.id
+
+  # Detect color option if available
+  assign color_option = null
+  assign color_option_index = 0
+  for option in product.options_with_values
+    assign opt_name_lower = option.name | downcase
+    if opt_name_lower == 'color' or opt_name_lower == 'colour' or opt_name_lower == 'shade'
+      assign color_option = option
+      assign color_option_index = forloop.index0
+      break
+    endif
+  endfor
+
+  # If no option named color, check for any option with swatches
+  if color_option == null
+    for option in product.options_with_values
+      assign swatches_present = option.values | map: 'swatch' | compact | size
+      if swatches_present > 0
+        assign color_option = option
+        assign color_option_index = forloop.index0
+        break
+      endif
+    endfor
+  endif
+%}
+
+<div
+  id="PreorderPanel-{{ block.id }}"
+  class="preorder-panel preorder-panel--{{ block.id }}"
+  data-block-id="{{ block.id }}"
+  data-product-id="{{ product.id }}"
+  data-button-label="{{ block_settings.button_label | default: 'PRE ORDER NOW' | escape }}"
+  data-sold-out-text="{{ 'products.product.sold_out' | t | default: 'SOLD OUT' | escape }}"
+  {% if color_option != null %}
+    data-color-index="{{ color_option_index }}"
+  {% endif %}
+  {{ block.shopify_attributes }}
+>
+  {%- style -%}
+    #PreorderPanel-{{ block.id }} {
+      --pop-bg: {{ block_settings.card_bg_color | default: '#FAF2E9' }};
+      --pop-border: {{ block_settings.card_border_color | default: '#E1CFB3' }};
+      --pop-eyebrow: {{ block_settings.eyebrow_color | default: '#B48A58' }};
+      --pop-title: {{ block_settings.title_color | default: '#111111' }};
+      --pop-text: {{ block_settings.text_color | default: '#333333' }};
+      --pop-btn-bg: {{ block_settings.button_bg_color | default: '#000000' }};
+      --pop-btn-text: {{ block_settings.button_text_color | default: '#FFFFFF' }};
+      --pop-details-color: {{ block_settings.details_text_color | default: '#2B2B2B' }};
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: {{ block_settings.margin_top | default: 16 }}px;
+      margin-bottom: {{ block_settings.margin_bottom | default: 24 }}px;
+      font-family: inherit;
+    }
+
+    /* 1. Optional Color Context Row */
+    .preorder-panel--{{ block.id }} .preorder-panel__color-context {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+      width: 100%;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__color-header {
+      font-size: 13px;
+      line-height: 1.2;
+      color: #111111;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__color-label {
+      font-weight: 400;
+      color: #222222;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__color-value {
+      font-weight: 500;
+      color: #111111;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__swatches {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      padding: 0;
+      border: 1px solid transparent;
+      cursor: pointer;
+      position: relative;
+      background-color: var(--swatch-color, #ffffff);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      outline: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      display: inline-block;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__swatch--light {
+      border-color: #d8d8d8;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__swatch.is-active {
+      box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px #111111;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__swatch--light.is-active {
+      box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px #111111;
+      border-color: #d0d0d0;
+    }
+
+    /* 2. Bordered Promotional Card */
+    .preorder-panel--{{ block.id }} .preorder-panel__promo-card {
+      background-color: var(--pop-bg);
+      border: 1px solid var(--pop-border);
+      padding: 16px 16px 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 0;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__promo-content {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--pop-eyebrow);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--pop-title);
+      line-height: 1.35;
+      margin: 0 0 6px 0;
+      white-space: nowrap;
+    }
+
+    @media screen and (max-width: 380px) {
+      .preorder-panel--{{ block.id }} .preorder-panel__title {
+        white-space: normal;
+      }
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__description {
+      font-size: 11.5px;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--pop-text);
+      margin: 0 0 12px 0;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__link {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--pop-title);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      line-height: 1.2;
+      width: fit-content;
+      transition: opacity 0.2s ease;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__link:hover {
+      opacity: 0.7;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__link-arrow {
+      font-size: 13px;
+      line-height: 1;
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__link:hover .preorder-panel__link-arrow {
+      transform: translateX(3px);
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__promo-image-wrapper {
+      flex: 0 0 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__promo-image {
+      max-width: 100%;
+      height: auto;
+      max-height: 125px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* 3. Pre-order Button */
+    .preorder-panel--{{ block.id }} .preorder-panel__form-wrapper {
+      width: 100%;
+      margin-top: 14px;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__button {
+      width: 100%;
+      min-height: 48px;
+      background-color: var(--pop-btn-bg);
+      color: var(--pop-btn-text);
+      border: none;
+      border-radius: 0;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      transition: background-color 0.2s ease, opacity 0.2s ease;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__button:hover {
+      opacity: 0.9;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__button:disabled {
+      background-color: #666666;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* 4. Pre-order Info Rows */
+    .preorder-panel--{{ block.id }} .preorder-panel__info-list {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 400;
+      color: var(--pop-details-color);
+      line-height: 1.3;
+    }
+
+    .preorder-panel--{{ block.id }} .preorder-panel__info-icon {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      color: var(--pop-details-color);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mobile Responsive */
+    @media screen and (max-width: 480px) {
+      .preorder-panel--{{ block.id }} .preorder-panel__promo-card {
+        padding: 14px 14px;
+        gap: 10px;
+      }
+      .preorder-panel--{{ block.id }} .preorder-panel__promo-image-wrapper {
+        flex: 0 0 100px;
+      }
+      .preorder-panel--{{ block.id }} .preorder-panel__eyebrow {
+        font-size: 10.5px;
+      }
+      .preorder-panel--{{ block.id }} .preorder-panel__title {
+        font-size: 11.5px;
+      }
+      .preorder-panel--{{ block.id }} .preorder-panel__description {
+        font-size: 11px;
+      }
+      .preorder-panel--{{ block.id }} .preorder-panel__info-item {
+        font-size: 12px;
+      }
+    }
+  {%- endstyle -%}
+
+  {% comment %} 1. Optional Top Color Context Row {% endcomment %}
+  {%- if block_settings.enable_color_context -%}
+    <div class="preorder-panel__color-context">
+      <div class="preorder-panel__color-header">
+        <span class="preorder-panel__color-label">{{ block_settings.color_label | default: 'Color' }}</span>
+        <span class="preorder-panel__color-value">
+          {%- if color_option != null -%}
+            {{ color_option.selected_value | default: current_variant.options[color_option_index] }}
+          {%- else -%}
+            {{ block_settings.fallback_color_name | default: 'Oracle White' }}
+          {%- endif -%}
+        </span>
+      </div>
+      <div class="preorder-panel__swatches">
+        {%- if color_option != null -%}
+          {%- for val in color_option.values -%}
+            {%- liquid
+              assign is_selected = false
+              if val == color_option.selected_value
+                assign is_selected = true
+              endif
+
+              # Determine swatch color
+              assign swatch_css_color = '#ffffff'
+              assign is_light = false
+
+              if val.swatch.color != blank
+                assign swatch_css_color = val.swatch.color
+              else
+                assign val_name_lower = val | downcase
+                if val_name_lower contains 'white' or val_name_lower contains 'bone' or val_name_lower contains 'ivory' or val_name_lower contains 'snow'
+                  assign swatch_css_color = '#FFFFFF'
+                  assign is_light = true
+                elsif val_name_lower contains 'black' or val_name_lower contains 'onyx' or val_name_lower contains 'noir'
+                  assign swatch_css_color = '#000000'
+                elsif val_name_lower contains 'beige' or val_name_lower contains 'sand' or val_name_lower contains 'cream' or val_name_lower contains 'taupe' or val_name_lower contains 'tan'
+                  assign swatch_css_color = '#E7DEC8'
+                elsif val_name_lower contains 'grey' or val_name_lower contains 'gray' or val_name_lower contains 'slate' or val_name_lower contains 'charcoal'
+                  assign swatch_css_color = '#56595C'
+                elsif val_name_lower contains 'blue' or val_name_lower contains 'navy'
+                  assign swatch_css_color = '#1D3557'
+                elsif val_name_lower contains 'green' or val_name_lower contains 'olive'
+                  assign swatch_css_color = '#386641'
+                elsif val_name_lower contains 'brown'
+                  assign swatch_css_color = '#583101'
+                else
+                  assign swatch_css_color = '#E0E0E0'
+                endif
+              endif
+
+              if swatch_css_color == '#FFFFFF' or swatch_css_color == '#ffffff' or swatch_css_color == 'white'
+                assign is_light = true
+              endif
+            -%}
+            <button
+              type="button"
+              class="preorder-panel__swatch{% if is_light %} preorder-panel__swatch--light{% endif %}{% if is_selected %} is-active{% endif %}"
+              style="--swatch-color: {{ swatch_css_color }};"
+              data-value="{{ val | escape }}"
+              aria-label="{{ val | escape }}"
+              aria-checked="{% if is_selected %}true{% else %}false{% endif %}"
+              role="radio"
+            ></button>
+          {%- endfor -%}
+        {%- else -%}
+          {% comment %} Default sample swatches matching inspiration {% endcomment %}
+          <button type="button" class="preorder-panel__swatch preorder-panel__swatch--light is-active" style="--swatch-color: #FFFFFF;" data-value="Oracle White" aria-label="Oracle White" aria-checked="true" role="radio"></button>
+          <button type="button" class="preorder-panel__swatch" style="--swatch-color: #000000;" data-value="Black" aria-label="Black" aria-checked="false" role="radio"></button>
+          <button type="button" class="preorder-panel__swatch" style="--swatch-color: #E7DEC8;" data-value="Beige" aria-label="Beige" aria-checked="false" role="radio"></button>
+          <button type="button" class="preorder-panel__swatch" style="--swatch-color: #56595C;" data-value="Slate" aria-label="Slate" aria-checked="false" role="radio"></button>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {% comment %} 2. Bordered Promotional Card {% endcomment %}
+  {%- if block_settings.show_promo_card -%}
+    <div class="preorder-panel__promo-card">
+      <div class="preorder-panel__promo-content">
+        {%- if block_settings.eyebrow_text != blank -%}
+          <span class="preorder-panel__eyebrow">{{ block_settings.eyebrow_text | escape }}</span>
+        {%- endif -%}
+        {%- if block_settings.title_text != blank -%}
+          <h4 class="preorder-panel__title">{{ block_settings.title_text | escape }}</h4>
+        {%- endif -%}
+        {%- if block_settings.description_text != blank -%}
+          <p class="preorder-panel__description">{{ block_settings.description_text | escape }}</p>
+        {%- endif -%}
+        {%- if block_settings.link_label != blank -%}
+          <a href="{{ block_settings.link_url | default: '#' }}" class="preorder-panel__link">
+            <span>{{ block_settings.link_label | escape }}</span>
+            <span class="preorder-panel__link-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        {%- endif -%}
+      </div>
+      <div class="preorder-panel__promo-image-wrapper">
+        {%- if block_settings.promo_image != blank -%}
+          {{
+            block_settings.promo_image
+            | image_url: width: 300
+            | image_tag:
+              loading: 'lazy',
+              alt: block_settings.title_text,
+              class: 'preorder-panel__promo-image'
+          }}
+        {%- else -%}
+          <img
+            src="{{ 'preorder-tag-sample.png' | asset_url }}"
+            alt="{{ block_settings.title_text | default: 'Archive 001 — The Origin Piece' | escape }}"
+            class="preorder-panel__promo-image"
+            width="160"
+            height="153"
+            loading="lazy"
+          >
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {% comment %} 3. Full-Width Primary Pre-order Button {% endcomment %}
+  <div class="preorder-panel__form-wrapper">
+    <product-form-component
+      id="PreorderFormComponent-{{ block.id }}"
+      class="preorder-panel__product-form"
+      data-section-id="{{ section.id }}"
+      data-product-id="{{ product.id }}"
+      data-product-url="{{ product.url }}"
+      on:submit="/handleSubmit"
+      data-quantity-default="1"
+      data-quantity-error-max="{{ 'products.product.quantity_error_max' | t }}"
+    >
+      <div
+        class="visually-hidden"
+        aria-live="assertive"
+        role="status"
+        aria-atomic="true"
+        ref="liveRegion"
+      ></div>
+
+      {%- form 'product', product, id: product_form_id, data-type: 'add-to-cart-form' -%}
+        <input
+          type="hidden"
+          name="id"
+          ref="variantId"
+          value="{{ current_variant.id }}"
+        >
+
+        <add-to-cart-component
+          ref="addToCartButtonContainer"
+          data-product-variant-media="{{ current_variant.featured_media.preview_image | default: product.featured_media.preview_image | image_url: width: 100 }}"
+          data-add-to-cart-animation="{{ settings.add_to_cart_animation }}"
+        >
+          <button
+            id="PreorderButton-{{ block.id }}"
+            type="submit"
+            name="add"
+            ref="addToCartButton"
+            on:click="/handleClick"
+            class="preorder-panel__button button"
+            {% unless is_available %}
+              disabled
+            {% endunless %}
+          >
+            <span class="add-to-cart-text">
+              <span class="add-to-cart-text__content">
+                <span class="preorder-panel__button-text">
+                  {%- if is_available -%}
+                    {{ block_settings.button_label | default: 'PRE ORDER NOW' | escape }}
+                  {%- else -%}
+                    {{ 'products.product.sold_out' | t | default: 'SOLD OUT' | escape }}
+                  {%- endif -%}
+                </span>
+              </span>
+            </span>
+          </button>
+        </add-to-cart-component>
+
+        <span
+          class="product-form-text__error hidden"
+          ref="addToCartTextError"
+        >
+          <span class="svg-wrapper">
+            {{- 'icon-error.svg' | inline_asset_content -}}
+          </span>
+        </span>
+      {%- endform -%}
+    </product-form-component>
+  </div>
+
+  {% comment %} 4. Two Information Rows Below Button {% endcomment %}
+  {%- if block_settings.show_details -%}
+    <div class="preorder-panel__info-list">
+      {%- if block_settings.close_date_text != blank -%}
+        <div class="preorder-panel__info-item">
+          <span class="preorder-panel__info-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </span>
+          <span class="preorder-panel__info-text">{{ block_settings.close_date_text | escape }}</span>
+        </div>
+      {%- endif -%}
+
+      {%- if block_settings.ship_date_text != blank -%}
+        <div class="preorder-panel__info-item">
+          <span class="preorder-panel__info-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13"></rect>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+              <circle cx="5.5" cy="18.5" r="2.5"></circle>
+              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+          </span>
+          <span class="preorder-panel__info-text">{{ block_settings.ship_date_text | escape }}</span>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div>
+
+<script>
+  (() => {
+    const root = document.getElementById('PreorderPanel-{{ block.id }}');
+    if (!root) return;
+
+    const section = root.closest('.shopify-section') || document;
+    const variantIdInput = root.querySelector('input[name="id"]');
+    const atcButton = root.querySelector('[ref="addToCartButton"]');
+    const buttonText = root.querySelector('.preorder-panel__button-text');
+    const defaultBtnLabel = root.dataset.buttonLabel || 'PRE ORDER NOW';
+    const soldOutText = root.dataset.soldOutText || 'SOLD OUT';
+    const colorIndex = root.dataset.colorIndex;
+
+    // Listen to theme variant updates
+    const onVariantUpdate = (event) => {
+      const variant = event.detail?.resource;
+      if (!variant) return;
+
+      if (variantIdInput) {
+        variantIdInput.value = variant.id;
+      }
+
+      if (atcButton) {
+        if (variant.available) {
+          atcButton.removeAttribute('disabled');
+          if (buttonText) buttonText.textContent = defaultBtnLabel;
+        } else {
+          atcButton.setAttribute('disabled', 'disabled');
+          if (buttonText) buttonText.textContent = soldOutText;
+        }
+      }
+
+      // Update color context row if present
+      if (colorIndex !== undefined && variant.options) {
+        const colorVal = variant.options[Number(colorIndex)];
+        const colorValueEl = root.querySelector('.preorder-panel__color-value');
+        if (colorValueEl && colorVal) {
+          colorValueEl.textContent = colorVal;
+        }
+
+        root.querySelectorAll('.preorder-panel__swatch').forEach((swatch) => {
+          const val = swatch.dataset.value;
+          if (val && val.toLowerCase() === (colorVal || '').toLowerCase()) {
+            swatch.classList.add('is-active');
+            swatch.setAttribute('aria-checked', 'true');
+          } else {
+            swatch.classList.remove('is-active');
+            swatch.setAttribute('aria-checked', 'false');
+          }
+        });
+      }
+    };
+
+    section.addEventListener('variant:update', onVariantUpdate);
+    document.addEventListener('variant:update', onVariantUpdate);
+
+    // Swatch click handler
+    root.querySelectorAll('.preorder-panel__swatch').forEach((swatch) => {
+      swatch.addEventListener('click', () => {
+        const value = swatch.dataset.value;
+        if (!value) return;
+
+        // Try clicking corresponding variant picker radio button if present
+        const nativeRadio = document.querySelector(
+          `variant-picker input[type="radio"][value="${value}" i], variant-picker input[type="radio"][value="${value}"]`
+        );
+        if (nativeRadio) {
+          nativeRadio.click();
+          return;
+        }
+
+        // Try select dropdown if present
+        const nativeSelect = document.querySelector('variant-picker select');
+        if (nativeSelect) {
+          for (let i = 0; i < nativeSelect.options.length; i++) {
+            if (nativeSelect.options[i].text.trim().toLowerCase() === value.toLowerCase() ||
+                nativeSelect.options[i].value.trim().toLowerCase() === value.toLowerCase()) {
+              nativeSelect.selectedIndex = i;
+              nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+              return;
+            }
+          }
+        }
+
+        // Fallback UI update if standalone
+        const colorValueEl = root.querySelector('.preorder-panel__color-value');
+        if (colorValueEl) colorValueEl.textContent = value;
+        root.querySelectorAll('.preorder-panel__swatch').forEach((s) => {
+          s.classList.toggle('is-active', s === swatch);
+          s.setAttribute('aria-checked', s === swatch ? 'true' : 'false');
+        });
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Pre-order Panel",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Color context row"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_color_context",
+      "label": "Enable color context row",
+      "default": true,
+      "info": "Displays current color title and swatches. Can be disabled if a variant picker is already present."
+    },
+    {
+      "type": "text",
+      "id": "color_label",
+      "label": "Color row label",
+      "default": "Color"
+    },
+    {
+      "type": "text",
+      "id": "fallback_color_name",
+      "label": "Fallback color value",
+      "default": "Oracle White",
+      "info": "Used when previewing or if product does not have a Color option"
+    },
+    {
+      "type": "header",
+      "content": "Promotional card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_promo_card",
+      "label": "Show promotional card",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow text",
+      "default": "PRE-ORDER EXCLUSIVE"
+    },
+    {
+      "type": "text",
+      "id": "title_text",
+      "label": "Card title",
+      "default": "ARCHIVE 001 — THE ORIGIN PIECE"
+    },
+    {
+      "type": "textarea",
+      "id": "description_text",
+      "label": "Card description",
+      "default": "A limited edition metal collectible, exclusively with every pre-order."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "Learn more"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "promo_image",
+      "label": "Promo card image",
+      "info": "Leave blank to use default Archive 001 Origin Piece image"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card background color",
+      "default": "#FAF2E9"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "#E1CFB3"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow text color",
+      "default": "#B48A58"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title text color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Description text color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Pre-order button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "PRE ORDER NOW"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Pre-order information rows"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_details",
+      "label": "Show information rows",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "close_date_text",
+      "label": "Pre-order closing date text",
+      "default": "Pre-order closes on DD MMM YYYY"
+    },
+    {
+      "type": "text",
+      "id": "ship_date_text",
+      "label": "Shipping date text",
+      "default": "Ships by DD MMM YYYY"
+    },
+    {
+      "type": "color",
+      "id": "details_text_color",
+      "label": "Details text color",
+      "default": "#2B2B2B"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pre-order Panel"
+    }
+  ]
+}
+{% endschema %}

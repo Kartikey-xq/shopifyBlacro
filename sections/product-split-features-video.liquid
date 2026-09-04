@@ -248,34 +248,95 @@
         {%- if block.type == 'text_point' -%}
           {%- liquid
             assign block_title = block.settings.title
-            if block_title == blank
-              assign text_val = block.settings.text | strip_html | strip
-              for ns in product.metafields
-                assign namespace = ns | first
-                for field in product.metafields[namespace]
-                  assign key = field | first
-                  assign metafield_obj = field | last
-                  assign meta_val = metafield_obj.value | strip_html | strip
-                  if meta_val != blank and meta_val == text_val
-                    assign block_title = key | replace: '_', ' ' | replace: '-', ' ' | capitalize
-                    break
+            assign metafield_source = block.settings.metafield_key | default: 'auto'
+
+            if metafield_source == 'auto'
+              assign title_clean = block.settings.title | downcase | strip
+              if title_clean contains 'top length'
+                assign metafield_source = 'top-length-type'
+              elsif title_clean contains 'neckline'
+                assign metafield_source = 'neckline'
+              elsif title_clean contains 'sleeve'
+                assign metafield_source = 'sleeve-length-type'
+              elsif title_clean contains 'color'
+                assign metafield_source = 'color-pattern'
+              else
+                assign metafield_source = 'none'
+              endif
+            endif
+
+            assign target_metafield = blank
+            assign is_metafield = true
+
+            case metafield_source
+              when 'top-length-type'
+                assign target_metafield = product.metafields.shopify['top-length-type']
+                if block_title == blank
+                  assign block_title = 'Top length type'
+                endif
+              when 'neckline'
+                assign target_metafield = product.metafields.shopify.neckline
+                if block_title == blank
+                  assign block_title = 'Neckline type'
+                endif
+              when 'sleeve-length-type'
+                assign target_metafield = product.metafields.shopify['sleeve-length-type']
+                if block_title == blank
+                  assign block_title = 'Sleeve length type'
+                endif
+              when 'color-pattern'
+                assign target_metafield = product.metafields.shopify['color-pattern']
+                if block_title == blank
+                  assign block_title = 'Color'
+                endif
+              else
+                assign is_metafield = false
+            endcase
+
+            assign display_value = ''
+
+            if is_metafield
+              if target_metafield != blank and target_metafield.value != blank
+                for item in target_metafield.value
+                  assign item_label = item.label.value | default: item.label | default: item.name | default: item | strip_html | strip
+                  if item_label != blank
+                    if display_value == ''
+                      assign display_value = item_label
+                    else
+                      assign display_value = display_value | append: ', ' | append: item_label
+                    endif
                   endif
                 endfor
-                if block_title != blank
-                  break
+                if display_value == ''
+                  assign single_item = target_metafield.value
+                  assign item_label = single_item.label.value | default: single_item.label | default: single_item.name | default: single_item | strip_html | strip
+                  assign display_value = item_label
                 endif
-              endfor
+              endif
+            else
+              assign raw_text = block.settings.text | strip_html | strip
+              if raw_text != blank and raw_text != 'Dynamically link to metafield or write descriptive features.'
+                unless block.settings.text contains 'product.metafields'
+                  assign display_value = block.settings.text
+                endunless
+              endif
             endif
           -%}
           
-          <div class="product-split-features__point block-{{ block.id }}" {{ block.shopify_attributes }}>
-            {%- if block_title != blank -%}
-              <h4 class="product-split-features__point-title">{{ block_title }}</h4>
-            {%- endif -%}
-            <div class="product-split-features__point-text">
-              {{ block.settings.text }}
+          {%- if display_value != blank -%}
+            <div class="product-split-features__point block-{{ block.id }}" {{ block.shopify_attributes }}>
+              {%- if block_title != blank -%}
+                <h4 class="product-split-features__point-title">{{ block_title }}</h4>
+              {%- endif -%}
+              <div class="product-split-features__point-text">
+                {%- if is_metafield -%}
+                  <p>{{ display_value }}</p>
+                {%- else -%}
+                  {{ display_value }}
+                {%- endif -%}
+              </div>
             </div>
-          </div>
+          {%- endif -%}
         {%- endif -%}
       {%- endfor -%}
     </div>
@@ -426,6 +487,21 @@
           "id": "title",
           "label": "Bullet Point Title",
           "info": "Leave blank to automatically detect name from metafield."
+        },
+        {
+          "type": "select",
+          "id": "metafield_key",
+          "label": "Metafield source",
+          "options": [
+            { "value": "auto", "label": "Automatic (from title)" },
+            { "value": "top-length-type", "label": "Top length type" },
+            { "value": "neckline", "label": "Neckline type" },
+            { "value": "sleeve-length-type", "label": "Sleeve length type" },
+            { "value": "color-pattern", "label": "Color" },
+            { "value": "none", "label": "None (Custom text)" }
+          ],
+          "default": "auto",
+          "info": "Automatically pull values from product taxonomy metafields."
         },
         {
           "type": "richtext",

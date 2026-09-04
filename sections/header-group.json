@@ -69,6 +69,7 @@
             "community_button_width": 48,
             "community_button_padding_left": 0,
             "community_button_padding_right": 0,
+            "community_bottom_padding": 24,
             "menu_link_gap": 3,
             "gift_card_section_margin_top": 24,
             "gift_card_image_width": 292
