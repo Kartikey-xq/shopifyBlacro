@@ -56,6 +56,10 @@
       --pop-btn-bg: {{ block_settings.button_bg_color | default: '#000000' }};
       --pop-btn-text: {{ block_settings.button_text_color | default: '#FFFFFF' }};
       --pop-details-color: {{ block_settings.details_text_color | default: '#2B2B2B' }};
+      --pop-img-width: {{ block_settings.promo_image_width | default: 120 }}px;
+      --pop-img-height: {{ block_settings.promo_image_height | default: 125 }}px;
+      --pop-img-width-mobile: {{ block_settings.promo_image_width_mobile | default: 100 }}px;
+      --pop-img-height-mobile: {{ block_settings.promo_image_height_mobile | default: 100 }}px;
       display: flex;
       flex-direction: column;
       width: 100%;
@@ -215,16 +219,18 @@
     }
 
     .preorder-panel--{{ block.id }} .preorder-panel__promo-image-wrapper {
-      flex: 0 0 120px;
+      flex: 0 0 var(--pop-img-width);
+      width: var(--pop-img-width);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .preorder-panel--{{ block.id }} .preorder-panel__promo-image {
-      max-width: 100%;
+      width: 100%;
+      max-width: var(--pop-img-width);
       height: auto;
-      max-height: 125px;
+      max-height: var(--pop-img-height);
       object-fit: contain;
       display: block;
     }
@@ -303,7 +309,12 @@
         gap: 10px;
       }
       .preorder-panel--{{ block.id }} .preorder-panel__promo-image-wrapper {
-        flex: 0 0 100px;
+        flex: 0 0 var(--pop-img-width-mobile);
+        width: var(--pop-img-width-mobile);
+      }
+      .preorder-panel--{{ block.id }} .preorder-panel__promo-image {
+        max-width: var(--pop-img-width-mobile);
+        max-height: var(--pop-img-height-mobile);
       }
       .preorder-panel--{{ block.id }} .preorder-panel__eyebrow {
         font-size: 10.5px;
@@ -417,9 +428,10 @@
       </div>
       <div class="preorder-panel__promo-image-wrapper">
         {%- if block_settings.promo_image != blank -%}
+          {%- assign img_calc_width = block_settings.promo_image_width | default: 120 | times: 2 -%}
           {{
             block_settings.promo_image
-            | image_url: width: 300
+            | image_url: width: img_calc_width
             | image_tag:
               loading: 'lazy',
               alt: block_settings.title_text,
@@ -430,8 +442,8 @@
             src="{{ 'preorder-tag-sample.png' | asset_url }}"
             alt="{{ block_settings.title_text | default: 'Archive 001 — The Origin Piece' | escape }}"
             class="preorder-panel__promo-image"
-            width="160"
-            height="153"
+            width="{{ block_settings.promo_image_width | default: 120 }}"
+            height="{{ block_settings.promo_image_height | default: 125 }}"
             loading="lazy"
           >
         {%- endif -%}
@@ -712,6 +724,46 @@
       "id": "promo_image",
       "label": "Promo card image",
       "info": "Leave blank to use default Archive 001 Origin Piece image"
+    },
+    {
+      "type": "range",
+      "id": "promo_image_width",
+      "label": "Image width (desktop)",
+      "min": 40,
+      "max": 250,
+      "step": 5,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "promo_image_height",
+      "label": "Image max height (desktop)",
+      "min": 40,
+      "max": 250,
+      "step": 5,
+      "unit": "px",
+      "default": 125
+    },
+    {
+      "type": "range",
+      "id": "promo_image_width_mobile",
+      "label": "Image width (mobile)",
+      "min": 30,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "promo_image_height_mobile",
+      "label": "Image max height (mobile)",
+      "min": 30,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 100
     },
     {
       "type": "color",
