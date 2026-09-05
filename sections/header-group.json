@@ -30,6 +30,7 @@
         },
         "header-menu": {
           "type": "_header-menu",
+          "disabled": true,
           "static": true,
           "settings": {
             "menu": "main-menu",
@@ -89,7 +90,7 @@
         "menu_letter_spacing": 0,
         "menu_text_transform": "none",
         "menu_color": "#fafafa",
-        "show_search": true,
+        "show_search": false,
         "search_position": "right",
         "search_row": "top",
         "show_country": false,

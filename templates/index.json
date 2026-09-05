@@ -15,6 +15,7 @@
         "custom_button_dUHeRV": {
           "type": "custom_button",
           "name": "Custom Button",
+          "disabled": true,
           "settings": {
             "label": "scroll",
             "link": "",
@@ -58,6 +59,7 @@
         "custom_button_N98Hd4": {
           "type": "custom_button",
           "name": "Custom Button",
+          "disabled": true,
           "settings": {
             "label": "SHOP RELIC",
             "link": "shopify://collections/relic",
@@ -101,6 +103,7 @@
         "custom_text_GKmzFa": {
           "type": "custom_text",
           "name": "Custom Text",
+          "disabled": true,
           "settings": {
             "text": "<p>CULTURE THAT'S</p>",
             "width": "100%",
@@ -126,6 +129,7 @@
         "custom_text_Ce8yeA": {
           "type": "custom_text",
           "name": "Custom Text",
+          "disabled": true,
           "settings": {
             "text": "<p>WEARABLE</p>",
             "width": "100%",
@@ -151,6 +155,7 @@
         "custom_text_dKEgph": {
           "type": "custom_text",
           "name": "Custom Text",
+          "disabled": true,
           "settings": {
             "text": "<p>RELIC VOL . I</p>",
             "width": "100%",
@@ -176,6 +181,7 @@
         "custom_heading_BxU8QJ": {
           "type": "custom_heading",
           "name": "Custom Heading",
+          "disabled": true,
           "settings": {
             "heading": "BREED",
             "width": "fit-content",
@@ -201,6 +207,7 @@
         "custom_heading_t4YG4d": {
           "type": "custom_heading",
           "name": "Custom Heading",
+          "disabled": true,
           "settings": {
             "heading": "APART",
             "width": "fit-content",
@@ -241,7 +248,7 @@
         "stack_media_on_mobile": true,
         "custom_mobile_media": true,
         "media_type_1_mobile": "image",
-        "image_1_mobile": "shopify://shop_images/IMG_20260616_163649_505_d5709494-8e2a-45af-8e11-28a8fdbbd998.jpg",
+        "image_1_mobile": "shopify://shop_images/DSC02442-1.jpg",
         "media_type_2_mobile": "image",
         "link": "",
         "open_in_new_tab": false,
