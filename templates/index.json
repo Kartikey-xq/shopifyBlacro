@@ -12,6 +12,48 @@
     "hero_jVaWmY": {
       "type": "hero",
       "blocks": {
+        "custom_button_HnAFaQ": {
+          "type": "custom_button",
+          "name": "Custom Button",
+          "settings": {
+            "label": "PRE ORDER NOW",
+            "link": "shopify://collections/relic",
+            "open_in_new_tab": false,
+            "button_style": "custom",
+            "width": "fit-content",
+            "pad_top": 12,
+            "pad_bottom": 12,
+            "pad_left": 24,
+            "pad_right": 24,
+            "border_radius": 4,
+            "bg_color": "#ffffff",
+            "btn_text_color": "#000000",
+            "border_width": 10,
+            "border_style": "solid",
+            "border_color": "#EEEEEEEE",
+            "icon_position": "left",
+            "icon_color": "#ffffff",
+            "icon_size": 16,
+            "icon_spacing": 8,
+            "font_preset": "custom",
+            "custom_font_family": "body",
+            "color_text": "#EEEEEE",
+            "font_size": 12,
+            "line_height": 1.3,
+            "letter_spacing": 3,
+            "center_horizontally": false,
+            "pos_top": "auto",
+            "pos_bottom": "auto",
+            "pos_left": "auto",
+            "pos_right": "auto",
+            "pos_top_mobile": "auto",
+            "pos_bottom_mobile": "auto",
+            "pos_left_mobile": "auto",
+            "pos_right_mobile": "auto",
+            "z_index": 10
+          },
+          "blocks": {}
+        },
         "custom_heading_zweMCw": {
           "type": "custom_heading",
           "name": "Custom Heading",
@@ -307,6 +349,7 @@
         }
       },
       "block_order": [
+        "custom_button_HnAFaQ",
         "custom_heading_zweMCw",
         "custom_text_7bfEeq",
         "custom_text_GbtUgK",
