@@ -5211,6 +5211,20 @@ dialog-component:has(dialog[open]) .icon-plus {
     right: var(--pos-right-mobile, var(--pos-right, auto)) !important;
     height: auto !important;
   }
+
+  .custom-font-style {
+    font-size: var(--custom-font-size-mobile, var(--custom-font-size, inherit)) !important;
+  }
+
+  .custom-button {
+    font-size: var(--custom-font-size-mobile, var(--custom-font-size, inherit)) !important;
+  }
+
+  .custom-button-icon svg,
+  .custom-button-icon img {
+    width: var(--custom-btn-icon-size-mobile, var(--custom-btn-icon-size, 16px)) !important;
+    height: var(--custom-btn-icon-size-mobile, var(--custom-btn-icon-size, 16px)) !important;
+  }
 }
 
 .custom-font-style {
@@ -5240,7 +5254,7 @@ shopify-block:has(> .custom-position-block) {
 /* Custom button styles */
 .custom-button {
   font-family: inherit;
-  font-size: inherit;
+  font-size: var(--custom-font-size, inherit);
   font-weight: inherit;
   line-height: inherit;
   letter-spacing: inherit;

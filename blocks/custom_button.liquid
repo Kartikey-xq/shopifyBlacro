@@ -20,6 +20,10 @@
     if block.settings.button_style == 'custom' or block.settings.button_style == blank or block.settings.button_style == nil
       assign is_custom = true
     endif
+    assign icon_size_desktop = block.settings.icon_size | default: 16
+    assign icon_size_mobile = block.settings.icon_size_mobile | default: icon_size_desktop
+    assign font_size_desktop = block.settings.font_size | default: 16
+    assign font_size_mobile = block.settings.font_size_mobile | default: font_size_desktop
   %}
 
   <a
@@ -40,6 +44,10 @@
       --border-style: {{ b_style }};
       --border-color: {{ b_color }};
       --border-radius: {{ b_radius }}px;
+      --custom-btn-icon-size: {{ icon_size_desktop }}px;
+      --custom-btn-icon-size-mobile: {{ icon_size_mobile }}px;
+      --custom-font-size: {{ font_size_desktop }}px;
+      --custom-font-size-mobile: {{ font_size_mobile }}px;
       box-sizing: border-box !important;
       border: {{ b_width }}px {{ b_style }} {{ b_color }} !important;
       border-width: {{ b_width }}px !important;
@@ -260,7 +268,17 @@
     {
       "type": "range",
       "id": "icon_size",
-      "label": "Icon Size",
+      "label": "Desktop icon size",
+      "min": 8,
+      "max": 100,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_mobile",
+      "label": "Mobile icon size",
       "min": 8,
       "max": 100,
       "step": 1,
@@ -316,7 +334,17 @@
     {
       "type": "range",
       "id": "font_size",
-      "label": "Custom Font Size (px)",
+      "label": "Desktop button font size",
+      "min": 10,
+      "max": 110,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Mobile button font size",
       "min": 10,
       "max": 110,
       "step": 1,

@@ -80,13 +80,25 @@
 --custom-text-transform: {{ text_transform }};
 --custom-width: {{ settings.width | default: 'fit-content' }};
 
+{%- assign font_size_desktop = settings.font_size -%}
+{%- assign font_size_mobile = settings.font_size_mobile | default: font_size_desktop -%}
+
+{%- if font_size_desktop != blank -%}
+  --custom-font-size: {{ font_size_desktop }}px;
+  --custom-font-size-mobile: {{ font_size_mobile }}px;
+{%- elsif settings.font_preset == 'custom' -%}
+  --custom-font-size: 16px;
+  --custom-font-size-mobile: 16px;
+{%- else -%}
+  --custom-font-size: inherit;
+  --custom-font-size-mobile: inherit;
+{%- endif -%}
+
 {%- if settings.font_preset == 'custom' -%}
-  --custom-font-size: {{ settings.font_size }}px;
   --custom-line-height: {{ settings.line_height | default: '1.2' }};
   --custom-letter-spacing: {{ settings.letter_spacing | default: '0' }}px;
   --custom-text-color: {{ settings.color_text | default: 'inherit' }};
 {%- else -%}
-  --custom-font-size: inherit;
   --custom-line-height: {{ preset_line_height | default: 'inherit' }};
   --custom-letter-spacing: {{ preset_letter_spacing | default: 'inherit' }};
   --custom-text-color: inherit;
@@ -98,6 +110,8 @@
   {%- if b_color == blank or b_color == 'rgba(0,0,0,0)' -%}
     {%- assign b_color = '#000000' -%}
   {%- endif -%}
+  {%- assign icon_size_desktop = btn_settings.icon_size | default: 16 -%}
+  {%- assign icon_size_mobile = btn_settings.icon_size_mobile | default: icon_size_desktop -%}
   --custom-btn-padding-top: {{ btn_settings.pad_top | default: 12 }}px;
   --custom-btn-padding-right: {{ btn_settings.pad_right | default: 24 }}px;
   --custom-btn-padding-bottom: {{ btn_settings.pad_bottom | default: 12 }}px;
@@ -112,7 +126,8 @@
   --border-style: {{ btn_settings.border_style | default: 'solid' }};
   --border-color: {{ b_color }};
   --border-radius: {{ btn_settings.border_radius | default: 4 }}px;
-  --custom-btn-icon-size: {{ btn_settings.icon_size | default: 16 }}px;
+  --custom-btn-icon-size: {{ icon_size_desktop }}px;
+  --custom-btn-icon-size-mobile: {{ icon_size_mobile }}px;
   --custom-btn-icon-spacing: {{ btn_settings.icon_spacing | default: 8 }}px;
   --custom-btn-icon-color: {{ btn_settings.icon_color | default: '#ffffff' }};
 {%- endif -%}
