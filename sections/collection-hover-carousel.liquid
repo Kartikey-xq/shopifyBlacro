@@ -592,7 +592,17 @@
                   {%- endfor -%}
 
                   <div class="collection-hover-carousel__quick-add" data-product-id="{{ product.id }}">
-                    <button class="collection-hover-carousel__quick-add-btn" aria-label="Add to cart / Select size" type="button">
+                    <button 
+                      class="collection-hover-carousel__quick-add-btn" 
+                      aria-label="{% if section.settings.disable_quick_add %}Quick add disabled{% else %}Add to cart / Select size{% endif %}" 
+                      type="button"
+                      {% if section.settings.disable_quick_add %}
+                        aria-disabled="true"
+                        tabindex="-1"
+                        onclick="event.preventDefault(); event.stopPropagation(); return false;"
+                        onkeydown="if(event.key==='Enter'||event.key===' '||event.keyCode===13||event.keyCode===32){event.preventDefault(); event.stopPropagation(); return false;}"
+                      {% endif %}
+                    >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -1428,59 +1438,79 @@
 
         // Toggling overlay on click (+ button)
         if (plusBtn) {
-          plusBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+          if (plusBtn.getAttribute('aria-disabled') === 'true') {
+            const blockEvent = function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (typeof e.stopImmediatePropagation === 'function') {
+                e.stopImmediatePropagation();
+              }
+              return false;
+            };
+            plusBtn.addEventListener('click', blockEvent, true);
+            plusBtn.addEventListener('pointerdown', blockEvent, true);
+            plusBtn.addEventListener('mousedown', blockEvent, true);
+            plusBtn.addEventListener('touchstart', blockEvent, { capture: true, passive: false });
+            plusBtn.addEventListener('keydown', function(e) {
+              if (e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32) {
+                blockEvent(e);
+              }
+            }, true);
+          } else {
+            plusBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
 
-            // If there are sizes, show sizes overlay
-            if (sizesOverlay) {
-              // Close all other overlays in this section
-              section.querySelectorAll('.collection-hover-carousel__quick-add').forEach(el => {
-                if (el !== quickAddContainer) {
-                  el.classList.remove('is-active');
-                  if (typeof el._clearDismissTimer === 'function') {
-                    el._clearDismissTimer();
+              // If there are sizes, show sizes overlay
+              if (sizesOverlay) {
+                // Close all other overlays in this section
+                section.querySelectorAll('.collection-hover-carousel__quick-add').forEach(el => {
+                  if (el !== quickAddContainer) {
+                    el.classList.remove('is-active');
+                    if (typeof el._clearDismissTimer === 'function') {
+                      el._clearDismissTimer();
+                    }
                   }
+                });
+
+                const isActive = quickAddContainer.classList.contains('is-active');
+                if (isActive) {
+                  quickAddContainer.classList.remove('is-active');
+                  clearDismissTimer();
+                } else {
+                  quickAddContainer.classList.add('is-active');
+                  startDismissTimer();
                 }
-              });
-
-              const isActive = quickAddContainer.classList.contains('is-active');
-              if (isActive) {
-                quickAddContainer.classList.remove('is-active');
-                clearDismissTimer();
               } else {
-                quickAddContainer.classList.add('is-active');
-                startDismissTimer();
-              }
-            } else {
-              // No size options: add first available variant directly
-              const jsonEl = quickAddContainer.querySelector('.product-variants-json');
-              if (!jsonEl) return;
-              const variants = JSON.parse(jsonEl.textContent);
+                // No size options: add first available variant directly
+                const jsonEl = quickAddContainer.querySelector('.product-variants-json');
+                if (!jsonEl) return;
+                const variants = JSON.parse(jsonEl.textContent);
 
-              // Find selected color swatch (if any)
-              const checkedSwatch = card.querySelector('product-swatches input[type="radio"]:checked');
-              const selectedColor = checkedSwatch ? checkedSwatch.value.trim() : null;
+                // Find selected color swatch (if any)
+                const checkedSwatch = card.querySelector('product-swatches input[type="radio"]:checked');
+                const selectedColor = checkedSwatch ? checkedSwatch.value.trim() : null;
 
-              let targetVariant = null;
-              // 1. Try matching selected color first
-              if (selectedColor) {
-                targetVariant = variants.find(v => v.available && v.options.includes(selectedColor));
-              }
-              // 2. Fall back to first available variant
-              if (!targetVariant) {
-                targetVariant = variants.find(v => v.available);
-              }
-              // 3. Fall back to first variant of all
-              if (!targetVariant) {
-                targetVariant = variants[0];
-              }
+                let targetVariant = null;
+                // 1. Try matching selected color first
+                if (selectedColor) {
+                  targetVariant = variants.find(v => v.available && v.options.includes(selectedColor));
+                }
+                // 2. Fall back to first available variant
+                if (!targetVariant) {
+                  targetVariant = variants.find(v => v.available);
+                }
+                // 3. Fall back to first variant of all
+                if (!targetVariant) {
+                  targetVariant = variants[0];
+                }
 
-              if (targetVariant) {
-                addToCart(targetVariant.id, quickAddContainer, plusBtn);
+                if (targetVariant) {
+                  addToCart(targetVariant.id, quickAddContainer, plusBtn);
+                }
               }
-            }
-          });
+            });
+          }
         }
 
         // Desktop hover inactivity check
@@ -2204,7 +2234,13 @@
     },
     {
       "type": "header",
-      "content": "Quick Add Size Typography Settings"
+      "content": "General settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "disable_quick_add",
+      "label": "Disable Quick Add",
+      "default": false
     },
     {
       "type": "select",
