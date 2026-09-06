@@ -16,23 +16,47 @@
         rel="noopener noreferrer"
       {%- endif -%}
     {%- endif -%}
-    class="custom-button custom-button--icon-{{ block.settings.icon_position }}{% if block.settings.button_style != 'custom' %} {{ block.settings.button_style }}{% endif %}"
-    {%- if block.settings.button_style == 'custom' -%}
-      style="
-        --custom-btn-border-width: {{ block.settings.border_width | default: 1 }}px;
-        --custom-btn-border-style: {{ block.settings.border_style | default: 'solid' }};
-        --custom-btn-border-color: {{ block.settings.border_color | default: 'currentColor' }};
-        --custom-btn-border-radius: {{ block.settings.border_radius | default: 4 }}px;
-        --border-width: {{ block.settings.border_width | default: 1 }}px;
-        --border-style: {{ block.settings.border_style | default: 'solid' }};
-        --border-color: {{ block.settings.border_color | default: 'currentColor' }};
-        --border-radius: {{ block.settings.border_radius | default: 4 }}px;
-        border-width: {{ block.settings.border_width | default: 1 }}px !important;
-        border-style: {{ block.settings.border_style | default: 'solid' }} !important;
-        border-color: {{ block.settings.border_color | default: 'currentColor' }} !important;
-        border-radius: {{ block.settings.border_radius | default: 4 }}px !important;
-      "
-    {%- endif -%}
+    class="custom-button custom-button--icon-{{ block.settings.icon_position }}{% if block.settings.button_style != 'custom' and block.settings.button_style != blank %} {{ block.settings.button_style }}{% endif %}"
+    {%- liquid
+      assign b_width = block.settings.border_width | default: 1
+      assign b_style = block.settings.border_style | default: 'solid'
+      assign b_color = block.settings.border_color
+      if b_color == blank or b_color == 'rgba(0,0,0,0)'
+        assign b_color = '#000000'
+      endif
+      assign b_radius = block.settings.border_radius | default: 4
+      assign is_custom = false
+      if block.settings.button_style == 'custom' or block.settings.button_style == blank or block.settings.button_style == nil
+        assign is_custom = true
+      endif
+    -%}
+    style="
+      --custom-btn-border-width: {{ b_width }}px;
+      --custom-btn-border-style: {{ b_style }};
+      --custom-btn-border-color: {{ b_color }};
+      --custom-btn-border-radius: {{ b_radius }}px;
+      --border-width: {{ b_width }}px;
+      --border-style: {{ b_style }};
+      --border-color: {{ b_color }};
+      --border-radius: {{ b_radius }}px;
+      box-sizing: border-box !important;
+      {%- if is_custom -%}
+        border: {{ b_width }}px {{ b_style }} {{ b_color }} !important;
+        border-width: {{ b_width }}px !important;
+        border-style: {{ b_style }} !important;
+        border-color: {{ b_color }} !important;
+        border-radius: {{ b_radius }}px !important;
+        background-color: {{ block.settings.bg_color | default: 'transparent' }} !important;
+        color: {{ block.settings.btn_text_color | default: 'inherit' }} !important;
+        padding: {{ block.settings.pad_top | default: 12 }}px {{ block.settings.pad_right | default: 24 }}px {{ block.settings.pad_bottom | default: 12 }}px {{ block.settings.pad_left | default: 24 }}px !important;
+      {%- elsif b_width > 0 -%}
+        border: {{ b_width }}px {{ b_style }} {{ b_color }} !important;
+        border-width: {{ b_width }}px !important;
+        border-style: {{ b_style }} !important;
+        border-color: {{ b_color }} !important;
+        border-radius: {{ b_radius }}px !important;
+      {%- endif -%}
+    "
   >
     {%- if block.settings.icon_image != blank -%}
       {%- if block.settings.icon_position == 'left' or block.settings.icon_position == 'left-top' or block.settings.icon_position == 'top' -%}

@@ -5269,6 +5269,11 @@ shopify-block:has(> .custom-position-block) {
   border-width: var(--custom-btn-border-width, var(--border-width, 1px)) !important;
   border-style: var(--custom-btn-border-style, var(--border-style, solid)) !important;
   border-color: var(--custom-btn-border-color, var(--border-color, currentColor)) !important;
+  box-sizing: border-box !important;
+}
+
+.custom-button {
+  box-sizing: border-box !important;
 }
 
 .custom-button:hover {
