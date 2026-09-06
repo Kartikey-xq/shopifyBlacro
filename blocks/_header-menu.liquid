@@ -16,6 +16,10 @@
       class="header__drawer"
       ref="headerDrawerContainer"
       data-hydration-key="header-drawer-mobile"
+      {% if section.settings.hide_menu %}
+        aria-hidden="true"
+        inert
+      {% endif %}
       {{ block.shopify_attributes }}
     >
       {% render 'header-drawer', linklist: block_settings.menu, data_header_drawer_type: 'mobile-drawer', section: section, transparent_color_scheme: transparent_color_scheme, block: block %}
@@ -27,6 +31,10 @@
         class="menu-list menu-list--mobile"
         style="--menu-horizontal-gap: 15px; --mobile-nav-margin: auto;"
         data-hydration-key="header-menu-mobile-navigation-bar"
+        {% if section.settings.hide_menu %}
+          aria-hidden="true"
+          inert
+        {% endif %}
       >
         <div class="menu-list__scroll-container">
           <ul
@@ -139,6 +147,10 @@
       class="header-menu"
       {{ block.shopify_attributes }}
       data-hydration-key="header-menu"
+      {% if section.settings.hide_menu %}
+        aria-hidden="true"
+        inert
+      {% endif %}
     >
       <div class="header-menu__inner">
         <nav header-menu>

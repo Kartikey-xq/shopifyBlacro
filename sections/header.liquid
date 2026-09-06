@@ -303,7 +303,10 @@
   endif
 -%}<header-component
   id="header-component"
-  class="{{ class }}"
+  class="{{ class }}{% if section.settings.hide_menu %} header--menu-hidden{% endif %}"
+  {% if section.settings.hide_menu %}
+    data-menu-hidden="true"
+  {% endif %}
   data-theme-color="rgb({{ section.settings.color_scheme_top.settings.background.rgb }})"
   {% if transparent %}
     transparent="{{ transparent }}"
@@ -343,6 +346,69 @@
       white-space: nowrap;
       width: auto !important;
       height: auto !important;
+    }
+
+    #header-component[data-menu-hidden='true'] :is(
+      header-menu,
+      .header-menu,
+      .header__drawer,
+      header-drawer,
+      .menu-drawer-container,
+      .header__icon--menu,
+      .mobile-menu-text-trigger,
+      .menu-drawer,
+      .header__navigation-bar-row,
+      .menu-list--mobile
+    ),
+    #header-component.header--menu-hidden :is(
+      header-menu,
+      .header-menu,
+      .header__drawer,
+      header-drawer,
+      .menu-drawer-container,
+      .header__icon--menu,
+      .mobile-menu-text-trigger,
+      .menu-drawer,
+      .header__navigation-bar-row,
+      .menu-list--mobile
+    ) {
+      visibility: hidden !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
+      cursor: default !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+    }
+
+    #header-component[data-menu-hidden='true'] :is(header-menu, .header-menu, .header__drawer, header-drawer, .header__icon--menu, .mobile-menu-text-trigger),
+    #header-component.header--menu-hidden :is(header-menu, .header-menu, .header__drawer, header-drawer, .header__icon--menu, .mobile-menu-text-trigger) {
+      position: absolute !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      max-height: 0 !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    #header-component[data-menu-hidden='true'] .header__navigation-bar-row,
+    #header-component.header--menu-hidden .header__navigation-bar-row {
+      visibility: hidden !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      max-height: 0 !important;
+      overflow: hidden !important;
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
   </style>
   {%- if request.page_type == 'index' -%}
@@ -450,6 +516,70 @@
     #header-component[data-menu-style='menu'] .header__navigation-bar-row {
       display: none;
     }
+  }
+
+  /* Scoped hidden menu state when "Hide menu" setting is enabled */
+  #header-component[data-menu-hidden='true'] :is(
+    header-menu,
+    .header-menu,
+    .header__drawer,
+    header-drawer,
+    .menu-drawer-container,
+    .header__icon--menu,
+    .mobile-menu-text-trigger,
+    .menu-drawer,
+    .header__navigation-bar-row,
+    .menu-list--mobile
+  ),
+  #header-component.header--menu-hidden :is(
+    header-menu,
+    .header-menu,
+    .header__drawer,
+    header-drawer,
+    .menu-drawer-container,
+    .header__icon--menu,
+    .mobile-menu-text-trigger,
+    .menu-drawer,
+    .header__navigation-bar-row,
+    .menu-list--mobile
+  ) {
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    cursor: default !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+  }
+
+  #header-component[data-menu-hidden='true'] :is(header-menu, .header-menu, .header__drawer, header-drawer, .header__icon--menu, .mobile-menu-text-trigger),
+  #header-component.header--menu-hidden :is(header-menu, .header-menu, .header__drawer, header-drawer, .header__icon--menu, .mobile-menu-text-trigger) {
+    position: absolute !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  #header-component[data-menu-hidden='true'] .header__navigation-bar-row,
+  #header-component.header--menu-hidden .header__navigation-bar-row {
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   .header[transparent] {
@@ -1084,6 +1214,12 @@
     {
       "type": "header",
       "content": "t:content.menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_menu",
+      "label": "Hide menu",
+      "default": false
     },
     {
       "type": "select",

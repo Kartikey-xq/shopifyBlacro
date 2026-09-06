@@ -50,6 +50,10 @@
 <header-drawer
   class="header-drawer {{ class }}"
   style="--menu-image-border-radius: {{ image_border_radius }}px; --resource-card-corner-radius: {{ image_border_radius }}px;"
+  {% if section.settings.hide_menu %}
+    aria-hidden="true"
+    inert
+  {% endif %}
 >
   {%- if block_settings.drawer_nav_font != blank -%}
     <style>
@@ -65,11 +69,20 @@
     class="menu-drawer-container"
     ref="details"
     scroll-lock
+    {% if section.settings.hide_menu %}
+      aria-hidden="true"
+      inert
+    {% endif %}
   >
     <summary
       class="header__icon header__icon--menu header__icon--summary"
       aria-label="{{ 'accessibility.menu' | t }}"
-      on:click="/toggle"
+      {% if section.settings.hide_menu %}
+        tabindex="-1"
+        aria-disabled="true"
+      {% else %}
+        on:click="/toggle"
+      {% endif %}
     >
       <span class="header-drawer-icon header-drawer-icon--open mobile-menu-text-trigger">
         {{- section.settings.menu_label | default: 'Menu' -}}
