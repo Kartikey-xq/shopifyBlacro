@@ -97,13 +97,17 @@
   --custom-btn-padding-right: {{ settings.pad_right | default: 24 }}px;
   --custom-btn-padding-bottom: {{ settings.pad_bottom | default: 12 }}px;
   --custom-btn-padding-left: {{ settings.pad_left | default: 24 }}px;
-  --custom-btn-border-radius: {{ settings.border_radius | default: '4px' }}px;
+  --custom-btn-border-radius: {{ block.settings.border_radius | default: settings.border_radius | default: 4 }}px;
   --custom-btn-bg-color: {{ settings.bg_color | default: 'transparent' }};
   --custom-btn-text-color: {{ settings.btn_text_color | default: 'inherit' }};
-  --custom-btn-border-width: {{ settings.border_width | default: '1px' }}px;
+  --custom-btn-border-width: {{ block.settings.border_width | default: settings.border_width | default: 1 }}px;
   --custom-btn-border-style: {{ settings.border_style | default: 'solid' }};
   --custom-btn-border-color: {{ settings.border_color | default: 'currentColor' }};
-  --custom-btn-icon-size: {{ settings.icon_size | default: '16' }}px;
-  --custom-btn-icon-spacing: {{ settings.icon_spacing | default: '8' }}px;
+  --border-width: {{ block.settings.border_width | default: settings.border_width | default: 1 }}px;
+  --border-style: {{ settings.border_style | default: 'solid' }};
+  --border-color: {{ settings.border_color | default: 'currentColor' }};
+  --border-radius: {{ block.settings.border_radius | default: settings.border_radius | default: 4 }}px;
+  --custom-btn-icon-size: {{ settings.icon_size | default: 16 }}px;
+  --custom-btn-icon-spacing: {{ settings.icon_spacing | default: 8 }}px;
   --custom-btn-icon-color: {{ settings.icon_color | default: '#ffffff' }};
 {%- endif -%}

@@ -5262,10 +5262,13 @@ shopify-block:has(> .custom-position-block) {
 
 .custom-button:not(.button):not(.button-secondary):not(.link) {
   padding: var(--custom-btn-padding-top, 12px) var(--custom-btn-padding-right, 24px) var(--custom-btn-padding-bottom, 12px) var(--custom-btn-padding-left, 24px) !important;
-  border-radius: var(--custom-btn-border-radius, 4px) !important;
+  border-radius: var(--custom-btn-border-radius, var(--border-radius, 4px)) !important;
   background-color: var(--custom-btn-bg-color, transparent) !important;
   color: var(--custom-btn-text-color, inherit) !important;
-  border: var(--custom-btn-border-width, 1px) var(--custom-btn-border-style, solid) var(--custom-btn-border-color, currentColor) !important;
+  border: var(--custom-btn-border-width, var(--border-width, 1px)) var(--custom-btn-border-style, var(--border-style, solid)) var(--custom-btn-border-color, var(--border-color, currentColor)) !important;
+  border-width: var(--custom-btn-border-width, var(--border-width, 1px)) !important;
+  border-style: var(--custom-btn-border-style, var(--border-style, solid)) !important;
+  border-color: var(--custom-btn-border-color, var(--border-color, currentColor)) !important;
 }
 
 .custom-button:hover {
