@@ -56,6 +56,10 @@
   style="
     {% render 'spacing-padding', settings: block_settings %}
     {% render 'typography-style', settings: block_settings %}
+    --margin-top-desktop: {{ block_settings.margin_top_desktop | default: 0 }}px;
+    --margin-top-mobile: {{ block_settings.margin_top_mobile | default: 0 }}px;
+    --margin-bottom-desktop: {{ block_settings.margin_bottom_desktop | default: 0 }}px;
+    --margin-bottom-mobile: {{ block_settings.margin_bottom_mobile | default: 0 }}px;
     --width: {{ text_width }};
     --max-width: var(--max-width--{{ type }}-{{ block_settings.max_width }});
     {% if text_width == "100%" %}
@@ -123,6 +127,22 @@
     display: flex;
     flex-direction: column;
     align-items: var(--horizontal-alignment);
+  }
+
+  .text-block.spacing-style {
+    --margin-block-start: var(--margin-top-desktop, 0px);
+    --margin-block-end: var(--margin-bottom-desktop, 0px);
+    margin-block-start: var(--margin-block-start);
+    margin-block-end: var(--margin-block-end);
+  }
+
+  @media screen and (max-width: 749px) {
+    .text-block.spacing-style {
+      --margin-block-start: var(--margin-top-mobile, 0px);
+      --margin-block-end: var(--margin-bottom-mobile, 0px);
+      margin-block-start: var(--margin-block-start);
+      margin-block-end: var(--margin-block-end);
+    }
   }
 
   .text-block > * {
