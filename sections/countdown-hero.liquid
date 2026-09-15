@@ -1,0 +1,2361 @@
+{% comment %}
+  Standalone Countdown Hero Section
+  Recreates the minimal luxury streetwear preorder countdown design 1:1.
+  Completely independent and isolated from existing hero section.
+{% endcomment %}
+
+{% liquid
+  assign section_id = section.id
+  assign bg_color = section.settings.bg_color | default: '#000000'
+  assign text_color = section.settings.text_color | default: '#f4f3ec'
+  assign min_height = '100svh'
+  if section.settings.section_height == 'viewport_height'
+    assign min_height = '100vh'
+  elsif section.settings.section_height == 'three_quarter'
+    assign min_height = '75svh'
+  elsif section.settings.section_height == 'custom'
+    assign min_height = section.settings.custom_height | append: 'svh'
+  endif
+%}
+
+{% style %}
+  #CountdownHero-{{ section_id }} {
+    --ch-bg-color: {{ bg_color }};
+    --ch-text-color: {{ text_color }};
+    --ch-min-height: {{ min_height }};
+    --ch-content-max-width: {{ section.settings.content_max_width | default: 680 }}px;
+    --ch-padding-top: {{ section.settings.padding_top | default: 60 }}px;
+    --ch-padding-bottom: {{ section.settings.padding_bottom | default: 60 }}px;
+    --ch-padding-top-mobile: {{ section.settings.padding_top_mobile | default: 40 }}px;
+    --ch-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile | default: 40 }}px;
+    --ch-anim-duration: {{ section.settings.animation_duration | default: 300 }}ms;
+
+    position: relative;
+    width: 100%;
+    min-height: var(--ch-min-height);
+    background-color: var(--ch-bg-color);
+    color: var(--ch-text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: var(--ch-padding-top);
+    padding-bottom: var(--ch-padding-bottom);
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media screen and (max-width: 749px) {
+    #CountdownHero-{{ section_id }} {
+      padding-top: var(--ch-padding-top-mobile);
+      padding-bottom: var(--ch-padding-bottom-mobile);
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+
+  @media screen and (max-height: 520px) {
+    #CountdownHero-{{ section_id }} {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__container {
+    width: 100%;
+    max-width: var(--ch-content-max-width);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__content-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* Block base positioning & responsive margins */
+  #CountdownHero-{{ section_id }} .countdown-hero__block {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: var(--m-top-d, 0px);
+    margin-bottom: var(--m-bottom-d, 0px);
+    z-index: var(--z-index, 10);
+  }
+
+  @media screen and (max-width: 749px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__block {
+      margin-top: var(--m-top-m, 0px);
+      margin-bottom: var(--m-bottom-m, 0px);
+    }
+  }
+
+  @media screen and (max-height: 520px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__block {
+      margin-top: 0px !important;
+    }
+  }
+
+  /* Desktop absolute positioning override */
+  #CountdownHero-{{ section_id }} .countdown-hero__block[data-pos-desktop="true"] {
+    position: absolute !important;
+    top: var(--pos-top, auto);
+    bottom: var(--pos-bottom, auto);
+    left: var(--pos-left, auto);
+    right: var(--pos-right, auto);
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__block[data-centered-desktop="true"] {
+    left: 0 !important;
+    right: 0 !important;
+    margin-inline: auto !important;
+    width: fit-content !important;
+  }
+
+  /* Mobile absolute positioning override */
+  @media screen and (max-width: 749px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__block[data-pos-mobile="true"] {
+      position: absolute !important;
+      top: var(--pos-top-mobile, var(--pos-top, auto));
+      bottom: var(--pos-bottom-mobile, var(--pos-bottom, auto));
+      left: var(--pos-left-mobile, var(--pos-left, auto));
+      right: var(--pos-right-mobile, var(--pos-right, auto));
+    }
+
+    #CountdownHero-{{ section_id }} .countdown-hero__block[data-centered-mobile="true"] {
+      left: 0 !important;
+      right: 0 !important;
+      margin-inline: auto !important;
+      width: fit-content !important;
+    }
+  }
+
+  /* 1. Logo Block */
+  #CountdownHero-{{ section_id }} .countdown-hero__logo-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__logo-img {
+    display: block;
+    width: var(--logo-width, 110px);
+    height: auto;
+    object-fit: contain;
+  }
+
+  @media screen and (max-width: 749px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__logo-img {
+      width: var(--logo-width-m, 95px);
+    }
+  }
+
+  @media screen and (max-height: 520px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__block--logo {
+      margin-bottom: 16px !important;
+    }
+    #CountdownHero-{{ section_id }} .countdown-hero__logo-img {
+      width: 65px !important;
+    }
+  }
+
+  /* 2. Preorder Text Block */
+  #CountdownHero-{{ section_id }} .countdown-hero__preorder-text {
+    font-family: var(--font-body--family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: var(--preorder-size, 13px);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--preorder-spacing, 0.32em);
+    color: var(--preorder-color, #e6e5dc);
+    text-align: center;
+    margin: 0;
+    padding-left: var(--preorder-spacing, 0.32em);
+    line-height: 1.2;
+  }
+
+  @media screen and (max-width: 749px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__preorder-text {
+      font-size: var(--preorder-size-m, 10px);
+      letter-spacing: var(--preorder-spacing-m, 0.3em);
+      padding-left: var(--preorder-spacing-m, 0.3em);
+    }
+  }
+
+  @media screen and (max-height: 520px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__block--preorder {
+      margin-bottom: 12px !important;
+    }
+  }
+
+  /* 3. Countdown Timer Block */
+  #CountdownHero-{{ section_id }} .countdown-hero__timer {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    font-family: 'Anton', var(--font-heading--family, 'Impact', sans-serif);
+    font-size: var(--timer-size, 78px);
+    line-height: 1;
+    color: var(--timer-color, #f4f3ec);
+    user-select: none;
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: 'tnum' 1, 'lnum' 1;
+  }
+
+  @media screen and (max-width: 749px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__timer {
+      max-width: 380px;
+      font-size: var(--timer-size-m, 52px);
+    }
+  }
+
+  @media screen and (max-width: 360px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__timer {
+      font-size: 42px;
+    }
+  }
+
+  @media screen and (max-height: 520px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__block--countdown {
+      margin-bottom: 6px !important;
+    }
+    #CountdownHero-{{ section_id }} .countdown-hero__timer {
+      font-size: 40px !important;
+    }
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__unit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__digit-slot {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    height: 1.08em;
+    width: 0.6em;
+    line-height: 1.08em;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__digit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__digit--current {
+    transform: translateY(0);
+  }
+
+  /* Upward Ticker Animations */
+  #CountdownHero-{{ section_id }} .countdown-hero__digit--animating-out {
+    animation: countdownHeroSlideUpExit-{{ section_id }} var(--ch-anim-duration, 300ms) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__digit--animating-in {
+    animation: countdownHeroSlideUpEnter-{{ section_id }} var(--ch-anim-duration, 300ms) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes countdownHeroSlideUpExit-{{ section_id }} {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes countdownHeroSlideUpEnter-{{ section_id }} {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  /* Stable Colon Separator with custom square blocks */
+  #CountdownHero-{{ section_id }} .countdown-hero__sep {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.36em;
+    width: 0.45em;
+    height: 1.08em;
+    vertical-align: middle;
+    margin: 0 clamp(4px, 1.2vw, 10px);
+    user-select: none;
+    color: var(--sep-color, #f4f3ec);
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__sep::before,
+  #CountdownHero-{{ section_id }} .countdown-hero__sep::after {
+    content: "";
+    display: block;
+    width: 0.12em;
+    height: 0.12em;
+    background-color: currentColor;
+    border-radius: 0.015em;
+  }
+
+  /* Completed Message Container */
+  #CountdownHero-{{ section_id }} .countdown-hero__completed-msg {
+    display: none;
+    font-size: clamp(16px, 2.5vw, 24px);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--timer-color, #f4f3ec);
+  }
+
+  #CountdownHero-{{ section_id }}[data-completed="true"] .countdown-hero__completed-msg {
+    display: block;
+  }
+
+  #CountdownHero-{{ section_id }}[data-completed="true"][data-hide-timer="true"] .countdown-hero__timer {
+    display: none;
+  }
+
+  /* 4. Unit Labels Block */
+  #CountdownHero-{{ section_id }} .countdown-hero__labels {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    font-family: var(--font-body--family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: var(--label-size, 11px);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--label-spacing, 0.22em);
+    color: var(--label-color, #cccccc);
+    user-select: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__labels {
+      max-width: 380px;
+      font-size: var(--label-size-m, 8px);
+      letter-spacing: var(--label-spacing-m, 0.18em);
+    }
+  }
+
+  @media screen and (max-width: 360px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__labels {
+      font-size: 7.5px;
+      letter-spacing: 0.12em;
+    }
+  }
+
+  @media screen and (max-height: 520px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__block--labels {
+      margin-bottom: 16px !important;
+    }
+    #CountdownHero-{{ section_id }} .countdown-hero__labels {
+      font-size: 8px !important;
+    }
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__label {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: var(--label-spacing, 0.22em);
+  }
+
+  @media screen and (max-width: 749px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__label {
+      padding-left: var(--label-spacing-m, 0.18em);
+    }
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__label-spacer {
+    width: 0.45em;
+    margin: 0 clamp(4px, 1.2vw, 10px);
+    visibility: hidden;
+  }
+
+  /* 5. Stay Tuned Button Block */
+  #CountdownHero-{{ section_id }} .countdown-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--btn-pad-v, 11px) var(--btn-pad-h, 34px);
+    border-radius: var(--btn-radius, 9999px);
+    border-width: var(--btn-border-w, 1px);
+    border-style: solid;
+    border-color: var(--btn-border-color, #ffffff);
+    background-color: var(--btn-bg, transparent);
+    color: var(--btn-color, #f4f3ec);
+    font-family: var(--font-body--family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: var(--btn-size, 13px);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--btn-spacing, 0.26em);
+    text-decoration: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, opacity 0.2s ease;
+    padding-left: calc(var(--btn-pad-h, 34px) + var(--btn-spacing, 0.26em));
+    line-height: 1.2;
+    min-height: 42px;
+  }
+
+  @media screen and (max-width: 749px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__btn {
+      padding: var(--btn-pad-v-m, 9px) var(--btn-pad-h-m, 28px);
+      font-size: var(--btn-size-m, 10.5px);
+      letter-spacing: var(--btn-spacing-m, 0.25em);
+      padding-left: calc(var(--btn-pad-h-m, 28px) + var(--btn-spacing-m, 0.25em));
+      min-height: 34px;
+    }
+  }
+
+  @media screen and (max-height: 520px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__block--button {
+      margin-bottom: 12px !important;
+    }
+    #CountdownHero-{{ section_id }} .countdown-hero__btn {
+      padding: 6px 22px !important;
+      font-size: 10px !important;
+      min-height: 30px !important;
+    }
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__btn:hover {
+    background-color: rgba(244, 243, 236, 0.12);
+    border-color: #ffffff;
+    color: #ffffff;
+    opacity: 0.95;
+  }
+
+  #CountdownHero-{{ section_id }} .countdown-hero__btn:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
+  }
+
+  /* 6. Tagline Block */
+  #CountdownHero-{{ section_id }} .countdown-hero__tagline {
+    font-family: var(--font-body--family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: var(--tagline-size, 11px);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tagline-spacing, 0.45em);
+    color: var(--tagline-color, #b5b4aa);
+    text-align: center;
+    margin: 0;
+    padding-left: var(--tagline-spacing, 0.45em);
+    line-height: 1.2;
+  }
+
+  @media screen and (max-width: 749px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__tagline {
+      font-size: var(--tagline-size-m, 8.5px);
+      letter-spacing: var(--tagline-spacing-m, 0.42em);
+      padding-left: var(--tagline-spacing-m, 0.42em);
+    }
+  }
+
+  @media screen and (max-height: 520px) {
+    #CountdownHero-{{ section_id }} .countdown-hero__tagline {
+      font-size: 8px !important;
+    }
+  }
+
+  /* Accessibility visually hidden */
+  #CountdownHero-{{ section_id }} .countdown-hero__sr-only {
+    position: absolute !important;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    clip: rect(0 0 0 0);
+    word-wrap: normal !important;
+  }
+
+  /* Accessibility: Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    #CountdownHero-{{ section_id }} .countdown-hero__digit--animating-out {
+      animation: none !important;
+      display: none !important;
+    }
+    #CountdownHero-{{ section_id }} .countdown-hero__digit--animating-in {
+      animation: none !important;
+      transform: translateY(0) !important;
+    }
+    #CountdownHero-{{ section_id }} .countdown-hero__btn {
+      transition: none !important;
+    }
+  }
+{% endstyle %}
+
+<div
+  id="CountdownHero-{{ section_id }}"
+  class="countdown-hero countdown-hero--{{ section_id }}"
+  data-section-id="{{ section_id }}"
+  data-countdown-hero
+  {{ section.shopify_attributes }}
+>
+  <div class="countdown-hero__container">
+    <div class="countdown-hero__content-wrapper">
+
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- liquid
+            # Positioning checks
+            assign is_pos_d = false
+            if block.settings.pos_top != 'auto' and block.settings.pos_top != blank
+              assign is_pos_d = true
+            elsif block.settings.pos_bottom != 'auto' and block.settings.pos_bottom != blank
+              assign is_pos_d = true
+            elsif block.settings.pos_left != 'auto' and block.settings.pos_left != blank
+              assign is_pos_d = true
+            elsif block.settings.pos_right != 'auto' and block.settings.pos_right != blank
+              assign is_pos_d = true
+            endif
+
+            assign is_pos_m = false
+            if block.settings.pos_top_mobile != 'auto' and block.settings.pos_top_mobile != blank
+              assign is_pos_m = true
+            elsif block.settings.pos_bottom_mobile != 'auto' and block.settings.pos_bottom_mobile != blank
+              assign is_pos_m = true
+            elsif block.settings.pos_left_mobile != 'auto' and block.settings.pos_left_mobile != blank
+              assign is_pos_m = true
+            elsif block.settings.pos_right_mobile != 'auto' and block.settings.pos_right_mobile != blank
+              assign is_pos_m = true
+            elsif is_pos_d
+              assign is_pos_m = true
+            endif
+
+            assign is_center_d = false
+            assign is_center_m = false
+            if block.settings.center_horizontally
+              if is_pos_d
+                assign is_center_d = true
+              endif
+              if is_pos_m
+                assign is_center_m = true
+              endif
+            endif
+          -%}
+
+          <div
+            id="CountdownBlock-{{ block.id }}"
+            class="countdown-hero__block countdown-hero__block--{{ block.type }} countdown-hero__block--{{ block.id }}"
+            data-pos-desktop="{{ is_pos_d }}"
+            data-pos-mobile="{{ is_pos_m }}"
+            data-centered-desktop="{{ is_center_d }}"
+            data-centered-mobile="{{ is_center_m }}"
+            style="
+              --pos-top: {{ block.settings.pos_top | default: 'auto' }};
+              --pos-bottom: {{ block.settings.pos_bottom | default: 'auto' }};
+              --pos-left: {{ block.settings.pos_left | default: 'auto' }};
+              --pos-right: {{ block.settings.pos_right | default: 'auto' }};
+              --pos-top-mobile: {{ block.settings.pos_top_mobile | default: 'auto' }};
+              --pos-bottom-mobile: {{ block.settings.pos_bottom_mobile | default: 'auto' }};
+              --pos-left-mobile: {{ block.settings.pos_left_mobile | default: 'auto' }};
+              --pos-right-mobile: {{ block.settings.pos_right_mobile | default: 'auto' }};
+              --m-top-d: {{ block.settings.margin_top_desktop | default: 0 }}px;
+              --m-top-m: {{ block.settings.margin_top_mobile | default: 0 }}px;
+              --m-bottom-d: {{ block.settings.margin_bottom_desktop | default: 0 }}px;
+              --m-bottom-m: {{ block.settings.margin_bottom_mobile | default: 0 }}px;
+              --z-index: {{ block.settings.z_index | default: 10 }};
+            "
+            {{ block.shopify_attributes }}
+          >
+            {%- case block.type -%}
+              {%- when 'logo' -%}
+                <div
+                  class="countdown-hero__logo-wrapper"
+                  style="
+                    --logo-width: {{ block.settings.logo_width | default: 110 }}px;
+                    --logo-width-m: {{ block.settings.logo_width_mobile | default: 95 }}px;
+                  "
+                >
+                  {%- if block.settings.image != blank -%}
+                    {{
+                      block.settings.image
+                      | image_url: width: 600
+                      | image_tag:
+                        loading: 'eager',
+                        class: 'countdown-hero__logo-img',
+                        alt: block.settings.logo_alt | default: 'Brand Logo'
+                    }}
+                  {%- else -%}
+                    <img
+                      src="{{ 'blacro-symbol-white@2x.png' | asset_url }}"
+                      alt="{{ block.settings.logo_alt | default: 'Brand symbol' | escape }}"
+                      class="countdown-hero__logo-img"
+                      width="95"
+                      height="70"
+                      loading="eager"
+                    >
+                  {%- endif -%}
+                </div>
+
+              {%- when 'preorder_text' -%}
+                <p
+                  class="countdown-hero__preorder-text"
+                  style="
+                    --preorder-size: {{ block.settings.font_size_desktop | default: 13 }}px;
+                    --preorder-size-m: {{ block.settings.font_size_mobile | default: 10 }}px;
+                    --preorder-spacing: {{ block.settings.letter_spacing | default: 3 }}px;
+                    --preorder-spacing-m: {{ block.settings.letter_spacing | default: 3 }}px;
+                    --preorder-color: {{ block.settings.color | default: '#e6e5dc' }};
+                  "
+                >
+                  {{ block.settings.text | default: 'PRE ORDERS BEGIN IN' }}
+                </p>
+
+              {%- when 'countdown' -%}
+                <div
+                  class="countdown-hero__timer"
+                  role="timer"
+                  aria-label="Preorders countdown timer"
+                  data-countdown-timer
+                  data-target-date="{{ block.settings.target_date | default: section.settings.target_date | escape }}"
+                  data-enable-animation="{{ block.settings.enable_animation | default: section.settings.enable_animation | default: true }}"
+                  data-animation-duration="{{ block.settings.animation_duration | default: section.settings.animation_duration | default: 300 }}"
+                  data-expiry-action="{{ block.settings.completion_behavior | default: section.settings.completion_behavior | default: 'zero' }}"
+                  data-completed-msg="{{ block.settings.completed_message | default: section.settings.completed_message | escape }}"
+                  style="
+                    --timer-size: {{ block.settings.font_size_desktop | default: 78 }}px;
+                    --timer-size-m: {{ block.settings.font_size_mobile | default: 52 }}px;
+                    --timer-color: {{ block.settings.color | default: '#f4f3ec' }};
+                    --sep-color: {{ block.settings.separator_color | default: '#f4f3ec' }};
+                  "
+                >
+                  <!-- Days Unit -->
+                  <div class="countdown-hero__unit" data-unit="days">
+                    <div class="countdown-hero__digit-slot" data-slot="0" data-digit="0">
+                      <span class="countdown-hero__digit countdown-hero__digit--current">0</span>
+                    </div>
+                    <div class="countdown-hero__digit-slot" data-slot="1" data-digit="2">
+                      <span class="countdown-hero__digit countdown-hero__digit--current">2</span>
+                    </div>
+                  </div>
+
+                  <div class="countdown-hero__sep" aria-hidden="true"></div>
+
+                  <!-- Hours Unit -->
+                  <div class="countdown-hero__unit" data-unit="hours">
+                    <div class="countdown-hero__digit-slot" data-slot="0" data-digit="1">
+                      <span class="countdown-hero__digit countdown-hero__digit--current">1</span>
+                    </div>
+                    <div class="countdown-hero__digit-slot" data-slot="1" data-digit="1">
+                      <span class="countdown-hero__digit countdown-hero__digit--current">1</span>
+                    </div>
+                  </div>
+
+                  <div class="countdown-hero__sep" aria-hidden="true"></div>
+
+                  <!-- Minutes Unit -->
+                  <div class="countdown-hero__unit" data-unit="minutes">
+                    <div class="countdown-hero__digit-slot" data-slot="0" data-digit="4">
+                      <span class="countdown-hero__digit countdown-hero__digit--current">4</span>
+                    </div>
+                    <div class="countdown-hero__digit-slot" data-slot="1" data-digit="7">
+                      <span class="countdown-hero__digit countdown-hero__digit--current">7</span>
+                    </div>
+                  </div>
+
+                  <div class="countdown-hero__sep" aria-hidden="true"></div>
+
+                  <!-- Seconds Unit -->
+                  <div class="countdown-hero__unit" data-unit="seconds">
+                    <div class="countdown-hero__digit-slot" data-slot="0" data-digit="0">
+                      <span class="countdown-hero__digit countdown-hero__digit--current">0</span>
+                    </div>
+                    <div class="countdown-hero__digit-slot" data-slot="1" data-digit="7">
+                      <span class="countdown-hero__digit countdown-hero__digit--current">7</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="countdown-hero__completed-msg" data-completed-display>
+                  {{ block.settings.completed_message | default: section.settings.completed_message | default: 'PRE ORDERS ARE NOW OPEN' }}
+                </div>
+
+                <span class="countdown-hero__sr-only" data-timer-announcer>
+                  Countdown active: 2 days, 11 hours, 47 minutes, 7 seconds remaining.
+                </span>
+
+              {%- when 'labels' -%}
+                <div
+                  class="countdown-hero__labels"
+                  aria-hidden="true"
+                  style="
+                    --label-size: {{ block.settings.font_size_desktop | default: 11 }}px;
+                    --label-size-m: {{ block.settings.font_size_mobile | default: 8 }}px;
+                    --label-spacing: {{ block.settings.letter_spacing | default: 2 }}px;
+                    --label-spacing-m: {{ block.settings.letter_spacing | default: 2 }}px;
+                    --label-color: {{ block.settings.color | default: '#cccccc' }};
+                  "
+                >
+                  <div class="countdown-hero__label">{{ block.settings.days_label | default: 'DAYS' }}</div>
+                  <div class="countdown-hero__label-spacer"></div>
+                  <div class="countdown-hero__label">{{ block.settings.hours_label | default: 'HOURS' }}</div>
+                  <div class="countdown-hero__label-spacer"></div>
+                  <div class="countdown-hero__label">{{ block.settings.minutes_label | default: 'MINUTES' }}</div>
+                  <div class="countdown-hero__label-spacer"></div>
+                  <div class="countdown-hero__label">{{ block.settings.seconds_label | default: 'SECONDS' }}</div>
+                </div>
+
+              {%- when 'button' -%}
+                <a
+                  href="{{ block.settings.link | default: '#stay-tuned' }}"
+                  {% if block.settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+                  class="countdown-hero__btn"
+                  style="
+                    --btn-size: {{ block.settings.font_size_desktop | default: 13 }}px;
+                    --btn-size-m: {{ block.settings.font_size_mobile | default: 10.5 }}px;
+                    --btn-spacing: {{ block.settings.letter_spacing | default: 3 }}px;
+                    --btn-spacing-m: {{ block.settings.letter_spacing | default: 3 }}px;
+                    --btn-color: {{ block.settings.btn_text_color | default: '#f4f3ec' }};
+                    --btn-border-color: {{ block.settings.border_color | default: '#ffffff' }};
+                    --btn-border-w: {{ block.settings.border_width | default: 1 }}px;
+                    --btn-radius: {{ block.settings.border_radius | default: 50 }}px;
+                    --btn-bg: {{ block.settings.bg_color | default: 'transparent' }};
+                    --btn-pad-v: {{ block.settings.pad_vertical | default: 11 }}px;
+                    --btn-pad-h: {{ block.settings.pad_horizontal | default: 34 }}px;
+                    --btn-pad-v-m: {{ block.settings.pad_vertical | default: 9 }}px;
+                    --btn-pad-h-m: {{ block.settings.pad_horizontal | default: 28 }}px;
+                  "
+                >
+                  {{ block.settings.label | default: 'STAY TUNED' }}
+                </a>
+
+              {%- when 'tagline' -%}
+                <p
+                  class="countdown-hero__tagline"
+                  style="
+                    --tagline-size: {{ block.settings.font_size_desktop | default: 11 }}px;
+                    --tagline-size-m: {{ block.settings.font_size_mobile | default: 8.5 }}px;
+                    --tagline-spacing: {{ block.settings.letter_spacing | default: 4 }}px;
+                    --tagline-spacing-m: {{ block.settings.letter_spacing | default: 4 }}px;
+                    --tagline-color: {{ block.settings.color | default: '#b5b4aa' }};
+                  "
+                >
+                  {{ block.settings.text | default: 'CULTURE THAT’S WEARABLE' }}
+                </p>
+            {%- endcase -%}
+          </div>
+        {%- endfor -%}
+
+      {%- else -%}
+        {%- comment -%} Default presentation if no blocks added {%- endcomment -%}
+        <div class="countdown-hero__block countdown-hero__block--logo" style="--m-bottom-d: 44px; --m-bottom-m: 38px;">
+          <div class="countdown-hero__logo-wrapper" style="--logo-width: {{ section.settings.logo_width | default: 110 }}px; --logo-width-m: {{ section.settings.logo_width_mobile | default: 95 }}px;">
+            {%- if section.settings.logo_image != blank -%}
+              {{ section.settings.logo_image | image_url: width: 600 | image_tag: loading: 'eager', class: 'countdown-hero__logo-img', alt: 'Brand Logo' }}
+            {%- else -%}
+              <img src="{{ 'blacro-symbol-white@2x.png' | asset_url }}" alt="Brand symbol" class="countdown-hero__logo-img" width="95" height="70" loading="eager">
+            {%- endif -%}
+          </div>
+        </div>
+
+        <div class="countdown-hero__block countdown-hero__block--preorder" style="--m-bottom-d: 30px; --m-bottom-m: 24px;">
+          <p class="countdown-hero__preorder-text">{{ section.settings.preorder_text | default: 'PRE ORDERS BEGIN IN' }}</p>
+        </div>
+
+        <div class="countdown-hero__block countdown-hero__block--countdown" style="--m-bottom-d: 14px; --m-bottom-m: 12px;">
+          <div
+            class="countdown-hero__timer"
+            role="timer"
+            aria-label="Preorders countdown timer"
+            data-countdown-timer
+            data-target-date="{{ section.settings.target_date | escape }}"
+            data-enable-animation="{{ section.settings.enable_animation | default: true }}"
+            data-animation-duration="{{ section.settings.animation_duration | default: 300 }}"
+            data-expiry-action="{{ section.settings.completion_behavior | default: 'zero' }}"
+            data-completed-msg="{{ section.settings.completed_message | escape }}"
+          >
+            <div class="countdown-hero__unit" data-unit="days">
+              <div class="countdown-hero__digit-slot" data-slot="0" data-digit="0"><span class="countdown-hero__digit countdown-hero__digit--current">0</span></div>
+              <div class="countdown-hero__digit-slot" data-slot="1" data-digit="2"><span class="countdown-hero__digit countdown-hero__digit--current">2</span></div>
+            </div>
+            <div class="countdown-hero__sep" aria-hidden="true"></div>
+            <div class="countdown-hero__unit" data-unit="hours">
+              <div class="countdown-hero__digit-slot" data-slot="0" data-digit="1"><span class="countdown-hero__digit countdown-hero__digit--current">1</span></div>
+              <div class="countdown-hero__digit-slot" data-slot="1" data-digit="1"><span class="countdown-hero__digit countdown-hero__digit--current">1</span></div>
+            </div>
+            <div class="countdown-hero__sep" aria-hidden="true"></div>
+            <div class="countdown-hero__unit" data-unit="minutes">
+              <div class="countdown-hero__digit-slot" data-slot="0" data-digit="4"><span class="countdown-hero__digit countdown-hero__digit--current">4</span></div>
+              <div class="countdown-hero__digit-slot" data-slot="1" data-digit="7"><span class="countdown-hero__digit countdown-hero__digit--current">7</span></div>
+            </div>
+            <div class="countdown-hero__sep" aria-hidden="true"></div>
+            <div class="countdown-hero__unit" data-unit="seconds">
+              <div class="countdown-hero__digit-slot" data-slot="0" data-digit="0"><span class="countdown-hero__digit countdown-hero__digit--current">0</span></div>
+              <div class="countdown-hero__digit-slot" data-slot="1" data-digit="7"><span class="countdown-hero__digit countdown-hero__digit--current">7</span></div>
+            </div>
+          </div>
+          <div class="countdown-hero__completed-msg" data-completed-display>
+            {{ section.settings.completed_message | default: 'PRE ORDERS ARE NOW OPEN' }}
+          </div>
+          <span class="countdown-hero__sr-only" data-timer-announcer>Countdown active: 2 days, 11 hours, 47 minutes, 7 seconds remaining.</span>
+        </div>
+
+        <div class="countdown-hero__block countdown-hero__block--labels" style="--m-bottom-d: 52px; --m-bottom-m: 44px;">
+          <div class="countdown-hero__labels" aria-hidden="true">
+            <div class="countdown-hero__label">DAYS</div>
+            <div class="countdown-hero__label-spacer"></div>
+            <div class="countdown-hero__label">HOURS</div>
+            <div class="countdown-hero__label-spacer"></div>
+            <div class="countdown-hero__label">MINUTES</div>
+            <div class="countdown-hero__label-spacer"></div>
+            <div class="countdown-hero__label">SECONDS</div>
+          </div>
+        </div>
+
+        <div class="countdown-hero__block countdown-hero__block--button" style="--m-bottom-d: 38px; --m-bottom-m: 32px;">
+          <a href="{{ section.settings.btn_link | default: '#stay-tuned' }}" class="countdown-hero__btn">
+            {{ section.settings.btn_label | default: 'STAY TUNED' }}
+          </a>
+        </div>
+
+        <div class="countdown-hero__block countdown-hero__block--tagline">
+          <p class="countdown-hero__tagline">{{ section.settings.tagline_text | default: 'CULTURE THAT’S WEARABLE' }}</p>
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  function initCountdownHero(root) {
+    if (!root || root._countdownInitialized) return;
+    root._countdownInitialized = true;
+
+    const timerEl = root.querySelector('[data-countdown-timer]');
+    if (!timerEl) return;
+
+    const announcer = root.querySelector('[data-timer-announcer]');
+    const completedDisplay = root.querySelector('[data-completed-display]');
+    const isAnimationEnabled = timerEl.dataset.enableAnimation !== 'false';
+    const animDuration = parseInt(timerEl.dataset.animationDuration, 10) || 300;
+    const expiryAction = timerEl.dataset.expiryAction || 'zero';
+    const completedMsg = timerEl.dataset.completedMsg || 'PRE ORDERS ARE NOW OPEN';
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Parse target date/time
+    let targetTime = null;
+    const rawTarget = timerEl.dataset.targetDate;
+    if (rawTarget && rawTarget.trim()) {
+      let formatted = rawTarget.trim();
+      if (formatted.includes(' ') && !formatted.includes('T')) {
+        formatted = formatted.replace(' ', 'T');
+      }
+      const parsed = new Date(formatted);
+      if (!isNaN(parsed.getTime())) {
+        targetTime = parsed.getTime();
+      }
+    }
+
+    // Default target: if none specified, set relative 2d 11h 47m 7s
+    if (!targetTime) {
+      const storageKey = 'countdown_hero_target_' + root.id;
+      let stored = null;
+      try { stored = sessionStorage.getItem(storageKey); } catch(e) {}
+      if (stored && !isNaN(parseInt(stored, 10))) {
+        targetTime = parseInt(stored, 10);
+      } else {
+        targetTime = Date.now() + (2 * 86400 + 11 * 3600 + 47 * 60 + 7) * 1000;
+        try { sessionStorage.setItem(storageKey, targetTime); } catch(e) {}
+      }
+    }
+
+    function updateDigit(slot, newDigitChar, animate) {
+      const currentDigit = slot.dataset.digit;
+      if (currentDigit === newDigitChar) return;
+
+      slot.dataset.digit = newDigitChar;
+
+      if (!animate || !isAnimationEnabled || prefersReducedMotion) {
+        const curEl = slot.querySelector('.countdown-hero__digit--current');
+        if (curEl) curEl.textContent = newDigitChar;
+        return;
+      }
+
+      // Clean up any stale exiting elements
+      const staleExiting = slot.querySelectorAll('.countdown-hero__digit--animating-out');
+      staleExiting.forEach(el => el.remove());
+
+      const oldEl = slot.querySelector('.countdown-hero__digit--current');
+      const newEl = document.createElement('span');
+      newEl.className = 'countdown-hero__digit countdown-hero__digit--current countdown-hero__digit--animating-in';
+      newEl.textContent = newDigitChar;
+      slot.appendChild(newEl);
+
+      if (oldEl) {
+        oldEl.classList.remove('countdown-hero__digit--current');
+        oldEl.classList.add('countdown-hero__digit--animating-out');
+
+        const cleanUp = () => {
+          if (oldEl && oldEl.parentNode) oldEl.remove();
+          newEl.classList.remove('countdown-hero__digit--animating-in');
+        };
+
+        oldEl.addEventListener('animationend', cleanUp, { once: true });
+        setTimeout(cleanUp, animDuration + 50);
+      } else {
+        newEl.classList.remove('countdown-hero__digit--animating-in');
+      }
+    }
+
+    function tick(animate) {
+      const now = Date.now();
+      const remainingMs = targetTime - now;
+      const isPast = remainingMs <= 0;
+      const remainingSec = Math.max(0, Math.floor(remainingMs / 1000));
+
+      if (isPast) {
+        if (expiryAction === 'message') {
+          root.setAttribute('data-completed', 'true');
+          root.setAttribute('data-hide-timer', 'true');
+          if (completedDisplay) completedDisplay.textContent = completedMsg;
+        } else {
+          root.setAttribute('data-completed', 'true');
+        }
+      }
+
+      const d = Math.floor(remainingSec / 86400);
+      const h = Math.floor((remainingSec % 86400) / 3600);
+      const m = Math.floor((remainingSec % 3600) / 60);
+      const s = remainingSec % 60;
+
+      const dStr = String(d).padStart(2, '0');
+      const hStr = String(h).padStart(2, '0');
+      const mStr = String(m).padStart(2, '0');
+      const sStr = String(s).padStart(2, '0');
+
+      const unitMap = {
+        days: dStr,
+        hours: hStr,
+        minutes: mStr,
+        seconds: sStr
+      };
+
+      Object.keys(unitMap).forEach(unit => {
+        const unitEl = timerEl.querySelector('[data-unit="' + unit + '"]');
+        if (!unitEl) return;
+        const str = unitMap[unit];
+        const slot0 = unitEl.querySelector('[data-slot="0"]');
+        const slot1 = unitEl.querySelector('[data-slot="1"]');
+
+        if (slot0 && str[0] !== undefined) updateDigit(slot0, str[0], animate);
+        if (slot1 && str[1] !== undefined) updateDigit(slot1, str[1], animate);
+      });
+
+      if (s === 0 && announcer) {
+        announcer.textContent = 'Countdown active: ' + d + ' days, ' + h + ' hours, ' + m + ' minutes remaining.';
+      }
+
+      if (isPast && root._countdownInterval) {
+        clearInterval(root._countdownInterval);
+        root._countdownInterval = null;
+      }
+    }
+
+    // Initial populate without animation
+    tick(false);
+
+    // Running ticker
+    root._countdownInterval = setInterval(() => {
+      tick(true);
+    }, 1000);
+  }
+
+  function setup() {
+    document.querySelectorAll('[data-countdown-hero]').forEach(initCountdownHero);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setup);
+  } else {
+    setup();
+  }
+
+  // Shopify Theme Editor live reload hooks
+  document.addEventListener('shopify:section:load', function(e) {
+    if (e.target && e.target.querySelector('[data-countdown-hero]')) {
+      const el = e.target.querySelector('[data-countdown-hero]');
+      el._countdownInitialized = false;
+      initCountdownHero(el);
+    }
+  });
+
+  document.addEventListener('shopify:section:unload', function(e) {
+    if (e.target && e.target.querySelector('[data-countdown-hero]')) {
+      const el = e.target.querySelector('[data-countdown-hero]');
+      if (el && el._countdownInterval) {
+        clearInterval(el._countdownInterval);
+        el._countdownInterval = null;
+      }
+    }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Countdown Hero",
+  "tag": "section",
+  "class": "countdown-hero-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General Styling"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#f4f3ec"
+    },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "Section height",
+      "options": [
+        { "value": "full_screen", "label": "Full Screen (100svh)" },
+        { "value": "viewport_height", "label": "Viewport Height (100vh)" },
+        { "value": "three_quarter", "label": "Three-quarter (75svh)" },
+        { "value": "custom", "label": "Custom Height" }
+      ],
+      "default": "full_screen"
+    },
+    {
+      "type": "range",
+      "id": "custom_height",
+      "label": "Custom section height (svh)",
+      "min": 50,
+      "max": 120,
+      "step": 5,
+      "unit": "svh",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content max width",
+      "min": 320,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 680
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Desktop top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Desktop bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Mobile top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Mobile bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Countdown Settings"
+    },
+    {
+      "type": "text",
+      "id": "target_date",
+      "label": "Target date and time",
+      "default": "2026-11-20 00:00:00",
+      "info": "Format: YYYY-MM-DD or YYYY-MM-DD HH:MM:SS. Leave blank for dynamic sample mode."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animation",
+      "label": "Enable upward ticker animation",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "animation_duration",
+      "label": "Ticker speed (ms)",
+      "min": 150,
+      "max": 500,
+      "step": 25,
+      "unit": "ms",
+      "default": 300
+    },
+    {
+      "type": "select",
+      "id": "completion_behavior",
+      "label": "When countdown finishes",
+      "options": [
+        { "value": "zero", "label": "Show 00:00:00:00" },
+        { "value": "message", "label": "Show completed message" }
+      ],
+      "default": "zero"
+    },
+    {
+      "type": "text",
+      "id": "completed_message",
+      "label": "Completed message",
+      "default": "PRE ORDERS ARE NOW OPEN"
+    },
+    {
+      "type": "header",
+      "content": "Fallback Defaults (When no blocks added)"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Brand logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Desktop logo width",
+      "min": 40,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "default": 110
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "label": "Mobile logo width",
+      "min": 30,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 95
+    },
+    {
+      "type": "text",
+      "id": "preorder_text",
+      "label": "Preorder text",
+      "default": "PRE ORDERS BEGIN IN"
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "label": "Button label",
+      "default": "STAY TUNED"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "tagline_text",
+      "label": "Tagline text",
+      "default": "CULTURE THAT’S WEARABLE"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Brand Logo",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Logo image"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "label": "Desktop logo width",
+          "min": 40,
+          "max": 300,
+          "step": 5,
+          "unit": "px",
+          "default": 110
+        },
+        {
+          "type": "range",
+          "id": "logo_width_mobile",
+          "label": "Mobile logo width",
+          "min": 30,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "default": 95
+        },
+        {
+          "type": "text",
+          "id": "logo_alt",
+          "label": "Logo alt text",
+          "default": "Blacro brand symbol"
+        },
+        {
+          "type": "header",
+          "content": "Alignment & Positioning"
+        },
+        {
+          "type": "checkbox",
+          "id": "center_horizontally",
+          "label": "Center horizontally",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "pos_top",
+          "label": "Top Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom",
+          "label": "Bottom Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left",
+          "label": "Left Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right",
+          "label": "Right Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_top_mobile",
+          "label": "Top Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom_mobile",
+          "label": "Bottom Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left_mobile",
+          "label": "Left Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right_mobile",
+          "label": "Right Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "header",
+          "content": "Responsive Margins"
+        },
+        {
+          "type": "range",
+          "id": "margin_top_desktop",
+          "label": "Desktop top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_top_mobile",
+          "label": "Mobile top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_desktop",
+          "label": "Desktop bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 44
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_mobile",
+          "label": "Mobile bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 38
+        },
+        {
+          "type": "range",
+          "id": "z_index",
+          "label": "Z-index",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 10
+        }
+      ]
+    },
+    {
+      "type": "preorder_text",
+      "name": "Preorder Text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Preorder text",
+          "default": "PRE ORDERS BEGIN IN"
+        },
+        {
+          "type": "range",
+          "id": "font_size_desktop",
+          "label": "Desktop font size",
+          "min": 8,
+          "max": 28,
+          "step": 1,
+          "unit": "px",
+          "default": 13
+        },
+        {
+          "type": "range",
+          "id": "font_size_mobile",
+          "label": "Mobile font size",
+          "min": 8,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "letter_spacing",
+          "label": "Letter spacing",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "unit": "px",
+          "default": 3
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Text color",
+          "default": "#e6e5dc"
+        },
+        {
+          "type": "header",
+          "content": "Alignment & Positioning"
+        },
+        {
+          "type": "checkbox",
+          "id": "center_horizontally",
+          "label": "Center horizontally",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "pos_top",
+          "label": "Top Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom",
+          "label": "Bottom Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left",
+          "label": "Left Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right",
+          "label": "Right Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_top_mobile",
+          "label": "Top Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom_mobile",
+          "label": "Bottom Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left_mobile",
+          "label": "Left Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right_mobile",
+          "label": "Right Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "header",
+          "content": "Responsive Margins"
+        },
+        {
+          "type": "range",
+          "id": "margin_top_desktop",
+          "label": "Desktop top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_top_mobile",
+          "label": "Mobile top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_desktop",
+          "label": "Desktop bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 30
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_mobile",
+          "label": "Mobile bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "z_index",
+          "label": "Z-index",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 10
+        }
+      ]
+    },
+    {
+      "type": "countdown",
+      "name": "Countdown Timer",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "target_date",
+          "label": "Target date and time",
+          "default": "2026-11-20 00:00:00",
+          "info": "Format: YYYY-MM-DD or YYYY-MM-DD HH:MM:SS"
+        },
+        {
+          "type": "range",
+          "id": "font_size_desktop",
+          "label": "Desktop timer size",
+          "min": 30,
+          "max": 120,
+          "step": 1,
+          "unit": "px",
+          "default": 78
+        },
+        {
+          "type": "range",
+          "id": "font_size_mobile",
+          "label": "Mobile timer size",
+          "min": 24,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "default": 52
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Digits color",
+          "default": "#f4f3ec"
+        },
+        {
+          "type": "color",
+          "id": "separator_color",
+          "label": "Colons color",
+          "default": "#f4f3ec"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_animation",
+          "label": "Enable upward ticker transition",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "animation_duration",
+          "label": "Animation speed (ms)",
+          "min": 150,
+          "max": 500,
+          "step": 25,
+          "unit": "ms",
+          "default": 300
+        },
+        {
+          "type": "select",
+          "id": "completion_behavior",
+          "label": "When countdown finishes",
+          "options": [
+            { "value": "zero", "label": "Show 00:00:00:00" },
+            { "value": "message", "label": "Show completed message" }
+          ],
+          "default": "zero"
+        },
+        {
+          "type": "text",
+          "id": "completed_message",
+          "label": "Completed state message",
+          "default": "PRE ORDERS ARE NOW OPEN"
+        },
+        {
+          "type": "header",
+          "content": "Alignment & Positioning"
+        },
+        {
+          "type": "checkbox",
+          "id": "center_horizontally",
+          "label": "Center horizontally",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "pos_top",
+          "label": "Top Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom",
+          "label": "Bottom Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left",
+          "label": "Left Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right",
+          "label": "Right Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_top_mobile",
+          "label": "Top Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom_mobile",
+          "label": "Bottom Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left_mobile",
+          "label": "Left Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right_mobile",
+          "label": "Right Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "header",
+          "content": "Responsive Margins"
+        },
+        {
+          "type": "range",
+          "id": "margin_top_desktop",
+          "label": "Desktop top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_top_mobile",
+          "label": "Mobile top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_desktop",
+          "label": "Desktop bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_mobile",
+          "label": "Mobile bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 12
+        },
+        {
+          "type": "range",
+          "id": "z_index",
+          "label": "Z-index",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 10
+        }
+      ]
+    },
+    {
+      "type": "labels",
+      "name": "Countdown Unit Labels",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "days_label",
+          "label": "Days label",
+          "default": "DAYS"
+        },
+        {
+          "type": "text",
+          "id": "hours_label",
+          "label": "Hours label",
+          "default": "HOURS"
+        },
+        {
+          "type": "text",
+          "id": "minutes_label",
+          "label": "Minutes label",
+          "default": "MINUTES"
+        },
+        {
+          "type": "text",
+          "id": "seconds_label",
+          "label": "Seconds label",
+          "default": "SECONDS"
+        },
+        {
+          "type": "range",
+          "id": "font_size_desktop",
+          "label": "Desktop font size",
+          "min": 7,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 11
+        },
+        {
+          "type": "range",
+          "id": "font_size_mobile",
+          "label": "Mobile font size",
+          "min": 6,
+          "max": 16,
+          "step": 1,
+          "unit": "px",
+          "default": 8
+        },
+        {
+          "type": "range",
+          "id": "letter_spacing",
+          "label": "Letter spacing",
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "unit": "px",
+          "default": 2
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Labels color",
+          "default": "#cccccc"
+        },
+        {
+          "type": "header",
+          "content": "Alignment & Positioning"
+        },
+        {
+          "type": "checkbox",
+          "id": "center_horizontally",
+          "label": "Center horizontally",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "pos_top",
+          "label": "Top Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom",
+          "label": "Bottom Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left",
+          "label": "Left Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right",
+          "label": "Right Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_top_mobile",
+          "label": "Top Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom_mobile",
+          "label": "Bottom Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left_mobile",
+          "label": "Left Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right_mobile",
+          "label": "Right Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "header",
+          "content": "Responsive Margins"
+        },
+        {
+          "type": "range",
+          "id": "margin_top_desktop",
+          "label": "Desktop top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_top_mobile",
+          "label": "Mobile top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_desktop",
+          "label": "Desktop bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 52
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_mobile",
+          "label": "Mobile bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 44
+        },
+        {
+          "type": "range",
+          "id": "z_index",
+          "label": "Z-index",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 10
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Stay Tuned Button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Button label",
+          "default": "STAY TUNED"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Button link"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_in_new_tab",
+          "label": "Open in new tab",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "font_size_desktop",
+          "label": "Desktop font size",
+          "min": 9,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "default": 13
+        },
+        {
+          "type": "range",
+          "id": "font_size_mobile",
+          "label": "Mobile font size",
+          "min": 8,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "letter_spacing",
+          "label": "Letter spacing",
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "unit": "px",
+          "default": 3
+        },
+        {
+          "type": "color",
+          "id": "btn_text_color",
+          "label": "Button text color",
+          "default": "#f4f3ec"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "range",
+          "id": "border_width",
+          "label": "Border width",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "unit": "px",
+          "default": 1
+        },
+        {
+          "type": "range",
+          "id": "border_radius",
+          "label": "Border radius",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "default": 50
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color",
+          "default": "transparent"
+        },
+        {
+          "type": "range",
+          "id": "pad_vertical",
+          "label": "Vertical padding",
+          "min": 4,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "default": 11
+        },
+        {
+          "type": "range",
+          "id": "pad_horizontal",
+          "label": "Horizontal padding",
+          "min": 10,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "default": 34
+        },
+        {
+          "type": "header",
+          "content": "Alignment & Positioning"
+        },
+        {
+          "type": "checkbox",
+          "id": "center_horizontally",
+          "label": "Center horizontally",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "pos_top",
+          "label": "Top Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom",
+          "label": "Bottom Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left",
+          "label": "Left Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right",
+          "label": "Right Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_top_mobile",
+          "label": "Top Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom_mobile",
+          "label": "Bottom Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left_mobile",
+          "label": "Left Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right_mobile",
+          "label": "Right Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "header",
+          "content": "Responsive Margins"
+        },
+        {
+          "type": "range",
+          "id": "margin_top_desktop",
+          "label": "Desktop top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_top_mobile",
+          "label": "Mobile top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_desktop",
+          "label": "Desktop bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 38
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_mobile",
+          "label": "Mobile bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 32
+        },
+        {
+          "type": "range",
+          "id": "z_index",
+          "label": "Z-index",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 10
+        }
+      ]
+    },
+    {
+      "type": "tagline",
+      "name": "Tagline",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Tagline text",
+          "default": "CULTURE THAT’S WEARABLE"
+        },
+        {
+          "type": "range",
+          "id": "font_size_desktop",
+          "label": "Desktop font size",
+          "min": 8,
+          "max": 22,
+          "step": 1,
+          "unit": "px",
+          "default": 11
+        },
+        {
+          "type": "range",
+          "id": "font_size_mobile",
+          "label": "Mobile font size",
+          "min": 7,
+          "max": 18,
+          "step": 1,
+          "unit": "px",
+          "default": 8
+        },
+        {
+          "type": "range",
+          "id": "letter_spacing",
+          "label": "Letter spacing",
+          "min": 0,
+          "max": 12,
+          "step": 1,
+          "unit": "px",
+          "default": 4
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Tagline color",
+          "default": "#b5b4aa"
+        },
+        {
+          "type": "header",
+          "content": "Alignment & Positioning"
+        },
+        {
+          "type": "checkbox",
+          "id": "center_horizontally",
+          "label": "Center horizontally",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "pos_top",
+          "label": "Top Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom",
+          "label": "Bottom Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left",
+          "label": "Left Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right",
+          "label": "Right Position (Desktop)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_top_mobile",
+          "label": "Top Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_bottom_mobile",
+          "label": "Bottom Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_left_mobile",
+          "label": "Left Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "text",
+          "id": "pos_right_mobile",
+          "label": "Right Position (Mobile)",
+          "default": "auto",
+          "info": "e.g. 10%, 50px, auto"
+        },
+        {
+          "type": "header",
+          "content": "Responsive Margins"
+        },
+        {
+          "type": "range",
+          "id": "margin_top_desktop",
+          "label": "Desktop top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_top_mobile",
+          "label": "Mobile top margin",
+          "min": -40,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_desktop",
+          "label": "Desktop bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_mobile",
+          "label": "Mobile bottom margin",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "z_index",
+          "label": "Z-index",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 10
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Countdown Hero",
+      "blocks": [
+        {
+          "type": "logo"
+        },
+        {
+          "type": "preorder_text"
+        },
+        {
+          "type": "countdown"
+        },
+        {
+          "type": "labels"
+        },
+        {
+          "type": "button"
+        },
+        {
+          "type": "tagline"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
