@@ -13,6 +13,7 @@
   "sections": {
     "footer_blacro_apHG3w": {
       "type": "footer-blacro",
+      "disabled": true,
       "name": "Blacro Footer",
       "settings": {
         "logo": "shopify://shop_images/typedmark.png",
