@@ -1428,6 +1428,199 @@
         "padding_top": 40,
         "padding_left": 8
       }
+    },
+    "countdown_hero_Rrkib4": {
+      "type": "countdown-hero",
+      "blocks": {
+        "logo_CYQzXj": {
+          "type": "logo",
+          "settings": {
+            "logo_width": 110,
+            "logo_width_mobile": 95,
+            "logo_alt": "Blacro brand symbol",
+            "center_horizontally": true,
+            "pos_top": "auto",
+            "pos_bottom": "auto",
+            "pos_left": "auto",
+            "pos_right": "auto",
+            "pos_top_mobile": "auto",
+            "pos_bottom_mobile": "auto",
+            "pos_left_mobile": "auto",
+            "pos_right_mobile": "auto",
+            "margin_top_desktop": 0,
+            "margin_top_mobile": 0,
+            "margin_bottom_desktop": 44,
+            "margin_bottom_mobile": 38,
+            "z_index": 10
+          }
+        },
+        "preorder_text_X7fnwj": {
+          "type": "preorder_text",
+          "settings": {
+            "text": "PRE ORDERS BEGIN IN",
+            "font_size_desktop": 13,
+            "font_size_mobile": 10,
+            "letter_spacing": 3,
+            "color": "#e6e5dc",
+            "center_horizontally": true,
+            "pos_top": "auto",
+            "pos_bottom": "auto",
+            "pos_left": "auto",
+            "pos_right": "auto",
+            "pos_top_mobile": "auto",
+            "pos_bottom_mobile": "auto",
+            "pos_left_mobile": "auto",
+            "pos_right_mobile": "auto",
+            "margin_top_desktop": 0,
+            "margin_top_mobile": 0,
+            "margin_bottom_desktop": 30,
+            "margin_bottom_mobile": 24,
+            "z_index": 10
+          }
+        },
+        "countdown_QnUNDW": {
+          "type": "countdown",
+          "settings": {
+            "target_date": "2026-11-20 00:00:00",
+            "font_size_desktop": 78,
+            "font_size_mobile": 52,
+            "color": "#f4f3ec",
+            "separator_color": "#f4f3ec",
+            "enable_animation": true,
+            "animation_duration": 300,
+            "completion_behavior": "zero",
+            "completed_message": "PRE ORDERS ARE NOW OPEN",
+            "center_horizontally": true,
+            "pos_top": "auto",
+            "pos_bottom": "auto",
+            "pos_left": "auto",
+            "pos_right": "auto",
+            "pos_top_mobile": "auto",
+            "pos_bottom_mobile": "auto",
+            "pos_left_mobile": "auto",
+            "pos_right_mobile": "auto",
+            "margin_top_desktop": 0,
+            "margin_top_mobile": 0,
+            "margin_bottom_desktop": 14,
+            "margin_bottom_mobile": 12,
+            "z_index": 10
+          }
+        },
+        "labels_FWwhnP": {
+          "type": "labels",
+          "settings": {
+            "days_label": "DAYS",
+            "hours_label": "HOURS",
+            "minutes_label": "MINUTES",
+            "seconds_label": "SECONDS",
+            "font_size_desktop": 11,
+            "font_size_mobile": 8,
+            "letter_spacing": 2,
+            "color": "#cccccc",
+            "center_horizontally": true,
+            "pos_top": "auto",
+            "pos_bottom": "auto",
+            "pos_left": "auto",
+            "pos_right": "auto",
+            "pos_top_mobile": "auto",
+            "pos_bottom_mobile": "auto",
+            "pos_left_mobile": "auto",
+            "pos_right_mobile": "auto",
+            "margin_top_desktop": 0,
+            "margin_top_mobile": 0,
+            "margin_bottom_desktop": 52,
+            "margin_bottom_mobile": 44,
+            "z_index": 10
+          }
+        },
+        "button_eaAGmN": {
+          "type": "button",
+          "settings": {
+            "label": "STAY TUNED",
+            "link": "",
+            "open_in_new_tab": false,
+            "font_size_desktop": 13,
+            "font_size_mobile": 10,
+            "letter_spacing": 3,
+            "btn_text_color": "#f4f3ec",
+            "border_color": "#ffffff",
+            "border_width": 1,
+            "border_radius": 50,
+            "bg_color": "transparent",
+            "pad_vertical": 11,
+            "pad_horizontal": 34,
+            "center_horizontally": true,
+            "pos_top": "auto",
+            "pos_bottom": "auto",
+            "pos_left": "auto",
+            "pos_right": "auto",
+            "pos_top_mobile": "auto",
+            "pos_bottom_mobile": "auto",
+            "pos_left_mobile": "auto",
+            "pos_right_mobile": "auto",
+            "margin_top_desktop": 0,
+            "margin_top_mobile": 0,
+            "margin_bottom_desktop": 38,
+            "margin_bottom_mobile": 32,
+            "z_index": 10
+          }
+        },
+        "tagline_VMTpbM": {
+          "type": "tagline",
+          "settings": {
+            "text": "CULTURE THAT’S WEARABLE",
+            "font_size_desktop": 11,
+            "font_size_mobile": 8,
+            "letter_spacing": 4,
+            "color": "#b5b4aa",
+            "center_horizontally": true,
+            "pos_top": "auto",
+            "pos_bottom": "auto",
+            "pos_left": "auto",
+            "pos_right": "auto",
+            "pos_top_mobile": "auto",
+            "pos_bottom_mobile": "auto",
+            "pos_left_mobile": "auto",
+            "pos_right_mobile": "auto",
+            "margin_top_desktop": 0,
+            "margin_top_mobile": 0,
+            "margin_bottom_desktop": 0,
+            "margin_bottom_mobile": 0,
+            "z_index": 10
+          }
+        }
+      },
+      "block_order": [
+        "logo_CYQzXj",
+        "preorder_text_X7fnwj",
+        "countdown_QnUNDW",
+        "labels_FWwhnP",
+        "button_eaAGmN",
+        "tagline_VMTpbM"
+      ],
+      "name": "Countdown Hero",
+      "settings": {
+        "bg_color": "#000000",
+        "text_color": "#f4f3ec",
+        "section_height": "full_screen",
+        "custom_height": 100,
+        "content_max_width": 680,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "target_date": "2026-11-20 00:00:00",
+        "enable_animation": true,
+        "animation_duration": 300,
+        "completion_behavior": "zero",
+        "completed_message": "PRE ORDERS ARE NOW OPEN",
+        "logo_width": 110,
+        "logo_width_mobile": 95,
+        "preorder_text": "PRE ORDERS BEGIN IN",
+        "btn_label": "STAY TUNED",
+        "btn_link": "",
+        "tagline_text": "CULTURE THAT’S WEARABLE"
+      }
     }
   },
   "order": [
@@ -1438,6 +1631,7 @@
     "hero_Kb46G4",
     "hero_xgzFy4",
     "hero_kCAidq",
-    "scrollytelling_videos_iJhGVn"
+    "scrollytelling_videos_iJhGVn",
+    "countdown_hero_Rrkib4"
   ]
 }
