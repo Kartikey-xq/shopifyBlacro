@@ -259,6 +259,7 @@
     line-height: 1.15em;
     text-align: center;
     vertical-align: middle;
+    contain: paint;
   }
 
   #CountdownHero-{{ section_id }} .countdown-hero__digit {
@@ -272,26 +273,33 @@
     justify-content: center;
     text-align: center;
     will-change: transform;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     /* pure vertical translateY scroll only - NO opacity fades */
   }
 
   #CountdownHero-{{ section_id }} .countdown-hero__digit--current {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 
   #CountdownHero-{{ section_id }} .countdown-hero__digit--outgoing {
-    transform: translateY(-100%);
-    transition: transform 1s linear;
+    transform: translate3d(0, -100%, 0);
+    transition: transform var(--ch-anim-duration, 750ms) cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   #CountdownHero-{{ section_id }} .countdown-hero__digit--incoming {
-    transform: translateY(100%);
+    transform: translate3d(0, 100%, 0);
   }
 
   #CountdownHero-{{ section_id }} .countdown-hero__digit--sliding-in {
-    transform: translateY(0);
-    transition: transform 1s linear;
+    transform: translate3d(0, 0, 0);
+    transition: transform var(--ch-anim-duration, 750ms) cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* Stable Colon Separator with custom square blocks */
@@ -509,7 +517,7 @@
       display: none !important;
     }
     #CountdownHero-{{ section_id }} .countdown-hero__digit--incoming {
-      transform: translateY(0) !important;
+      transform: translate3d(0, 0, 0) !important;
       transition: none !important;
     }
     #CountdownHero-{{ section_id }} .countdown-hero__btn {
@@ -917,19 +925,26 @@
         return;
       }
 
+      // If slot has a pending cleanup from previous tick, finish it immediately
+      if (typeof slot._cleanupAnim === 'function') {
+        slot._cleanupAnim();
+      }
+
       // Clean any extraneous elements so at most 1 element exists before roll
-      digits.forEach(d => {
-        if (d !== currentVisible && d.parentNode) {
+      const remainingDigits = Array.from(slot.querySelectorAll('.countdown-hero__digit'));
+      const activeDigit = remainingDigits.find(d => !d.classList.contains('countdown-hero__digit--outgoing')) || remainingDigits[remainingDigits.length - 1];
+      remainingDigits.forEach(d => {
+        if (d !== activeDigit && d.parentNode) {
           d.remove();
         }
       });
 
       if (!animate || !isAnimationEnabled || prefersReducedMotion) {
-        if (currentVisible) {
-          currentVisible.className = 'countdown-hero__digit countdown-hero__digit--current';
-          currentVisible.textContent = nextValStr;
-          currentVisible.style.transition = 'none';
-          currentVisible.style.transform = 'translateY(0)';
+        if (activeDigit) {
+          activeDigit.className = 'countdown-hero__digit countdown-hero__digit--current';
+          activeDigit.textContent = nextValStr;
+          activeDigit.style.transition = 'none';
+          activeDigit.style.transform = 'translate3d(0, 0, 0)';
         } else {
           const span = document.createElement('span');
           span.className = 'countdown-hero__digit countdown-hero__digit--current';
@@ -940,47 +955,42 @@
       }
 
       // Two elements stacked: outgoing and incoming
-      const outgoing = currentVisible;
+      const outgoing = activeDigit;
       const incoming = document.createElement('span');
       incoming.className = 'countdown-hero__digit countdown-hero__digit--incoming';
       incoming.textContent = nextValStr;
-      incoming.style.transform = 'translateY(100%)';
-      incoming.style.transition = 'none';
       slot.appendChild(incoming);
 
-      // Force layout reflow
-      void incoming.offsetHeight;
+      // Smooth double requestAnimationFrame prevents layout thrashing & guarantees GPU transition trigger
+      let animFrameId1 = requestAnimationFrame(() => {
+        let animFrameId2 = requestAnimationFrame(() => {
+          if (outgoing) {
+            outgoing.className = 'countdown-hero__digit countdown-hero__digit--outgoing';
+          }
+          incoming.className = 'countdown-hero__digit countdown-hero__digit--incoming countdown-hero__digit--sliding-in';
+        });
+        slot._animFrame2 = animFrameId2;
+      });
+      slot._animFrame1 = animFrameId1;
 
-      // Outgoing slides upward out of view
-      if (outgoing) {
-        outgoing.className = 'countdown-hero__digit countdown-hero__digit--outgoing';
-        outgoing.style.transition = 'transform 1000ms linear';
-        outgoing.style.transform = 'translateY(-100%)';
-      }
-
-      // Incoming slides in from below
-      incoming.className = 'countdown-hero__digit countdown-hero__digit--incoming countdown-hero__digit--sliding-in';
-      incoming.style.transition = 'transform 1000ms linear';
-      incoming.style.transform = 'translateY(0)';
-
+      let finished = false;
       const finish = () => {
+        if (finished) return;
+        finished = true;
+        slot._cleanupAnim = null;
+        if (slot._animFrame1) cancelAnimationFrame(slot._animFrame1);
+        if (slot._animFrame2) cancelAnimationFrame(slot._animFrame2);
         if (outgoing && outgoing.parentNode) {
           outgoing.remove();
         }
         incoming.className = 'countdown-hero__digit countdown-hero__digit--current';
-        incoming.style.transition = 'none';
-        incoming.style.transform = 'translateY(0)';
+        incoming.style.transition = '';
+        incoming.style.transform = 'translate3d(0, 0, 0)';
       };
 
-      let finished = false;
-      const handleDone = () => {
-        if (finished) return;
-        finished = true;
-        finish();
-      };
-
-      incoming.addEventListener('transitionend', handleDone, { once: true });
-      setTimeout(handleDone, 1000);
+      slot._cleanupAnim = finish;
+      incoming.addEventListener('transitionend', finish, { once: true });
+      setTimeout(finish, 850);
     }
 
     const unitNames = ['days', 'hours', 'minutes', 'seconds'];
