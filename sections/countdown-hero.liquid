@@ -249,11 +249,14 @@
 
   #CountdownHero-{{ section_id }} .countdown-hero__digit-slot {
     position: relative;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
-    height: 1.08em;
-    width: 0.6em;
-    line-height: 1.08em;
+    height: 1.15em;
+    width: 100%;
+    min-width: 1.25em;
+    line-height: 1.15em;
     text-align: center;
     vertical-align: middle;
   }
@@ -267,38 +270,28 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
     will-change: transform;
+    transform: translateY(0);
+    /* pure vertical translateY scroll only - NO opacity fades */
   }
 
   #CountdownHero-{{ section_id }} .countdown-hero__digit--current {
     transform: translateY(0);
   }
 
-  /* Upward Ticker Animations */
-  #CountdownHero-{{ section_id }} .countdown-hero__digit--animating-out {
-    animation: countdownHeroSlideUpExit-{{ section_id }} var(--ch-anim-duration, 300ms) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  #CountdownHero-{{ section_id }} .countdown-hero__digit--outgoing {
+    transform: translateY(-100%);
+    transition: transform 1s linear;
   }
 
-  #CountdownHero-{{ section_id }} .countdown-hero__digit--animating-in {
-    animation: countdownHeroSlideUpEnter-{{ section_id }} var(--ch-anim-duration, 300ms) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  #CountdownHero-{{ section_id }} .countdown-hero__digit--incoming {
+    transform: translateY(100%);
   }
 
-  @keyframes countdownHeroSlideUpExit-{{ section_id }} {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(-100%);
-    }
-  }
-
-  @keyframes countdownHeroSlideUpEnter-{{ section_id }} {
-    0% {
-      transform: translateY(100%);
-    }
-    100% {
-      transform: translateY(0);
-    }
+  #CountdownHero-{{ section_id }} .countdown-hero__digit--sliding-in {
+    transform: translateY(0);
+    transition: transform 1s linear;
   }
 
   /* Stable Colon Separator with custom square blocks */
@@ -509,13 +502,15 @@
 
   /* Accessibility: Reduced Motion Support */
   @media (prefers-reduced-motion: reduce) {
-    #CountdownHero-{{ section_id }} .countdown-hero__digit--animating-out {
-      animation: none !important;
+    #CountdownHero-{{ section_id }} .countdown-hero__digit {
+      transition: none !important;
+    }
+    #CountdownHero-{{ section_id }} .countdown-hero__digit--outgoing {
       display: none !important;
     }
-    #CountdownHero-{{ section_id }} .countdown-hero__digit--animating-in {
-      animation: none !important;
+    #CountdownHero-{{ section_id }} .countdown-hero__digit--incoming {
       transform: translateY(0) !important;
+      transition: none !important;
     }
     #CountdownHero-{{ section_id }} .countdown-hero__btn {
       transition: none !important;
@@ -661,11 +656,8 @@
                 >
                   <!-- Days Unit -->
                   <div class="countdown-hero__unit" data-unit="days">
-                    <div class="countdown-hero__digit-slot" data-slot="0" data-digit="0">
-                      <span class="countdown-hero__digit countdown-hero__digit--current">0</span>
-                    </div>
-                    <div class="countdown-hero__digit-slot" data-slot="1" data-digit="2">
-                      <span class="countdown-hero__digit countdown-hero__digit--current">2</span>
+                    <div class="countdown-hero__digit-slot" data-slot>
+                      <span class="countdown-hero__digit countdown-hero__digit--current">02</span>
                     </div>
                   </div>
 
@@ -673,11 +665,8 @@
 
                   <!-- Hours Unit -->
                   <div class="countdown-hero__unit" data-unit="hours">
-                    <div class="countdown-hero__digit-slot" data-slot="0" data-digit="1">
-                      <span class="countdown-hero__digit countdown-hero__digit--current">1</span>
-                    </div>
-                    <div class="countdown-hero__digit-slot" data-slot="1" data-digit="1">
-                      <span class="countdown-hero__digit countdown-hero__digit--current">1</span>
+                    <div class="countdown-hero__digit-slot" data-slot>
+                      <span class="countdown-hero__digit countdown-hero__digit--current">11</span>
                     </div>
                   </div>
 
@@ -685,11 +674,8 @@
 
                   <!-- Minutes Unit -->
                   <div class="countdown-hero__unit" data-unit="minutes">
-                    <div class="countdown-hero__digit-slot" data-slot="0" data-digit="4">
-                      <span class="countdown-hero__digit countdown-hero__digit--current">4</span>
-                    </div>
-                    <div class="countdown-hero__digit-slot" data-slot="1" data-digit="7">
-                      <span class="countdown-hero__digit countdown-hero__digit--current">7</span>
+                    <div class="countdown-hero__digit-slot" data-slot>
+                      <span class="countdown-hero__digit countdown-hero__digit--current">47</span>
                     </div>
                   </div>
 
@@ -697,11 +683,8 @@
 
                   <!-- Seconds Unit -->
                   <div class="countdown-hero__unit" data-unit="seconds">
-                    <div class="countdown-hero__digit-slot" data-slot="0" data-digit="0">
-                      <span class="countdown-hero__digit countdown-hero__digit--current">0</span>
-                    </div>
-                    <div class="countdown-hero__digit-slot" data-slot="1" data-digit="7">
-                      <span class="countdown-hero__digit countdown-hero__digit--current">7</span>
+                    <div class="countdown-hero__digit-slot" data-slot>
+                      <span class="countdown-hero__digit countdown-hero__digit--current">07</span>
                     </div>
                   </div>
                 </div>
@@ -805,23 +788,19 @@
             data-completed-msg="{{ section.settings.completed_message | escape }}"
           >
             <div class="countdown-hero__unit" data-unit="days">
-              <div class="countdown-hero__digit-slot" data-slot="0" data-digit="0"><span class="countdown-hero__digit countdown-hero__digit--current">0</span></div>
-              <div class="countdown-hero__digit-slot" data-slot="1" data-digit="2"><span class="countdown-hero__digit countdown-hero__digit--current">2</span></div>
+              <div class="countdown-hero__digit-slot" data-slot><span class="countdown-hero__digit countdown-hero__digit--current">02</span></div>
             </div>
             <div class="countdown-hero__sep" aria-hidden="true"></div>
             <div class="countdown-hero__unit" data-unit="hours">
-              <div class="countdown-hero__digit-slot" data-slot="0" data-digit="1"><span class="countdown-hero__digit countdown-hero__digit--current">1</span></div>
-              <div class="countdown-hero__digit-slot" data-slot="1" data-digit="1"><span class="countdown-hero__digit countdown-hero__digit--current">1</span></div>
+              <div class="countdown-hero__digit-slot" data-slot><span class="countdown-hero__digit countdown-hero__digit--current">11</span></div>
             </div>
             <div class="countdown-hero__sep" aria-hidden="true"></div>
             <div class="countdown-hero__unit" data-unit="minutes">
-              <div class="countdown-hero__digit-slot" data-slot="0" data-digit="4"><span class="countdown-hero__digit countdown-hero__digit--current">4</span></div>
-              <div class="countdown-hero__digit-slot" data-slot="1" data-digit="7"><span class="countdown-hero__digit countdown-hero__digit--current">7</span></div>
+              <div class="countdown-hero__digit-slot" data-slot><span class="countdown-hero__digit countdown-hero__digit--current">47</span></div>
             </div>
             <div class="countdown-hero__sep" aria-hidden="true"></div>
             <div class="countdown-hero__unit" data-unit="seconds">
-              <div class="countdown-hero__digit-slot" data-slot="0" data-digit="0"><span class="countdown-hero__digit countdown-hero__digit--current">0</span></div>
-              <div class="countdown-hero__digit-slot" data-slot="1" data-digit="7"><span class="countdown-hero__digit countdown-hero__digit--current">7</span></div>
+              <div class="countdown-hero__digit-slot" data-slot><span class="countdown-hero__digit countdown-hero__digit--current">07</span></div>
             </div>
           </div>
           <div class="countdown-hero__completed-msg" data-completed-display>
@@ -869,7 +848,6 @@
     const announcer = root.querySelector('[data-timer-announcer]');
     const completedDisplay = root.querySelector('[data-completed-display]');
     const isAnimationEnabled = timerEl.dataset.enableAnimation !== 'false';
-    const animDuration = parseInt(timerEl.dataset.animationDuration, 10) || 300;
     const expiryAction = timerEl.dataset.expiryAction || 'zero';
     const completedMsg = timerEl.dataset.completedMsg || 'PRE ORDERS ARE NOW OPEN';
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -901,105 +879,203 @@
       }
     }
 
-    function updateDigit(slot, newDigitChar, animate) {
-      const currentDigit = slot.dataset.digit;
-      if (currentDigit === newDigitChar) return;
+    function getRemaining() {
+      const now = Date.now();
+      const diff = Math.max(0, targetTime - now);
+      const totalSec = Math.floor(diff / 1000);
+      const d = Math.floor(totalSec / 86400);
+      const h = Math.floor((totalSec % 86400) / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      return {
+        diff,
+        totalSec,
+        days: String(d).padStart(2, '0'),
+        hours: String(h).padStart(2, '0'),
+        minutes: String(m).padStart(2, '0'),
+        seconds: String(s).padStart(2, '0')
+      };
+    }
 
-      slot.dataset.digit = newDigitChar;
+    function handleCompletion() {
+      if (expiryAction === 'message') {
+        root.setAttribute('data-completed', 'true');
+        root.setAttribute('data-hide-timer', 'true');
+        if (completedDisplay) completedDisplay.textContent = completedMsg;
+      } else {
+        root.setAttribute('data-completed', 'true');
+      }
+    }
 
-      if (!animate || !isAnimationEnabled || prefersReducedMotion) {
-        const curEl = slot.querySelector('.countdown-hero__digit--current');
-        if (curEl) curEl.textContent = newDigitChar;
+    // Single slot roll mechanism (outgoing slides up to -100%, incoming slides in from 100% to 0)
+    function rollSlot(slot, nextValStr, animate) {
+      if (!slot) return;
+      const digits = Array.from(slot.querySelectorAll('.countdown-hero__digit'));
+      const currentVisible = digits.find(d => !d.classList.contains('countdown-hero__digit--outgoing')) || digits[digits.length - 1];
+
+      if (currentVisible && currentVisible.textContent === nextValStr) {
         return;
       }
 
-      // Clean up any stale exiting elements
-      const staleExiting = slot.querySelectorAll('.countdown-hero__digit--animating-out');
-      staleExiting.forEach(el => el.remove());
-
-      const oldEl = slot.querySelector('.countdown-hero__digit--current');
-      const newEl = document.createElement('span');
-      newEl.className = 'countdown-hero__digit countdown-hero__digit--current countdown-hero__digit--animating-in';
-      newEl.textContent = newDigitChar;
-      slot.appendChild(newEl);
-
-      if (oldEl) {
-        oldEl.classList.remove('countdown-hero__digit--current');
-        oldEl.classList.add('countdown-hero__digit--animating-out');
-
-        const cleanUp = () => {
-          if (oldEl && oldEl.parentNode) oldEl.remove();
-          newEl.classList.remove('countdown-hero__digit--animating-in');
-        };
-
-        oldEl.addEventListener('animationend', cleanUp, { once: true });
-        setTimeout(cleanUp, animDuration + 50);
-      } else {
-        newEl.classList.remove('countdown-hero__digit--animating-in');
-      }
-    }
-
-    function tick(animate) {
-      const now = Date.now();
-      const remainingMs = targetTime - now;
-      const isPast = remainingMs <= 0;
-      const remainingSec = Math.max(0, Math.floor(remainingMs / 1000));
-
-      if (isPast) {
-        if (expiryAction === 'message') {
-          root.setAttribute('data-completed', 'true');
-          root.setAttribute('data-hide-timer', 'true');
-          if (completedDisplay) completedDisplay.textContent = completedMsg;
-        } else {
-          root.setAttribute('data-completed', 'true');
+      // Clean any extraneous elements so at most 1 element exists before roll
+      digits.forEach(d => {
+        if (d !== currentVisible && d.parentNode) {
+          d.remove();
         }
-      }
-
-      const d = Math.floor(remainingSec / 86400);
-      const h = Math.floor((remainingSec % 86400) / 3600);
-      const m = Math.floor((remainingSec % 3600) / 60);
-      const s = remainingSec % 60;
-
-      const dStr = String(d).padStart(2, '0');
-      const hStr = String(h).padStart(2, '0');
-      const mStr = String(m).padStart(2, '0');
-      const sStr = String(s).padStart(2, '0');
-
-      const unitMap = {
-        days: dStr,
-        hours: hStr,
-        minutes: mStr,
-        seconds: sStr
-      };
-
-      Object.keys(unitMap).forEach(unit => {
-        const unitEl = timerEl.querySelector('[data-unit="' + unit + '"]');
-        if (!unitEl) return;
-        const str = unitMap[unit];
-        const slot0 = unitEl.querySelector('[data-slot="0"]');
-        const slot1 = unitEl.querySelector('[data-slot="1"]');
-
-        if (slot0 && str[0] !== undefined) updateDigit(slot0, str[0], animate);
-        if (slot1 && str[1] !== undefined) updateDigit(slot1, str[1], animate);
       });
 
-      if (s === 0 && announcer) {
-        announcer.textContent = 'Countdown active: ' + d + ' days, ' + h + ' hours, ' + m + ' minutes remaining.';
+      if (!animate || !isAnimationEnabled || prefersReducedMotion) {
+        if (currentVisible) {
+          currentVisible.className = 'countdown-hero__digit countdown-hero__digit--current';
+          currentVisible.textContent = nextValStr;
+          currentVisible.style.transition = 'none';
+          currentVisible.style.transform = 'translateY(0)';
+        } else {
+          const span = document.createElement('span');
+          span.className = 'countdown-hero__digit countdown-hero__digit--current';
+          span.textContent = nextValStr;
+          slot.appendChild(span);
+        }
+        return;
       }
 
-      if (isPast && root._countdownInterval) {
-        clearInterval(root._countdownInterval);
-        root._countdownInterval = null;
+      // Two elements stacked: outgoing and incoming
+      const outgoing = currentVisible;
+      const incoming = document.createElement('span');
+      incoming.className = 'countdown-hero__digit countdown-hero__digit--incoming';
+      incoming.textContent = nextValStr;
+      incoming.style.transform = 'translateY(100%)';
+      incoming.style.transition = 'none';
+      slot.appendChild(incoming);
+
+      // Force layout reflow
+      void incoming.offsetHeight;
+
+      // Outgoing slides upward out of view
+      if (outgoing) {
+        outgoing.className = 'countdown-hero__digit countdown-hero__digit--outgoing';
+        outgoing.style.transition = 'transform 1000ms linear';
+        outgoing.style.transform = 'translateY(-100%)';
       }
+
+      // Incoming slides in from below
+      incoming.className = 'countdown-hero__digit countdown-hero__digit--incoming countdown-hero__digit--sliding-in';
+      incoming.style.transition = 'transform 1000ms linear';
+      incoming.style.transform = 'translateY(0)';
+
+      const finish = () => {
+        if (outgoing && outgoing.parentNode) {
+          outgoing.remove();
+        }
+        incoming.className = 'countdown-hero__digit countdown-hero__digit--current';
+        incoming.style.transition = 'none';
+        incoming.style.transform = 'translateY(0)';
+      };
+
+      let finished = false;
+      const handleDone = () => {
+        if (finished) return;
+        finished = true;
+        finish();
+      };
+
+      incoming.addEventListener('transitionend', handleDone, { once: true });
+      setTimeout(handleDone, 1000);
     }
 
-    // Initial populate without animation
-    tick(false);
+    const unitNames = ['days', 'hours', 'minutes', 'seconds'];
+    const unitSlots = {};
+    unitNames.forEach(name => {
+      const u = timerEl.querySelector('[data-unit="' + name + '"]');
+      if (u) unitSlots[name] = u.querySelector('.countdown-hero__digit-slot');
+    });
 
-    // Running ticker
-    root._countdownInterval = setInterval(() => {
-      tick(true);
-    }, 1000);
+    const currentValues = { days: null, hours: null, minutes: null, seconds: null };
+
+    // Initial populate without animation
+    const initial = getRemaining();
+    unitNames.forEach(name => {
+      currentValues[name] = initial[name];
+      rollSlot(unitSlots[name], initial[name], false);
+    });
+
+    if (initial.diff <= 0) {
+      handleCompletion();
+      return;
+    }
+
+    function tick() {
+      const rem = getRemaining();
+      if (rem.diff <= 0) {
+        unitNames.forEach(name => rollSlot(unitSlots[name], '00', true));
+        handleCompletion();
+        if (root._countdownTimer) clearTimeout(root._countdownTimer);
+        root._countdownTimer = null;
+        return;
+      }
+
+      // Seconds continuously rolls every second
+      rollSlot(unitSlots.seconds, rem.seconds, true);
+      currentValues.seconds = rem.seconds;
+
+      // Minutes roll only when value actually changes
+      if (rem.minutes !== currentValues.minutes) {
+        rollSlot(unitSlots.minutes, rem.minutes, true);
+        currentValues.minutes = rem.minutes;
+      }
+
+      // Hours roll only when value actually changes
+      if (rem.hours !== currentValues.hours) {
+        rollSlot(unitSlots.hours, rem.hours, true);
+        currentValues.hours = rem.hours;
+      }
+
+      // Days roll only when value actually changes
+      if (rem.days !== currentValues.days) {
+        rollSlot(unitSlots.days, rem.days, true);
+        currentValues.days = rem.days;
+      }
+
+      if (announcer && rem.seconds === '00') {
+        announcer.textContent = 'Countdown active: ' + rem.days + ' days, ' + rem.hours + ' hours, ' + rem.minutes + ' minutes remaining.';
+      }
+
+      // Schedule next tick synced to new Date()
+      const nextDiff = Math.max(0, targetTime - Date.now());
+      const nextDelay = (nextDiff % 1000) || 1000;
+      root._countdownTimer = setTimeout(tick, nextDelay);
+    }
+
+    // Initial delay synced to exact second boundary of targetTime / Date.now()
+    const firstDiff = Math.max(0, targetTime - Date.now());
+    const firstDelay = (firstDiff % 1000) || 1000;
+    root._countdownTimer = setTimeout(tick, firstDelay);
+
+    // Resync when tab becomes visible again after background throttling
+    function onVisibilityChange() {
+      if (document.visibilityState === 'visible') {
+        if (root._countdownTimer) clearTimeout(root._countdownTimer);
+        const rem = getRemaining();
+        if (rem.diff <= 0) {
+          unitNames.forEach(name => rollSlot(unitSlots[name], '00', false));
+          handleCompletion();
+          return;
+        }
+        unitNames.forEach(name => {
+          currentValues[name] = rem[name];
+          rollSlot(unitSlots[name], rem[name], false);
+        });
+        const d = Math.max(0, targetTime - Date.now());
+        const delay = (d % 1000) || 1000;
+        root._countdownTimer = setTimeout(tick, delay);
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    root._cleanup = function() {
+      if (root._countdownTimer) clearTimeout(root._countdownTimer);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
   }
 
   function setup() {
@@ -1016,6 +1092,7 @@
   document.addEventListener('shopify:section:load', function(e) {
     if (e.target && e.target.querySelector('[data-countdown-hero]')) {
       const el = e.target.querySelector('[data-countdown-hero]');
+      if (el._cleanup) el._cleanup();
       el._countdownInitialized = false;
       initCountdownHero(el);
     }
@@ -1024,9 +1101,8 @@
   document.addEventListener('shopify:section:unload', function(e) {
     if (e.target && e.target.querySelector('[data-countdown-hero]')) {
       const el = e.target.querySelector('[data-countdown-hero]');
-      if (el && el._countdownInterval) {
-        clearInterval(el._countdownInterval);
-        el._countdownInterval = null;
+      if (el && el._cleanup) {
+        el._cleanup();
       }
     }
   });
