@@ -1,0 +1,535 @@
+{%- doc -%}
+  Custom Newsletter Signup Section
+  Compatible with Shopify Horizon and Online Store 2.0 theme architecture.
+  Submissions use Shopify's native 'customer' form to capture emails and tag subscribers.
+
+  DATA & PLATFORM BEHAVIOR:
+  - Submissions are posted to Shopify's native customer endpoint (/contact#form_id).
+  - The hidden input `name="contact[tags]" value="newsletter"` tags the customer record in Shopify Admin.
+  - Depending on store settings (Double Opt-In vs. Single Opt-In in Settings > Notifications):
+    * Single Opt-In: Customer is immediately marked with email_marketing_consent = 'Subscribed'.
+    * Double Opt-In: Customer is marked as 'Pending confirmation' until they verify via the automated email.
+  - Once captured, contacts appear in Shopify Admin > Customers and are queryable via Customer Segments
+    (e.g., `email_subscription_status = 'SUBSCRIBED'` or `customer_tags CONTAINS 'newsletter'`).
+  - Limitations: Newsletter signups do not create storefront customer accounts with passwords; they create
+    lead/customer records for marketing. If an email has already unsubscribed previously, platform privacy
+    rules may prevent automated re-subscription without explicit double opt-in confirmation.
+{%- enddoc -%}
+
+{%- liquid
+  assign section_id = section.id
+  assign form_id = 'NewsletterForm-' | append: section_id
+  assign align_class = 'newsletter-signup--align-' | append: section.settings.content_alignment
+-%}
+
+{%- style -%}
+  #NewsletterSection-{{ section_id }} {
+    --nl-pt: {{ section.settings.padding_top }}px;
+    --nl-pb: {{ section.settings.padding_bottom }}px;
+    --nl-pt-m: {{ section.settings.padding_top_mobile }}px;
+    --nl-pb-m: {{ section.settings.padding_bottom_mobile }}px;
+    --nl-max-w: {{ section.settings.max_width }}px;
+    padding-top: var(--nl-pt);
+    padding-bottom: var(--nl-pb);
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  @media screen and (max-width: 749px) {
+    #NewsletterSection-{{ section_id }} {
+      padding-top: var(--nl-pt-m);
+      padding-bottom: var(--nl-pb-m);
+    }
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__container {
+    width: 100%;
+    box-sizing: border-box;
+    {%- if section.settings.full_width -%}
+      padding-left: clamp(16px, 4vw, 40px);
+      padding-right: clamp(16px, 4vw, 40px);
+    {%- else -%}
+      max-width: var(--page-width, 1200px);
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: clamp(16px, 3vw, 32px);
+      padding-right: clamp(16px, 3vw, 32px);
+    {%- endif -%}
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__inner {
+    max-width: var(--nl-max-w);
+    box-sizing: border-box;
+    {%- case section.settings.content_alignment -%}
+      {%- when 'center' -%}
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+      {%- when 'right' -%}
+        margin-left: auto;
+        margin-right: 0;
+        text-align: right;
+      {%- else -%}
+        margin-left: 0;
+        margin-right: auto;
+        text-align: left;
+    {%- endcase -%}
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__heading {
+    margin-top: 0;
+    margin-bottom: 12px;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__text {
+    margin-top: 0;
+    margin-bottom: 24px;
+    line-height: 1.6;
+    opacity: 0.9;
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__text p:last-child {
+    margin-bottom: 0;
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__fields {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+    {%- if section.settings.content_alignment == 'center' -%}
+      justify-content: center;
+    {%- elsif section.settings.content_alignment == 'right' -%}
+      justify-content: flex-end;
+    {%- else -%}
+      justify-content: flex-start;
+    {%- endif -%}
+  }
+
+  @media screen and (max-width: 600px) {
+    #NewsletterSection-{{ section_id }} .newsletter-signup__fields {
+      flex-direction: column;
+    }
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__input-wrapper {
+    position: relative;
+    flex: 1 1 auto;
+    max-width: 440px;
+    min-width: 0;
+  }
+
+  @media screen and (max-width: 600px) {
+    #NewsletterSection-{{ section_id }} .newsletter-signup__input-wrapper {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    font-size: 15px;
+    line-height: 48px;
+    color: inherit;
+    background-color: transparent;
+    border: 1px solid currentColor;
+    border-radius: var(--inputs-radius, 4px);
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__input::placeholder {
+    color: inherit;
+    opacity: 0.6;
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__input:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__input[aria-invalid="true"] {
+    border-color: #d20000;
+    outline-color: #d20000;
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 28px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: var(--buttons-radius, 4px);
+    border: 1px solid currentColor;
+    color: inherit;
+    background-color: transparent;
+    box-sizing: border-box;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__button:hover {
+    background-color: currentColor;
+    color: var(--color-background, #ffffff);
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  @media screen and (max-width: 600px) {
+    #NewsletterSection-{{ section_id }} .newsletter-signup__button {
+      width: 100%;
+    }
+  }
+
+  /* Success and Error Message Containers */
+  #NewsletterSection-{{ section_id }} .newsletter-signup__message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+    box-sizing: border-box;
+    {%- if section.settings.content_alignment == 'center' -%}
+      justify-content: center;
+    {%- elsif section.settings.content_alignment == 'right' -%}
+      justify-content: flex-end;
+    {%- else -%}
+      justify-content: flex-start;
+    {%- endif -%}
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__message--success {
+    background-color: rgba(46, 125, 50, 0.12);
+    color: #2e7d32;
+    border: 1px solid rgba(46, 125, 50, 0.3);
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__message--error {
+    background-color: rgba(211, 47, 47, 0.12);
+    color: #d32f2f;
+    border: 1px solid rgba(211, 47, 47, 0.3);
+  }
+
+  #NewsletterSection-{{ section_id }} .newsletter-signup__message-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Screen Reader Only Utility */
+  #NewsletterSection-{{ section_id }} .newsletter-signup__sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+{%- endstyle -%}
+
+<section
+  id="NewsletterSection-{{ section_id }}"
+  class="newsletter-signup-section {{ align_class }} color-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section_id }}"
+  aria-labelledby="NewsletterHeading-{{ section_id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="newsletter-signup__container">
+    <div class="newsletter-signup__inner">
+
+      {%- if section.settings.heading != blank -%}
+        <h2 id="NewsletterHeading-{{ section_id }}" class="newsletter-signup__heading {{ section.settings.heading_size }}">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {%- endif -%}
+
+      {%- if section.settings.text != blank -%}
+        <div class="newsletter-signup__text rte">
+          {{ section.settings.text }}
+        </div>
+      {%- endif -%}
+
+      {%- form 'customer', id: form_id, class: 'newsletter-signup__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input type="hidden" name="contact[context]" value="newsletter-section">
+
+        {%- if form.posted_successfully? -%}
+          <div
+            id="NewsletterSuccess-{{ section_id }}"
+            class="newsletter-signup__message newsletter-signup__message--success"
+            role="status"
+            tabindex="-1"
+            autofocus
+          >
+            <svg
+              class="newsletter-signup__message-icon"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm-1.2 14.6l-4.4-4.4 1.41-1.41L8.8 11.78l6.99-6.99 1.41 1.41-8.4 8.4z"
+                fill="currentColor"
+              />
+            </svg>
+            <span class="newsletter-signup__message-text">
+              {{ section.settings.success_message | default: 'Thank you for subscribing!' | escape }}
+            </span>
+          </div>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+          <div
+            id="NewsletterError-{{ section_id }}"
+            class="newsletter-signup__message newsletter-signup__message--error"
+            role="alert"
+            tabindex="-1"
+            autofocus
+          >
+            <svg
+              class="newsletter-signup__message-icon"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                fill="currentColor"
+              />
+            </svg>
+            <span class="newsletter-signup__message-text">
+              {%- if section.settings.error_message != blank -%}
+                {{ section.settings.error_message | escape }}
+              {%- else -%}
+                {{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}
+              {%- endif -%}
+            </span>
+          </div>
+        {%- endif -%}
+
+        {%- unless form.posted_successfully? -%}
+          <div class="newsletter-signup__fields">
+            <div class="newsletter-signup__input-wrapper">
+              <label for="NewsletterEmail-{{ section_id }}" class="newsletter-signup__sr-only">
+                {{ 'Email address' }}
+              </label>
+              <input
+                id="NewsletterEmail-{{ section_id }}"
+                type="email"
+                name="contact[email]"
+                class="newsletter-signup__input"
+                value="{{ form.email }}"
+                placeholder="{{ section.settings.placeholder_text | default: 'Enter your email address' | escape }}"
+                aria-required="true"
+                autocorrect="off"
+                autocapitalize="off"
+                autocomplete="email"
+                required
+                {% if form.errors %}
+                  autofocus
+                  aria-invalid="true"
+                  aria-describedby="NewsletterError-{{ section_id }}"
+                {% endif %}
+              >
+            </div>
+
+            <button
+              type="submit"
+              class="newsletter-signup__button"
+              name="commit"
+              id="NewsletterSubmit-{{ section_id }}"
+            >
+              {{ section.settings.button_label | default: 'Subscribe' | escape }}
+            </button>
+          </div>
+        {%- endunless -%}
+      {%- endform -%}
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter Signup",
+  "tag": "section",
+  "class": "newsletter-signup-wrapper",
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Subscribe to our emails"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "h3", "label": "Small" },
+        { "value": "h2", "label": "Medium" },
+        { "value": "h1", "label": "Large" }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Supporting text",
+      "default": "<p>Be the first to know about new collections, exclusive drops, and private sales.</p>"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_text",
+      "label": "Placeholder text",
+      "default": "Enter your email address"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "header",
+      "content": "Feedback Messages"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you for subscribing! Check your inbox for confirmation."
+    },
+    {
+      "type": "text",
+      "id": "error_message",
+      "label": "Custom error message",
+      "info": "Leave blank to display Shopify default error message."
+    },
+    {
+      "type": "header",
+      "content": "Appearance & Layout"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width section",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max content width",
+      "min": 400,
+      "max": 1000,
+      "step": 20,
+      "unit": "px",
+      "default": 640
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding (Desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding (Desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter Signup"
+    }
+  ]
+}
+{% endschema %}
